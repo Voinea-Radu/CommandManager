@@ -1,6 +1,7 @@
 package dev.lightdream.fly;
 
 import dev.lightdream.fly.dto.CommandLang;
+import dev.lightdream.fly.manager.CommandManager;
 
 public interface CommandMain {
 
@@ -11,5 +12,8 @@ public interface CommandMain {
     String getProjectName();
 
     String getProjectVersion();
+
+    @SuppressWarnings("unused")
+    CommandManager registerCommandManager();
 
 }
