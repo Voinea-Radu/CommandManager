@@ -1,0 +1,5 @@
+name: Fly
+version: '${project.version}'
+main: dev.lightdream.fly.Main
+authors: [ LightDream ]
+website: https://lightdream.dev
