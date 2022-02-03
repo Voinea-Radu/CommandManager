@@ -37,7 +37,8 @@ public class CommandManager {
                     }
                 }
                 if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
-                    obj = aClass.getDeclaredConstructors()[0].newInstance();
+                    obj = aClass.getConstructor().newInstance();
+                    //obj = aClass.getDeclaredConstructors()[0].newInstance();
                 } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
                     obj = aClass.getDeclaredConstructors()[0].newInstance(main);
                 } else {
@@ -47,7 +48,7 @@ public class CommandManager {
                 if (obj instanceof dev.lightdream.fly.commands.Command) {
                     commands.add((dev.lightdream.fly.commands.Command) obj);
                 }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
         });
