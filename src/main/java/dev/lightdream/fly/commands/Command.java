@@ -1,6 +1,7 @@
 package dev.lightdream.fly.commands;
 
 import dev.lightdream.fly.CommandMain;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.SneakyThrows;
@@ -11,6 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.reflections.Reflections;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -53,7 +55,29 @@ public abstract class Command extends Executable {
         new Reflections("dev.lightdream").getTypesAnnotatedWith(dev.lightdream.fly.annotations.SubCommand.class).forEach(aClass -> {
             if (aClass.getAnnotation(dev.lightdream.fly.annotations.SubCommand.class).parent().getSimpleName().equals(getClass().getSimpleName())) {
                 try {
-                    subCommands.add((SubCommand) aClass.getDeclaredConstructors()[0].newInstance(main));
+                    Object obj;
+                    Debugger.info(aClass.getSimpleName() + " constructors: ");
+                    for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
+                        StringBuilder parameters = new StringBuilder();
+                        for (Class<?> parameter : constructor.getParameterTypes()) {
+                            parameters.append(parameter.getSimpleName()).append(" ");
+                        }
+                        if (parameters.toString().equals("")) {
+                            Debugger.info("    - zero argument");
+                        } else {
+                            Debugger.info("    - " + parameters);
+                        }
+                    }
+                    if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
+                        obj = aClass.getDeclaredConstructors()[0].newInstance();
+                    } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
+                        obj = aClass.getDeclaredConstructors()[0].newInstance(main);
+                    } else {
+                        Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
+                        return;
+                    }
+
+                    subCommands.add((SubCommand) obj);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
