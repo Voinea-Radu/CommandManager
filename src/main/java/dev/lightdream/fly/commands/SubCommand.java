@@ -9,11 +9,9 @@ import java.util.List;
 
 public abstract class SubCommand extends Executable {
 
-
-    protected SubCommand(CommandMain main) {
+    public SubCommand(CommandMain main) {
         super(main);
     }
-
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
