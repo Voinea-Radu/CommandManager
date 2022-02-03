@@ -2,6 +2,7 @@ package dev.lightdream.fly.manager;
 
 import dev.lightdream.fly.CommandMain;
 import dev.lightdream.fly.annotations.Command;
+import dev.lightdream.logger.Logger;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +21,15 @@ public class CommandManager {
                         return;
                     }
                 }
-                Object obj = aClass.getDeclaredConstructors()[0].newInstance(main);
+                Object obj;
+                if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
+                    obj = aClass.getDeclaredConstructors()[0].newInstance();
+                } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
+                    obj = aClass.getDeclaredConstructors()[0].newInstance(main);
+                } else {
+                    Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
+                    return;
+                }
                 if (obj instanceof dev.lightdream.fly.commands.Command) {
                     commands.add((dev.lightdream.fly.commands.Command) obj);
                 }
