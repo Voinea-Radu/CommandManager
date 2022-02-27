@@ -1,6 +1,6 @@
-package dev.lightdream.fly.commands;
+package dev.lightdream.commandmanager.commands;
 
-import dev.lightdream.fly.CommandMain;
+import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
@@ -30,7 +30,7 @@ public abstract class Command extends Executable {
         super(main);
         this.main = main;
 
-        if (!getClass().isAnnotationPresent(dev.lightdream.fly.annotations.Command.class)) {
+        if (!getClass().isAnnotationPresent(dev.lightdream.commandmanager.annotations.Command.class)) {
             Logger.error("Class " + getClass().getSimpleName() + " is not annotated as @Command");
             return;
         }
@@ -52,8 +52,8 @@ public abstract class Command extends Executable {
         Logger.good("Command " + getCommand() + " initialized successfully");
 
         //Get all the subcommands
-        new Reflections("dev.lightdream").getTypesAnnotatedWith(dev.lightdream.fly.annotations.SubCommand.class).forEach(aClass -> {
-            if (aClass.getAnnotation(dev.lightdream.fly.annotations.SubCommand.class).parent().getSimpleName().equals(getClass().getSimpleName())) {
+        new Reflections("dev.lightdream").getTypesAnnotatedWith(dev.lightdream.commandmanager.annotations.SubCommand.class).forEach(aClass -> {
+            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotations.SubCommand.class).parent().getSimpleName().equals(getClass().getSimpleName())) {
                 try {
                     Object obj;
                     Debugger.info(aClass.getSimpleName() + " constructors: ");
@@ -169,32 +169,32 @@ public abstract class Command extends Executable {
     }
 
     private String getCommand() {
-        return getClass().getAnnotation(dev.lightdream.fly.annotations.Command.class).command();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).command();
     }
 
     @Override
     public String getPermission() {
-        return getClass().getAnnotation(dev.lightdream.fly.annotations.Command.class).permission();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).permission();
     }
 
     @Override
     public String getUsage() {
-        return getClass().getAnnotation(dev.lightdream.fly.annotations.Command.class).usage();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).usage();
     }
 
     @Override
     public boolean onlyForPlayers() {
-        return getClass().getAnnotation(dev.lightdream.fly.annotations.Command.class).onlyForPlayers();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).onlyForPlayers();
     }
 
     @Override
     public boolean onlyForConsole() {
-        return getClass().getAnnotation(dev.lightdream.fly.annotations.Command.class).onlyForConsole();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).onlyForConsole();
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList(getClass().getAnnotation(dev.lightdream.fly.annotations.Command.class).aliases());
+        return Arrays.asList(getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).aliases());
     }
 
     @Override

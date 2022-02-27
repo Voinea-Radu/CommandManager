@@ -1,7 +1,7 @@
-package dev.lightdream.fly.commands.base;
+package dev.lightdream.commandmanager.commands.base;
 
-import dev.lightdream.fly.CommandMain;
-import dev.lightdream.fly.annotations.SubCommand;
+import dev.lightdream.commandmanager.CommandMain;
+import dev.lightdream.commandmanager.annotations.SubCommand;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @SubCommand(parent = VersionCommand.class,
         command = "version")
-public class VersionCommand extends dev.lightdream.fly.commands.SubCommand {
+public class VersionCommand extends dev.lightdream.commandmanager.commands.SubCommand {
 
     public VersionCommand(@NotNull CommandMain main) {
         super(main);

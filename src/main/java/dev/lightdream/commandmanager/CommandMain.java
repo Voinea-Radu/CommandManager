@@ -1,7 +1,7 @@
-package dev.lightdream.fly;
+package dev.lightdream.commandmanager;
 
-import dev.lightdream.fly.dto.CommandLang;
-import dev.lightdream.fly.manager.CommandManager;
+import dev.lightdream.commandmanager.dto.CommandLang;
+import dev.lightdream.commandmanager.manager.CommandManager;
 
 public interface CommandMain {
 

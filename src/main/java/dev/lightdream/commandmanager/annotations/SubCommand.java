@@ -1,10 +1,12 @@
-package dev.lightdream.fly.annotations;
+package dev.lightdream.commandmanager.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
+public @interface SubCommand {
+
+    Class<?> parent();
 
     String command();
 
@@ -17,5 +19,8 @@ public @interface Command {
     boolean onlyForPlayers() default false;
 
     boolean onlyForConsole() default false;
+
+    int minimumArgs() default 0;
+
 
 }
