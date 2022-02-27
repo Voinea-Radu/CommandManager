@@ -23,7 +23,7 @@ public class VersionCommand extends dev.lightdream.commandmanager.commands.SubCo
         sender.sendMessage(new MessageBuilder(api.getLang().version).addPlaceholders(new HashMap<String, String>() {{
             put("project_name", api.getProjectName());
             put("version", api.getProjectVersion());
-        }}).toString());
+        }}).parseString());
     }
 
     @Override
