@@ -14,6 +14,6 @@ public interface CommandMain {
     String getProjectVersion();
 
     @SuppressWarnings("unused")
-    CommandManager registerCommandManager();
+    CommandManager getCommandManager();
 
 }
