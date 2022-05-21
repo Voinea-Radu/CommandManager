@@ -1,6 +1,7 @@
 package dev.lightdream.commandmanager.commands;
 
 import dev.lightdream.commandmanager.CommandMain;
+import dev.lightdream.commandmanager.Utils;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
@@ -10,6 +11,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
@@ -20,24 +22,40 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Command extends Executable {
+public abstract class Command extends org.bukkit.command.Command {
 
     public final CommandMain main;
-    public final List<SubCommand> subCommands = new ArrayList<>();
+    public final List<Command> subCommands = new ArrayList<>();
+    public boolean onlyForConsole = false;
+    public boolean onlyForPlayers = false;
 
     @SneakyThrows
     public Command(CommandMain main) {
-        super(main);
+        super("");
         this.main = main;
 
-        if (!getClass().isAnnotationPresent(dev.lightdream.commandmanager.annotations.Command.class)) {
-            Logger.error("Class " + getClass().getSimpleName() + " is not annotated as @Command");
+        if (!getClass().isAnnotationPresent(dev.lightdream.commandmanager.annotation.Command.class)) {
+            Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
             return;
         }
 
-        setName(getCommand());
+        dev.lightdream.commandmanager.annotation.Command command = getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class);
 
-        //Register the command
+        String permission = command.permission();
+        if (!permission.equals("")) {
+            setPermission(permission);
+        }
+        onlyForConsole = command.onlyForConsole();
+        onlyForPlayers = command.onlyForPlayers();
+        this.setAliases(new ArrayList<>(Arrays.asList(command.aliases())));
+
+        if (command.parent() == Void.class) {
+            registerCommand();
+        }
+    }
+
+    @SneakyThrows
+    private void registerCommand() {
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
 
@@ -52,15 +70,15 @@ public abstract class Command extends Executable {
         Logger.good("Command " + getCommand() + " initialized successfully");
 
         //Get all the subcommands
-        new Reflections("dev.lightdream").getTypesAnnotatedWith(dev.lightdream.commandmanager.annotations.SubCommand.class).forEach(aClass -> {
-            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotations.SubCommand.class).parent().getSimpleName().equals(getClass().getSimpleName())) {
+        new Reflections("dev.lightdream").getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
+            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
                 try {
                     Object obj;
-                    Debugger.info(aClass.getSimpleName() + " constructors: ");
+                    Debugger.info(aClass.getName() + " constructors: ");
                     for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
                         StringBuilder parameters = new StringBuilder();
                         for (Class<?> parameter : constructor.getParameterTypes()) {
-                            parameters.append(parameter.getSimpleName()).append(" ");
+                            parameters.append(parameter.getName()).append(" ");
                         }
                         if (parameters.toString().equals("")) {
                             Debugger.info("    - zero argument");
@@ -73,17 +91,16 @@ public abstract class Command extends Executable {
                     } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
                         obj = aClass.getDeclaredConstructors()[0].newInstance(main);
                     } else {
-                        Logger.error("Class " + aClass.getSimpleName() + " does not have a valid constructor");
+                        Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
                         return;
                     }
 
-                    subCommands.add((SubCommand) obj);
+                    subCommands.add((Command) obj);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
         });
-
     }
 
     public void sendUsage(CommandSender sender) {
@@ -91,7 +108,7 @@ public abstract class Command extends Executable {
         helpCommandOutput.append("\n");
 
         if (main.getLang().helpCommand.equals("")) {
-            for (SubCommand subCommand : subCommands) {
+            for (Command subCommand : subCommands) {
                 if (sender.hasPermission(subCommand.getPermission())) {
                     helpCommandOutput.append(subCommand.getCommand());
                     helpCommandOutput.append(" ");
@@ -106,14 +123,38 @@ public abstract class Command extends Executable {
         sender.sendMessage(new MessageBuilder(helpCommandOutput.toString()).toString());
     }
 
+    public void exec(@NotNull CommandSender source, List<String> args) {
+        if (getSubCommands().size() == 0) {
+            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
+        }
+
+        source.sendMessage(Utils.listToString(getSubCommandsHelpMessage(source), "\n"));
+    }
+
+    public void exec(@NotNull ConsoleCommandSender console, @NotNull List<String> args) {
+        if (getSubCommands().size() == 0) {
+            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+        }
+
+        console.sendMessage(Utils.listToString(getSubCommandsHelpMessage(console), "\n"));
+    }
+
+    public void exec(@NotNull Player player, @NotNull List<String> args) {
+        if (getSubCommands().size() == 0) {
+            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
+        }
+
+        player.sendMessage(Utils.listToString(getSubCommandsHelpMessage(player), "\n"));
+    }
+
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (args.length == 0) {
-            _execute(sender, Arrays.asList(args));
+            exec(sender, Arrays.asList(args));
             return true;
         }
 
-        for (SubCommand subCommand : subCommands) {
+        for (Command subCommand : subCommands) {
             if (!(subCommand.getAliases().contains(args[0].toLowerCase()))) {
                 continue;
             }
@@ -133,11 +174,11 @@ public abstract class Command extends Executable {
                 return true;
             }
 
-            subCommand.execute(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+            subCommand.exec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
             return true;
         }
 
-        _execute(sender, Arrays.asList(args));
+        exec(sender, Arrays.asList(args));
         return true;
     }
 
@@ -145,7 +186,7 @@ public abstract class Command extends Executable {
     public List<String> tabComplete(CommandSender sender, String bukkitAlias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
             ArrayList<String> result = new ArrayList<>();
-            for (SubCommand subCommand : subCommands) {
+            for (Command subCommand : subCommands) {
                 for (String alias : subCommand.getAliases()) {
                     if (alias.toLowerCase().startsWith(args[0].toLowerCase()) && hasPermission(sender, subCommand.getPermission())) {
                         result.add(alias);
@@ -155,12 +196,16 @@ public abstract class Command extends Executable {
             return result;
         }
 
-        for (SubCommand subCommand : subCommands) {
+        for (Command subCommand : subCommands) {
             if (subCommand.getAliases().contains(args[0]) && hasPermission(sender, subCommand.getPermission())) {
                 return subCommand.onTabComplete(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
             }
         }
 
+        return onTabComplete(sender, new ArrayList<>(Arrays.asList(args)));
+    }
+
+    public List<String> onTabComplete(CommandSender sender, List<String> args){
         return Collections.emptyList();
     }
 
@@ -169,36 +214,80 @@ public abstract class Command extends Executable {
     }
 
     private String getCommand() {
-        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).command();
+        return getAliases().get(0);
     }
 
     @Override
     public String getPermission() {
-        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).permission();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).permission();
     }
 
     @Override
     public String getUsage() {
-        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).usage();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).usage();
     }
 
-    @Override
     public boolean onlyForPlayers() {
-        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).onlyForPlayers();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).onlyForPlayers();
     }
 
-    @Override
     public boolean onlyForConsole() {
-        return getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).onlyForConsole();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).onlyForConsole();
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList(getClass().getAnnotation(dev.lightdream.commandmanager.annotations.Command.class).aliases());
+        return Arrays.asList(getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).aliases());
     }
 
-    @Override
     public int getMinimumArgs() {
         return 0;
+    }
+
+    private List<Command> getSubCommands() {
+        List<Command> subCommands = new ArrayList<>();
+
+        new Reflections(main.getPackageName()).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
+            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
+                try {
+                    Object obj;
+                    Debugger.info(aClass.getName() + " constructors: ");
+                    for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
+                        StringBuilder parameters = new StringBuilder();
+                        for (Class<?> parameter : constructor.getParameterTypes()) {
+                            parameters.append(parameter.getName()).append(" ");
+                        }
+                        if (parameters.toString().equals("")) {
+                            Debugger.info("    - zero argument");
+                        } else {
+                            Debugger.info("    - " + parameters);
+                        }
+                    }
+                    if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
+                        obj = aClass.getDeclaredConstructors()[0].newInstance();
+                    } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
+                        obj = aClass.getDeclaredConstructors()[0].newInstance(main);
+                    } else {
+                        Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
+                        return;
+                    }
+
+                    subCommands.add((Command) obj);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return subCommands;
+    }
+
+    private List<String> getSubCommandsHelpMessage(CommandSender source) {
+        List<String> output = new ArrayList<>();
+        getSubCommands().forEach(command -> output.add(
+                "/" + this.getAliases().get(0) + " " + command.getAliases().get(0) + " " +
+                        command.getUsage()
+        ));
+        return output;
     }
 }

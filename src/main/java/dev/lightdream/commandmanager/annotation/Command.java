@@ -1,14 +1,10 @@
-package dev.lightdream.commandmanager.annotations;
+package dev.lightdream.commandmanager.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SubCommand {
-
-    Class<?> parent();
-
-    String command();
+public @interface Command {
 
     String[] aliases() default {};
 
@@ -20,7 +16,8 @@ public @interface SubCommand {
 
     boolean onlyForConsole() default false;
 
-    int minimumArgs() default 0;
+    Class<?> parent() default Void.class;
 
+    int minimumArgs() default 0;
 
 }
