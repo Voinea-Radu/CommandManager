@@ -26,8 +26,6 @@ public abstract class Command extends org.bukkit.command.Command {
 
     public final CommandMain main;
     public final List<Command> subCommands = new ArrayList<>();
-    public boolean onlyForConsole = false;
-    public boolean onlyForPlayers = false;
 
     @SneakyThrows
     public Command(CommandMain main) {
@@ -45,8 +43,6 @@ public abstract class Command extends org.bukkit.command.Command {
         if (!permission.equals("")) {
             setPermission(permission);
         }
-        onlyForConsole = command.onlyForConsole();
-        onlyForPlayers = command.onlyForPlayers();
         this.setAliases(new ArrayList<>(Arrays.asList(command.aliases())));
 
         if (command.parent() == Void.class) {
@@ -125,7 +121,7 @@ public abstract class Command extends org.bukkit.command.Command {
 
     public void exec(@NotNull CommandSender source, List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
+            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSender, List<String>");
         }
 
         source.sendMessage(Utils.listToString(getSubCommandsHelpMessage(source), "\n"));
@@ -133,7 +129,7 @@ public abstract class Command extends org.bukkit.command.Command {
 
     public void exec(@NotNull ConsoleCommandSender console, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleCommandSender, List<String>");
         }
 
         console.sendMessage(Utils.listToString(getSubCommandsHelpMessage(console), "\n"));
@@ -141,7 +137,7 @@ public abstract class Command extends org.bukkit.command.Command {
 
     public void exec(@NotNull Player player, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + this.getAliases().get(0) + " for " + player.getName() + ", but the command is not implemented. Exec type: Player, List<String>");
         }
 
         player.sendMessage(Utils.listToString(getSubCommandsHelpMessage(player), "\n"));
@@ -174,12 +170,24 @@ public abstract class Command extends org.bukkit.command.Command {
                 return true;
             }
 
-            subCommand.exec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+            subCommand.distributeExec(sender, args);
             return true;
         }
 
-        exec(sender, Arrays.asList(args));
+        distributeExec(sender, args);
         return true;
+    }
+
+    public void distributeExec(CommandSender sender, String[] args) {
+        if (onlyForPlayers()) {
+            exec((Player) sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+        }
+
+        if (onlyForConsole()) {
+            exec((ConsoleCommandSender) sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+        }
+
+        exec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
     }
 
     @Override
@@ -205,7 +213,7 @@ public abstract class Command extends org.bukkit.command.Command {
         return onTabComplete(sender, new ArrayList<>(Arrays.asList(args)));
     }
 
-    public List<String> onTabComplete(CommandSender sender, List<String> args){
+    public List<String> onTabComplete(CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 
