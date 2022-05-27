@@ -99,6 +99,7 @@ public abstract class Command extends org.bukkit.command.Command {
         });
     }
 
+    @SuppressWarnings("unused")
     public void sendUsage(CommandSender sender) {
         StringBuilder helpCommandOutput = new StringBuilder();
         helpCommandOutput.append("\n");
@@ -119,6 +120,7 @@ public abstract class Command extends org.bukkit.command.Command {
         sender.sendMessage(new MessageBuilder(helpCommandOutput.toString()).toString());
     }
 
+    @SuppressWarnings("unused")
     public void exec(@NotNull CommandSender source, List<String> args) {
         if (getSubCommands().size() == 0) {
             Logger.warn("Executing command " + this.getAliases().get(0) + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSender, List<String>");
@@ -127,6 +129,7 @@ public abstract class Command extends org.bukkit.command.Command {
         source.sendMessage(Utils.listToString(getSubCommandsHelpMessage(source), "\n"));
     }
 
+    @SuppressWarnings("unused")
     public void exec(@NotNull ConsoleCommandSender console, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
             Logger.warn("Executing command " + this.getAliases().get(0) + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleCommandSender, List<String>");
@@ -135,6 +138,7 @@ public abstract class Command extends org.bukkit.command.Command {
         console.sendMessage(Utils.listToString(getSubCommandsHelpMessage(console), "\n"));
     }
 
+    @SuppressWarnings("unused")
     public void exec(@NotNull Player player, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
             Logger.warn("Executing command " + this.getAliases().get(0) + " for " + player.getName() + ", but the command is not implemented. Exec type: Player, List<String>");
@@ -146,7 +150,7 @@ public abstract class Command extends org.bukkit.command.Command {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (args.length == 0) {
-            distributeExec(sender, args);
+            distributeExec(sender, new ArrayList<>(Arrays.asList(args)));
             return true;
         }
 
@@ -170,27 +174,29 @@ public abstract class Command extends org.bukkit.command.Command {
                 return true;
             }
 
-            subCommand.distributeExec(sender, args);
+            subCommand.distributeExec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
             return true;
         }
 
-        distributeExec(sender, args);
+        distributeExec(sender, new ArrayList<>(Arrays.asList(args)));
         return true;
     }
 
-    public void distributeExec(CommandSender sender, String[] args) {
+    public void distributeExec(CommandSender sender, List<String> args) {
         if (onlyForPlayers()) {
             Debugger.log("-- Only For Players --");
-            exec((Player) sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+            exec((Player) sender, args);
+            return;
         }
 
         if (onlyForConsole()) {
             Debugger.log("-- Only For Console --");
-            exec((ConsoleCommandSender) sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+            exec((ConsoleCommandSender) sender, args);
+            return;
         }
 
         Debugger.log("-- Default --");
-        exec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+        exec(sender, args);
     }
 
     @Override
@@ -216,6 +222,7 @@ public abstract class Command extends org.bukkit.command.Command {
         return onTabComplete(sender, new ArrayList<>(Arrays.asList(args)));
     }
 
+    @SuppressWarnings("unused")
     public List<String> onTabComplete(CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
@@ -251,8 +258,9 @@ public abstract class Command extends org.bukkit.command.Command {
         return Arrays.asList(getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).aliases());
     }
 
+    @SuppressWarnings("unused")
     public int getMinimumArgs() {
-        return 0;
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).minimumArgs();
     }
 
     private List<Command> getSubCommands() {
@@ -293,6 +301,7 @@ public abstract class Command extends org.bukkit.command.Command {
         return subCommands;
     }
 
+    @SuppressWarnings("unused")
     private List<String> getSubCommandsHelpMessage(CommandSender source) {
         List<String> output = new ArrayList<>();
         getSubCommands().forEach(command -> output.add(
