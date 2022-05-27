@@ -180,13 +180,16 @@ public abstract class Command extends org.bukkit.command.Command {
 
     public void distributeExec(CommandSender sender, String[] args) {
         if (onlyForPlayers()) {
+            Debugger.log("-- Only For Players --");
             exec((Player) sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
         }
 
         if (onlyForConsole()) {
+            Debugger.log("-- Only For Console --");
             exec((ConsoleCommandSender) sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
         }
 
+        Debugger.log("-- Default --");
         exec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
     }
 
