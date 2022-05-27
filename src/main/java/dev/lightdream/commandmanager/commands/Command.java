@@ -146,7 +146,7 @@ public abstract class Command extends org.bukkit.command.Command {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (args.length == 0) {
-            exec(sender, Arrays.asList(args));
+            distributeExec(sender, args);
             return true;
         }
 
