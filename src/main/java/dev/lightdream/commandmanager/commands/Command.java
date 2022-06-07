@@ -184,11 +184,19 @@ public abstract class Command extends org.bukkit.command.Command {
 
     public void distributeExec(CommandSender sender, List<String> args) {
         if (onlyForPlayers()) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(new MessageBuilder(main.getLang().mustBeAPlayer).parse());
+                return;
+            }
             exec((Player) sender, args);
             return;
         }
 
         if (onlyForConsole()) {
+            if (!(sender instanceof ConsoleCommandSender)) {
+                sender.sendMessage(new MessageBuilder(main.getLang().mustBeConsole).parse());
+                return;
+            }
             exec((ConsoleCommandSender) sender, args);
             return;
         }
