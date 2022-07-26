@@ -18,7 +18,7 @@
 <dependencies>
     <dependency>
         <groupId>dev.lightdream</groupId>
-        <artifactId>DatabaseManager</artifactId>
+        <artifactId>CommandManager</artifactId>
         <version>LATEST</version>
     </dependency>
     <!-- Other dependencies -->
