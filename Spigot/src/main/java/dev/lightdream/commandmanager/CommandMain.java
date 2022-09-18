@@ -1,7 +1,7 @@
-package commandmanager;
+package dev.lightdream.commandmanager;
 
-import commandmanager.dto.CommandLang;
-import commandmanager.manager.CommandManager;
+import dev.lightdream.commandmanager.dto.CommandLang;
+import dev.lightdream.commandmanager.manager.CommandManager;
 
 public interface CommandMain {
 

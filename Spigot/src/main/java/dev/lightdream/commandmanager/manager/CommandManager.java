@@ -1,7 +1,7 @@
-package commandmanager.manager;
+package dev.lightdream.commandmanager.manager;
 
-import commandmanager.CommandMain;
-import commandmanager.commands.Command;
+import dev.lightdream.commandmanager.CommandMain;
+import dev.lightdream.commandmanager.commands.Command;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import org.reflections.Reflections;
@@ -16,7 +16,7 @@ public class CommandManager {
     public List<Command> commands = new ArrayList<>();
 
     public CommandManager(CommandMain main) {
-        new Reflections(main.getPackageName()).getTypesAnnotatedWith(commandmanager.annotation.Command.class).forEach(aClass -> {
+        new Reflections(main.getPackageName()).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
             try {
                 for (Command command : commands) {
                     if (command.getClass().getName().equals(aClass.getName())) {

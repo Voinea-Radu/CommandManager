@@ -1,4 +1,4 @@
-package commandmanager.annotation;
+package dev.lightdream.commandmanager.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

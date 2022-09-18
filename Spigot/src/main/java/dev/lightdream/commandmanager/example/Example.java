@@ -1,8 +1,8 @@
-package commandmanager.example;
+package dev.lightdream.commandmanager.example;
 
-import commandmanager.CommandMain;
-import commandmanager.dto.CommandLang;
-import commandmanager.manager.CommandManager;
+import dev.lightdream.commandmanager.CommandMain;
+import dev.lightdream.commandmanager.dto.CommandLang;
+import dev.lightdream.commandmanager.manager.CommandManager;
 import dev.lightdream.filemanager.FileManagerMain;
 
 import java.io.File;

@@ -1,7 +1,7 @@
-package commandmanager.commands;
+package dev.lightdream.commandmanager.commands;
 
-import commandmanager.CommandMain;
-import commandmanager.Utils;
+import dev.lightdream.commandmanager.CommandMain;
+import dev.lightdream.commandmanager.Utils;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
@@ -32,12 +32,12 @@ public abstract class Command extends org.bukkit.command.Command {
         super("");
         this.main = main;
 
-        if (!getClass().isAnnotationPresent(commandmanager.annotation.Command.class)) {
+        if (!getClass().isAnnotationPresent(dev.lightdream.commandmanager.annotation.Command.class)) {
             Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
             return;
         }
 
-        commandmanager.annotation.Command command = getClass().getAnnotation(commandmanager.annotation.Command.class);
+        dev.lightdream.commandmanager.annotation.Command command = getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class);
 
         String permission = command.permission();
         if (!permission.equals("")) {
@@ -66,8 +66,8 @@ public abstract class Command extends org.bukkit.command.Command {
         Logger.good("Command " + getCommand() + " initialized successfully");
 
         //Get all the subcommands
-        new Reflections("dev.lightdream").getTypesAnnotatedWith(commandmanager.annotation.Command.class).forEach(aClass -> {
-            if (aClass.getAnnotation(commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
+        new Reflections("dev.lightdream").getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
+            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
                 try {
                     Object obj;
                     Debugger.info(aClass.getName() + " constructors: ");
@@ -242,37 +242,37 @@ public abstract class Command extends org.bukkit.command.Command {
 
     @Override
     public String getPermission() {
-        return getClass().getAnnotation(commandmanager.annotation.Command.class).permission();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).permission();
     }
 
     @Override
     public String getUsage() {
-        return getClass().getAnnotation(commandmanager.annotation.Command.class).usage();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).usage();
     }
 
     public boolean onlyForPlayers() {
-        return getClass().getAnnotation(commandmanager.annotation.Command.class).onlyForPlayers();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).onlyForPlayers();
     }
 
     public boolean onlyForConsole() {
-        return getClass().getAnnotation(commandmanager.annotation.Command.class).onlyForConsole();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).onlyForConsole();
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList(getClass().getAnnotation(commandmanager.annotation.Command.class).aliases());
+        return Arrays.asList(getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).aliases());
     }
 
     @SuppressWarnings("unused")
     public int getMinimumArgs() {
-        return getClass().getAnnotation(commandmanager.annotation.Command.class).minimumArgs();
+        return getClass().getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).minimumArgs();
     }
 
     private List<Command> getSubCommands() {
         List<Command> subCommands = new ArrayList<>();
 
-        new Reflections(main.getPackageName()).getTypesAnnotatedWith(commandmanager.annotation.Command.class).forEach(aClass -> {
-            if (aClass.getAnnotation(commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
+        new Reflections(main.getPackageName()).getTypesAnnotatedWith(dev.lightdream.commandmanager.annotation.Command.class).forEach(aClass -> {
+            if (aClass.getAnnotation(dev.lightdream.commandmanager.annotation.Command.class).parent().getName().equals(getClass().getName())) {
                 try {
                     Object obj;
                     Debugger.info(aClass.getName() + " constructors: ");
