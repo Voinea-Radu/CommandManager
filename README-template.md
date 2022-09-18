@@ -1,4 +1,4 @@
-# LightDream (Spigot) Command Manager
+# LightDream Command Manager
 
 ![Build](../../actions/workflows/build.yml/badge.svg)
 ![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-${{ env.VERSION_SPIGOT }}-red.svg)
