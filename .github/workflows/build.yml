@@ -1,25 +1,62 @@
-name: Build
+name: Maven Publish
 
-on: [push]
+on: [ push ]
+permissions: write-all
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 8
+
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'adopt'
+
+      - name: Git submodule update
+        run: git submodule update --init
+
+      - name: Set env variable
+        run: |
+          cd Spigot
+          echo "VERSION_SPIGOT=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          echo "ARTIFACT_SPIGOT=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
+          echo "PACKAGE_SPIGOT=$(ls src/main/java/*/*)" >> $GITHUB_ENV
+          cd ../Sponge
+          echo "VERSION_SPONGE=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          echo "ARTIFACT_SPONGE=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
+          echo "PACKAGE_SPONGE=$(ls src/main/java/*/*)" >> $GITHUB_ENV
+          cd ..
+
       - name: Build with Maven
         run: mvn package
+
       - name: Automatic Releases
-        uses: marvinpinto/action-automatic-releases@v1.2.1
+        uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "${{ env.VERSION }}"
           prerelease: false
-          title: "Latest Release"
+          title: "${{ env.VERSION }}"
           files: |
             target/*.jar
+            */target/*.jar
+
+      - name: "README.md Render"
+        uses: varunsridharan/action-dynamic-readme@main
+        with:
+          committer_name: "Radu Voinea"
+          committer_email: "contact@voienaradu.com"
+          commit_message: "Updated README.md"
+          files: |
+            README-template.md=README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION_SPIGOT: ${{ env.VERSION_SPIGOT }}
+          VERSION_SPONGE: ${{ env.VERSION_SPONGE }}
+          PACKAGE_SPIGOT: ${{ env.PACKAGE_SPIGOT }}
+          PACKAGE_SPONGE: ${{ env.PACKAGE_SPONGE }}
+          ARTIFACT_SPIGOT: ${{ env.ARTIFACT_SPIGOT }}
+          ARTIFACT_SPONGE: ${{ env.ARTIFACT_SPONGE }}

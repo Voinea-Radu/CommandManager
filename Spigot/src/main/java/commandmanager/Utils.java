@@ -1,4 +1,4 @@
-package dev.lightdream.commandmanager;
+package commandmanager;
 
 import java.util.List;
 
