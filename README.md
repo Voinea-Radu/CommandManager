@@ -1,6 +1,14 @@
 # LightDream (Spigot) Command Manager
 
-![Build](https://github.com/L1ghtDream/CommandManager/actions/workflows/build.yml/badge.svg)
+![Build](../../actions/workflows/build.yml/badge.svg)
+![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-2.4.0-red.svg)
+![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-1.3.0-red.svg)
+
+A command registration and manager lib. Allows the creation and registration of command without interacting with either spigot or sponge API.
+
+## Use
+
+### Maven
 
 ```xml
 
@@ -18,47 +26,41 @@
 <dependencies>
     <dependency>
         <groupId>dev.lightdream</groupId>
-        <artifactId>CommandManager</artifactId>
-        <version>LATEST</version>
+        <artifactId>CommandManager-Spigot</artifactId>
+        <version>2.4.0</version>
+    </dependency>
+    <dependency>
+        <groupId>dev.lightdream</groupId>
+        <artifactId>CommandManager-Sponge</artifactId>
+        <version>1.3.0</version>
     </dependency>
     <!-- Other dependencies -->
 </dependencies>
 ```
 
-## Example Main
+### Gradle
 
-```java
-public class Example extends JavaPlugin implements CommandMain {
+```groovy
+repositories {
+    maven { url "https://repo.lightdream.dev/repository/LightDream-API/" }
 
-    private CommandLang lang;
-    private FileManager fileManager;
+    // Other repositories
+}
 
-    @Override
-    public void onEnable() {
-        fileManager = new FileManager(this, FileManager.PersistType.YAML);
-        loadConfigs();
-    }
+dependencies {
+    implementation "dev.lightdream:CommandManager-Spigot:2.4.0"
+    implementation "dev.lightdream:CommandManager-Sponge:1.3.0"
 
-    @Override
-    public CommandLang getLang() {
-        return lang;
-    }
-
-    @Override
-    public void loadConfigs() {
-        lang = fileManager.load(CommandLang.class);
-    }
-
-    @Override
-    public String getProjectName() {
-        return "Example";
-    }
-
-    @Override
-    public String getProjectVersion() {
-        return "1.0";
-    }
+    // Other dependencies
 }
 ```
 
+
+## Example
+
+### Spigot
+Can be found in the [source code](/Spigot/src/main/java/dev/lightdream/commandmanager/example)
+
+### Sponge
+Can be found in the [source code](/Sponge/src/main/java/dev/lightdream/commandmanager/example)
 
