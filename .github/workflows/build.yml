@@ -21,10 +21,16 @@ jobs:
       - name: Set env variable
         run: |
           cd Spigot
+          echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo $(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          echo $(ls src/main/java/*/*)
           echo "VERSION_SPIGOT=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
           echo "ARTIFACT_SPIGOT=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
           echo "PACKAGE_SPIGOT=$(ls src/main/java/*/*)" >> $GITHUB_ENV
           cd ../Sponge
+          echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo $(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          echo $(ls src/main/java/*/*)
           echo "VERSION_SPONGE=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
           echo "ARTIFACT_SPONGE=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
           echo "PACKAGE_SPONGE=$(ls src/main/java/*/*)" >> $GITHUB_ENV
