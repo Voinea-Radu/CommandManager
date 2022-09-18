@@ -5,7 +5,7 @@
 ![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-1.3.0-red.svg)
 
 A command registration and manager lib. Allows the creation and registration of command without interacting with either
-spigot or sponge API.
+Spigot or Sponge API.
 
 ## Use
 
