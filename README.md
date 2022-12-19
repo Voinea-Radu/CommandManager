@@ -16,7 +16,7 @@ Spigot or Sponge API.
 <repositories>
     <repository>
         <id>lightdream-repo</id>
-        <url>https://repo.lightdream.dev/repository/LightDream-API/</url>
+        <url>https://repo.lightdream.dev/</url>
     </repository>
     <!-- Other repositories -->
 </repositories>
@@ -43,7 +43,7 @@ Spigot or Sponge API.
 
 ```groovy
 repositories {
-    maven { url "https://repo.lightdream.dev/repository/LightDream-API/" }
+    maven { url "https://repo.lightdream.dev/" }
 
     // Other repositories
 }
