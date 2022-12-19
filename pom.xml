@@ -15,8 +15,8 @@
 
     <distributionManagement>
         <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+            <id>gitlab-maven</id>
+            <url>https://repo.lightdream.dev/</url>
         </repository>
     </distributionManagement>
 

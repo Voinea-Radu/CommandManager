@@ -3,3 +3,5 @@
 /CommandManager.iml
 .gradle
 build
+Spigot/target
+Sponge/target
