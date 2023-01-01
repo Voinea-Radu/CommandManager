@@ -20,9 +20,6 @@ jobs:
 
       - name: Set env variable
         run: |
-          echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-          echo "ARTIFACT=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
-
           cd run
           
           cd ../Spigot
@@ -53,8 +50,7 @@ jobs:
           prerelease: false
           title: "${{ env.VERSION }}"
           files: |
-            target/*.jar
-            */target/*.jar
+            */build/libs/*.jar
 
       - name: "README.md Render"
         uses: varunsridharan/action-dynamic-readme@main
