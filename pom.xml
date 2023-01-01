@@ -6,19 +6,7 @@
 
     <groupId>dev.lightdream</groupId>
     <artifactId>CommandManager</artifactId>
-    <packaging>pom</packaging>
     <version>1.0.0</version>
-    <modules>
-        <module>Spigot</module>
-        <module>Sponge</module>
-    </modules>
-
-    <distributionManagement>
-        <repository>
-            <id>gitlab-maven</id>
-            <url>https://repo.lightdream.dev/</url>
-        </repository>
-    </distributionManagement>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
