@@ -23,15 +23,22 @@ jobs:
           echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
           echo "ARTIFACT=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
 
-          cd Spigot
-          echo "VERSION_SPIGOT=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-          echo "ARTIFACT_SPIGOT=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
+          cd run
+          
+          cd ../Spigot
+          echo "VERSION_SPIGOT=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "ARTIFACT_SPIGOT=CommandManager-Spigot" >> $GITHUB_ENV
           echo "PACKAGE_SPIGOT=$(ls src/main/java/*/*)" >> $GITHUB_ENV
           
           cd ../Sponge
-          echo "VERSION_SPONGE=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-          echo "ARTIFACT_SPONGE=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)" >> $GITHUB_ENV
+          echo "VERSION_SPONGE=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "ARTIFACT_SPONGE=CommandManager-Sponge" >> $GITHUB_ENV
           echo "PACKAGE_SPONGE=$(ls src/main/java/*/*)" >> $GITHUB_ENV
+          
+          cd ../Forge_1_19_3
+          echo "VERSION_FORGE_1_19_3=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "ARTIFACT_FORGE_1_19_3=CommandManager-Forge_1_19_3" >> $GITHUB_ENV
+          echo "PACKAGE_FORGE_1_19_3=$(ls src/main/java/*/*)" >> $GITHUB_ENV
           
           cd ..
 
@@ -59,9 +66,15 @@ jobs:
             README-template.md=README.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
           VERSION_SPIGOT: ${{ env.VERSION_SPIGOT }}
           VERSION_SPONGE: ${{ env.VERSION_SPONGE }}
+          VERSION_FORGE_1_19_3: ${{ env.VERSION_FORGE_1_19_3 }}
+
           PACKAGE_SPIGOT: ${{ env.PACKAGE_SPIGOT }}
           PACKAGE_SPONGE: ${{ env.PACKAGE_SPONGE }}
+          PACKAGE_FORGE_1_19_3: ${{ env.PACKAGE_FORGE_1_19_3 }}
+
           ARTIFACT_SPIGOT: ${{ env.ARTIFACT_SPIGOT }}
           ARTIFACT_SPONGE: ${{ env.ARTIFACT_SPONGE }}
+          ARTIFACT_FORGE_1_19_3: ${{ env.ARTIFACT_FORGE_1_19_3 }}

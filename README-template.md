@@ -37,6 +37,11 @@ Spigot or Sponge API.
         <artifactId>${{ env.ARTIFACT_SPONGE }}</artifactId>
         <version>${{ env.VERSION_SPONGE }}</version>
     </dependency>
+    <dependency>
+        <groupId>dev.lightdream</groupId>
+        <artifactId>${{ env.ARTIFACT_FORGE_1_19_3 }}</artifactId>
+        <version>${{ env.VERSION_FORGE_1_19_3 }}</version>
+    </dependency>
     <!-- Other dependencies -->
 </dependencies>
 ```
