@@ -18,7 +18,7 @@ public interface CommonCommand {
     /**
      * Called in the constructor of the command
      */
-    default void init() {
+    default void init(Object... args) {
         if (!getClass().isAnnotationPresent(Command.class)) {
             Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
             return;
@@ -33,14 +33,14 @@ public interface CommonCommand {
         }
 
         if (command.parent() == Void.class) {
-            registerCommand();
+            registerCommand(args);
         }
     }
 
     /**
      * Registers the command with the platform specific API
      */
-    void registerCommand();
+    void registerCommand(Object... args);
 
     /**
      * Sends the usage of the command to the user

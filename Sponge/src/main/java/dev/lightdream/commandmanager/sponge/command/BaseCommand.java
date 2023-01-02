@@ -29,13 +29,13 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     public List<String> aliases;
     private boolean runAsync = false;
 
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
     @Override
-    public void registerCommand() {
+    public void registerCommand(Object... args) {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getClass().getAnnotation(Command.class);

@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "2.5.1"
+version = "2.6.0"
 
 repositories {
     maven ("https://repo.spongepowered.org/maven/")

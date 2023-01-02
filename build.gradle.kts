@@ -19,6 +19,7 @@ extra["spigot-api"] = "1.8-R0.1-SNAPSHOT"
 extra["reflections"] = "0.10.2"
 extra["lombok"] = "1.18.24"
 extra["spongeapi"] = "7.4.0-SNAPSHOT"
+extra["luckperms"] = "5.4"
 
 group = "com.pokeninjas"
 version = "1.0.0"

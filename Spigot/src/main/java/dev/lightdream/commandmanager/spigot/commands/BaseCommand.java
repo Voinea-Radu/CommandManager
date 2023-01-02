@@ -30,10 +30,10 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     public final List<BaseCommand> subCommands = new ArrayList<>();
 
     @SneakyThrows
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         super("");
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
      */
     @Override
     @SneakyThrows
-    public void registerCommand() {
+    public void registerCommand(Object... args) {
         this.setAliases(getAliases());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);

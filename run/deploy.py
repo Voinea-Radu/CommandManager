@@ -1,5 +1,13 @@
 import os
 import re
+import sys
+
+argsSize = len(sys.argv)
+deployList = []
+
+if argsSize != 1:
+    for i in range(1, argsSize):
+        deployList.append(sys.argv[i])
 
 
 def runShell(command):
@@ -27,6 +35,18 @@ def publish(artifact, version, project, file):
              f"-Durl=https://repo.lightdream.dev")
 
 
+def deployForge1_19_3():
+    publish("CommandManager-Forge-1.19.3", version_forge_1_19_3, "Forge_1_19_3", "Forge-1.19.3.jar")
+
+
+def deploySpigot():
+    publish("CommandManager-Spigot", version_spigot, "Spigot", "Spigot.jar")
+
+
+def deploySponge():
+    publish("CommandManager-Sponge", version_sponge, "Sponge", "Sponge.jar")
+
+
 runShell("rm ../Forge-1.19.3/build/libs/*")
 runShell("rm ../Spigot/build/libs/*")
 runShell("rm ../Sponge/build/libs/*")
@@ -41,6 +61,14 @@ print(f"Forge 1.19.3 version: {version_forge_1_19_3} with file Forge-1.19.3.jar"
 print(f"Spigot version: {version_spigot} with file Spigot.jar")
 print(f"Sponge version: {version_sponge} with file Sponge.jar")
 
-publish("CommandManager-Forge-1.19.3", version_forge_1_19_3, "Forge_1_19_3", "Forge-1.19.3.jar")
-publish("CommandManager-Spigot", version_spigot, "Spigot", "Spigot.jar")
-publish("CommandManager-Sponge", version_sponge, "Sponge", "Sponge.jar")
+if len(deployList) == 0:
+    deployForge1_19_3()
+    deploySpigot()
+    deploySponge()
+else:
+    if "forge_1_19_3" in deployList:
+        deployForge1_19_3()
+    if "spigot" in deployList:
+        deploySpigot()
+    if "sponge" in deployList:
+        deploySponge()

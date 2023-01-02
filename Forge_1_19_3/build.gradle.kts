@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "1.0.1"
+version = "1.1.0"
 
 minecraft {
     mappings("parchment", getVersion("parchment"))
@@ -48,6 +48,8 @@ dependencies {
     implementation("dev.lightdream:MessageBuilder:${getVersion("MessageBuilder")}"){
         exclude("org.projectlombok")
     }
+
+    compileOnly("net.luckperms:api:${getVersion("luckperms")}")
 }
 
 tasks {

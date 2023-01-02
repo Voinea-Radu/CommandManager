@@ -17,7 +17,7 @@ public class CommandManager {
 
     public List<CommonCommand> commands = new ArrayList<>();
 
-    public CommandManager(CommandMain main) {
+    public CommandManager(CommandMain main, Object... args) {
         Set<Class<?>> classes = new Reflections(main.getPackageName()).getTypesAnnotatedWith(Command.class);
         Logger.good("Found and registered " + classes.size() + " commands");
         classes.forEach(aClass -> {
@@ -44,6 +44,8 @@ public class CommandManager {
                     obj = aClass.getDeclaredConstructors()[0].newInstance();
                 } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
                     obj = aClass.getDeclaredConstructors()[0].newInstance(main);
+                } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 2) {
+                    obj = aClass.getDeclaredConstructors()[0].newInstance(main, args);
                 } else {
                     Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
                     return;

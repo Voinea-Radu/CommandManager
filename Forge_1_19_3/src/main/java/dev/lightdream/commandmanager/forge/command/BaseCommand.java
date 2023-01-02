@@ -6,8 +6,12 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.commandmanager.command.CommonCommand;
+import dev.lightdream.commandmanager.forge.util.PermissionUtil;
+import dev.lightdream.logger.Logger;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -16,15 +20,22 @@ import java.util.List;
 public abstract class BaseCommand implements CommonCommand {
 
     private final CommandMain main;
-    public List<String> aliases;
     private final boolean runAsync = false;
+    public List<String> aliases;
 
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
-    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    @Override
+    public void registerCommand(Object... args) {
+        if(args.length==0){
+            Logger.error("No CommandDispatcher was passed to the register method!");
+            return;
+        }
+        //noinspection unchecked
+        CommandDispatcher<CommandSourceStack> dispatcher = (CommandDispatcher<CommandSourceStack>) args[0];
         dispatcher.register(getCommandBuilder());
     }
 
@@ -87,5 +98,21 @@ public abstract class BaseCommand implements CommonCommand {
      * @param context The command context
      */
     public abstract void execute(CommandContext<CommandSourceStack> context);
+
+    @Override
+    public boolean checkPermission(Object user, String permission) {
+        return PermissionUtil.checkPermission((Player) user, permission);
+    }
+
+    @Override
+    public void sendMessage(Object user, String message) {
+        Player player = (Player) user;
+        player.displayClientMessage(Component.literal(message), false);
+    }
+
+    @Override
+    public void setPermission(String permission) {
+        // noop
+    }
 
 }
