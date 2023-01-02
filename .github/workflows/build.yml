@@ -26,19 +26,21 @@ jobs:
           cd run
           
           cd ../Spigot
-          echo "VERSION_SPIGOT=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "VERSION_SPIGOT=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_SPIGOT=CommandManager-Spigot" >> $GITHUB_ENV
           
           cd ../Sponge
-          echo "VERSION_SPONGE=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "VERSION_SPONGE=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_SPONGE=CommandManager-Sponge" >> $GITHUB_ENV
           
           cd ../Forge_1_19_3
-          echo "VERSION_FORGE_1_19_3=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "VERSION_FORGE_1_19_3=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_FORGE_1_19_3=CommandManager-Forge_1_19_3" >> $GITHUB_ENV
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          chmod u+x gradlew
+          ./gradlew build
 
       - name: Automatic Releases
         uses: marvinpinto/action-automatic-releases@latest
