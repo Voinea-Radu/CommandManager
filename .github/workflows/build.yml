@@ -21,6 +21,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Build with Gradle
+        run: |
+          chmod u+x gradlew
+          ./gradlew build
+
       - name: Set env variable
         run: |
           cd run
@@ -36,11 +41,6 @@ jobs:
           cd ../Forge_1_19_3
           echo "VERSION_FORGE_1_19_3=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_FORGE_1_19_3=CommandManager-Forge_1_19_3" >> $GITHUB_ENV
-
-      - name: Build with Gradle
-        run: |
-          chmod u+x gradlew
-          ./gradlew build
 
       - name: Automatic Releases
         uses: marvinpinto/action-automatic-releases@latest
