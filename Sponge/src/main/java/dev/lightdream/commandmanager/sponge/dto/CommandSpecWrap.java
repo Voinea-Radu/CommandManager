@@ -1,4 +1,4 @@
-package dev.lightdream.commandmanager.dto;
+package dev.lightdream.commandmanager.sponge.dto;
 
 import org.spongepowered.api.command.spec.CommandSpec;
 

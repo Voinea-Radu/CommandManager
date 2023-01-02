@@ -1,4 +1,4 @@
-package dev.lightdream.commanmanagerforge.command;
+package dev.lightdream.commandmanager.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

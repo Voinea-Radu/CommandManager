@@ -12,10 +12,11 @@ buildscript {
 plugins {
     id("java")
     id("maven-publish")
+    id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
 group = "dev.lightdream"
-version = "2.5.0"
+version = "2.5.1"
 
 repositories {
     maven ("https://repo.spongepowered.org/maven/")
@@ -51,16 +52,18 @@ dependencies {
     implementation("org.reflections:reflections:${getVersion("reflections")}")
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
+tasks {
+    shadowJar {
+        isZip64 = true
+        archiveFileName.set("Spigot.jar")
+        dependencies {
+            include(project(":Common"))
         }
     }
-    repositories {
-        maven("https://repo.lightdream.dev/")
-    }
 }
+
+tasks.getByName("jar").finalizedBy("shadowJar")
+
 
 fun getVersion(id: String): String {
     return rootProject.extra[id] as String

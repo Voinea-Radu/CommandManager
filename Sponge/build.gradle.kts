@@ -13,10 +13,11 @@ buildscript {
 plugins {
     id("java")
     id("maven-publish")
+    id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
 group = "dev.lightdream"
-version = "1.4.0"
+version = "1.4.1"
 
 
 repositories {
@@ -62,6 +63,18 @@ publishing {
         maven ("https://repo.lightdream.dev/")
     }
 }
+
+tasks {
+    shadowJar {
+        isZip64 = true
+        archiveFileName.set("Sponge.jar")
+        dependencies {
+            include(project(":Common"))
+        }
+    }
+}
+
+tasks.getByName("jar").finalizedBy("shadowJar")
 
 fun getVersion(id: String): String {
     return rootProject.extra[id] as String

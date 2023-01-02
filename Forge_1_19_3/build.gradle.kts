@@ -3,10 +3,11 @@ plugins {
     id("idea")
     id("net.minecraftforge.gradle") version ("5.1.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
+    id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
 group = "dev.lightdream"
-version = "1.0.0"
+version = "1.0.1"
 
 minecraft {
     mappings("parchment", getVersion("parchment"))
@@ -48,6 +49,19 @@ dependencies {
         exclude("org.projectlombok")
     }
 }
+
+tasks {
+    shadowJar {
+        isZip64 = true
+        archiveFileName.set("Forge-1.19.3.jar")
+        dependencies {
+            include(project(":Common"))
+        }
+    }
+}
+
+tasks.getByName("jar").finalizedBy("shadowJar")
+
 
 fun getVersion(id: String): String {
     return rootProject.extra[id] as String

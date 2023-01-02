@@ -1,4 +1,4 @@
-package dev.lightdream.commandmanager.commands;
+package dev.lightdream.commandmanager.spigot.commands;
 
 import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.commandmanager.annotation.Command;

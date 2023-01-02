@@ -1,8 +1,9 @@
-package dev.lightdream.commandmanager.command;
+package dev.lightdream.commandmanager.sponge.command;
 
 import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.commandmanager.annotation.Command;
-import dev.lightdream.commandmanager.dto.CommandSpecWrap;
+import dev.lightdream.commandmanager.command.CommonCommand;
+import dev.lightdream.commandmanager.sponge.dto.CommandSpecWrap;
 import dev.lightdream.lambda.ScheduleUtils;
 import dev.lightdream.lambda.lambda.LambdaExecutor;
 import dev.lightdream.logger.Logger;
