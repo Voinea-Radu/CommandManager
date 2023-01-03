@@ -4,6 +4,7 @@
 ![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-2.6.0-red.svg)
 ![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-1.5.0-red.svg)
 ![Version-Forge_1_19_3](https://img.shields.io/badge/Version%20Forge%201.19.3-1.1.0-red.svg)
+![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-1.0.1-red.svg)
 
 A command registration and manager lib. Allows the creation and registration of command without interacting with either
 Spigot or Sponge API.
@@ -42,6 +43,11 @@ Spigot or Sponge API.
         <artifactId>CommandManager-Forge_1_19_3</artifactId>
         <version>1.1.0</version>
     </dependency>
+    <dependency>
+        <groupId>dev.lightdream</groupId>
+        <artifactId>CommandManager-Velocity</artifactId>
+        <version>1.0.1</version>
+    </dependency>
     <!-- Other dependencies -->
 </dependencies>
 ```
@@ -61,6 +67,7 @@ dependencies {
     implementation "dev.lightdream:CommandManager-Spigot:2.6.0"
     implementation "dev.lightdream:CommandManager-Sponge:1.5.0"
     implementation "dev.lightdream:CommandManager-Forge_1_19_3:1.1.0"
+    implementation "dev.lightdream:CommandManager-Velocity:1.0.1"
 
     // Other dependencies
 }
