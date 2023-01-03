@@ -1,10 +1,8 @@
 package dev.lightdream.commandmanager.spigot.commands;
 
 import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.annotation.Command;
 import dev.lightdream.commandmanager.command.CommonCommand;
 import dev.lightdream.commandmanager.utils.ListUtils;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.SneakyThrows;
@@ -14,11 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +22,7 @@ import java.util.List;
 public abstract class BaseCommand extends org.bukkit.command.Command implements CommonCommand {
 
     public final CommandMain main;
-    public final List<BaseCommand> subCommands = new ArrayList<>();
+    private List<BaseCommand> subCommands = new ArrayList<>();
 
     @SneakyThrows
     public BaseCommand(CommandMain main, Object... args) {
@@ -55,39 +50,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             return;
         }
         Logger.good("Command " + getCommand() + " initialized successfully");
-
-        //Get all the subcommands
-        new Reflections("dev.lightdream").getTypesAnnotatedWith(Command.class).forEach(aClass -> {
-            if (aClass.getAnnotation(Command.class).parent().getName().equals(getClass().getName())) {
-                try {
-                    Object obj;
-                    Debugger.info(aClass.getName() + " constructors: ");
-                    for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
-                        StringBuilder parameters = new StringBuilder();
-                        for (Class<?> parameter : constructor.getParameterTypes()) {
-                            parameters.append(parameter.getName()).append(" ");
-                        }
-                        if (parameters.toString().equals("")) {
-                            Debugger.info("    - zero argument");
-                        } else {
-                            Debugger.info("    - " + parameters);
-                        }
-                    }
-                    if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
-                        obj = aClass.getDeclaredConstructors()[0].newInstance();
-                    } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
-                        obj = aClass.getDeclaredConstructors()[0].newInstance(main);
-                    } else {
-                        Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
-                        return;
-                    }
-
-                    subCommands.add((BaseCommand) obj);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     /**
@@ -286,5 +248,19 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         ((CommandSender) user).sendMessage(message);
     }
 
+    @Override
+    public List<CommonCommand> getSubCommands() {
+        return new ArrayList<>(subCommands);
+    }
 
+    @Override
+    public void saveSubCommands(List<CommonCommand> subCommands) {
+        List<BaseCommand> newSubCommands = new ArrayList<>();
+
+        for (CommonCommand subCommand : subCommands) {
+            newSubCommands.add((BaseCommand) subCommand);
+        }
+
+        this.subCommands = newSubCommands;
+    }
 }

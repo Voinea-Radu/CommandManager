@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "1.5.2"
+version = "2.0.0"
 
 
 repositories {
@@ -37,8 +37,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
     annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
 
-    // Utils
-    implementation("org.reflections:reflections:${getVersion("reflections")}")
+
 }
 
 tasks {

@@ -1,62 +1,87 @@
 package dev.lightdream.commandmanager.manager;
 
 import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.annotation.Command;
 import dev.lightdream.commandmanager.command.CommonCommand;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
-import org.reflections.Reflections;
+import lombok.SneakyThrows;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class CommandManager {
 
     public List<CommonCommand> commands = new ArrayList<>();
 
+    @SneakyThrows
     public CommandManager(CommandMain main, Object... args) {
-        Set<Class<?>> classes = new Reflections(main.getPackageName()).getTypesAnnotatedWith(Command.class);
-        Logger.good("Found and registered " + classes.size() + " commands");
-        classes.forEach(aClass -> {
-            try {
-                for (CommonCommand command : commands) {
-                    if (command.getClass().getName().equals(aClass.getName())) {
-                        return;
-                    }
+        List<Class<? extends CommonCommand>> commandClasses = main.getCommandClasses();
+        List<CommonCommand> commandObjects = main.getCommands();
+
+        List<Class<? extends CommonCommand>> commandClassesToRemove = new ArrayList<>();
+        List<CommonCommand> commandObjectsToRemove = new ArrayList<>();
+
+        for (Class<? extends CommonCommand> clazz : commandClasses) {
+            for (CommonCommand command : commands) {
+                if (command.getClass().getName().equals(clazz.getName())) {
+                    commandClassesToRemove.add(clazz);
+                    break;
                 }
-                Object obj;
-                Debugger.info(aClass.getName() + " constructors: ");
-                for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
-                    StringBuilder parameters = new StringBuilder();
-                    for (Class<?> parameter : constructor.getParameterTypes()) {
-                        parameters.append(parameter.getName()).append(" ");
-                    }
-                    if (parameters.toString().equals("")) {
-                        Debugger.info("    - zero argument");
-                    } else {
-                        Debugger.info("    - " + parameters);
-                    }
-                }
-                if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
-                    obj = aClass.getDeclaredConstructors()[0].newInstance();
-                } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
-                    obj = aClass.getDeclaredConstructors()[0].newInstance(main);
-                } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 2) {
-                    obj = aClass.getDeclaredConstructors()[0].newInstance(main, args);
-                } else {
-                    Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
-                    return;
-                }
-                if (obj instanceof CommonCommand) {
-                    commands.add((CommonCommand) obj);
-                }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
             }
-        });
+        }
+
+        for (CommonCommand commandObject : commandObjects) {
+            for (CommonCommand command : commands) {
+                if (command.getClass().getName().equals(commandObject.getClass().getName())) {
+                    commandObjectsToRemove.add(commandObject);
+                    break;
+                }
+            }
+        }
+
+        commandClasses.removeAll(commandClassesToRemove);
+        commandObjects.removeAll(commandObjectsToRemove);
+
+        this.commands.addAll(registerCommands(commandClasses, commandObjects, main, args));
+
+
+    }
+
+    @SneakyThrows
+    public static List<CommonCommand> registerCommands(List<Class<? extends CommonCommand>> commandClasses,
+                                                       List<CommonCommand> commandObjects, CommandMain main, Object... args) {
+        List<CommonCommand> commands = new ArrayList<>();
+
+        for (Class<? extends CommonCommand> clazz : commandClasses) {
+            CommonCommand commandObject;
+
+            //noinspection unchecked
+            Constructor<CommonCommand> constructor = (Constructor<CommonCommand>) clazz.getDeclaredConstructors()[0];
+
+            int argumentCount = constructor.getParameterCount();
+
+            if (argumentCount == 0) {
+                commandObject = constructor.newInstance();
+            } else {
+                if (argumentCount - 1 != args.length) {
+                    Logger.error("The constructor for command " + clazz.getName() + " has " + argumentCount + " arguments, but " + args.length + " were passed to the CommandManager");
+                    continue;
+                }
+
+                List<Object> passedArgsList = new ArrayList<>();
+                passedArgsList.add(main);
+                passedArgsList.addAll(Arrays.asList(args));
+                Object[] passedArgs = passedArgsList.toArray();
+
+                commandObject = constructor.newInstance(passedArgs);
+            }
+
+            commands.add(commandObject);
+        }
+        commands.addAll(commandObjects);
+
+        return commands;
     }
 
 }

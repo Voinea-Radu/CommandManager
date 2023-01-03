@@ -27,6 +27,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     private final CommandMain main;
     public CommandSpecWrap spec;
     public List<String> aliases;
+    public List<CommonCommand> subCommands = new ArrayList<>();
     private boolean runAsync = false;
 
     public BaseCommand(CommandMain main, Object... args) {
@@ -160,4 +161,29 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         player.sendMessages(Text.of(getSubCommandsHelpMessage()));
     }
 
+    @Override
+    public List<CommonCommand> getSubCommands() {
+        return subCommands;
+    }
+
+    @Override
+    public void saveSubCommands(List<CommonCommand> subCommands) {
+        this.subCommands = subCommands;
+    }
+
+    @Override
+    public CommandMain getMain() {
+        return main;
+    }
+
+    @Override
+    public boolean checkPermission(Object user, String permission) {
+        return ((Player) user).hasPermission(permission);
+    }
+
+    @Override
+    public void sendMessage(Object user, String message) {
+        CommandSource source = (CommandSource) user;
+        source.sendMessage(Text.of(message));
+    }
 }

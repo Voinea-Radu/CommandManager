@@ -2,18 +2,16 @@ package dev.lightdream.commandmanager.command;
 
 import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.commandmanager.annotation.Command;
-import dev.lightdream.logger.Debugger;
+import dev.lightdream.commandmanager.manager.CommandManager;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
-import org.reflections.Reflections;
+import lombok.SneakyThrows;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public interface CommonCommand {
+public interface CommonCommand extends CommandProvider {
 
     /**
      * Called in the constructor of the command
@@ -26,13 +24,9 @@ public interface CommonCommand {
 
         Command command = getClass().getAnnotation(Command.class);
 
+        generateSubCommands(args);
 
-        String permission = command.permission();
-        if (!permission.equals("")) {
-            setPermission(permission);
-        }
-
-        if (command.parent() == Void.class) {
+        if (!command.isSubCommand()) {
             registerCommand(args);
         }
     }
@@ -68,48 +62,15 @@ public interface CommonCommand {
 
 
     /**
-     * Gets the subcommands of the command
-     *
-     * @return The subcommands
+     * Created the objects for all sub commands
      */
-    default List<CommonCommand> getSubCommands() {
-        List<CommonCommand> subCommands = new ArrayList<>();
-
-        new Reflections(getMain().getPackageName()).getTypesAnnotatedWith(Command.class).forEach(aClass -> {
-            if (aClass.getAnnotation(Command.class).parent().getName().equals(getClass().getName())) {
-                try {
-                    Object obj;
-                    Debugger.info(aClass.getName() + " constructors: ");
-                    for (Constructor<?> constructor : aClass.getDeclaredConstructors()) {
-                        StringBuilder parameters = new StringBuilder();
-                        for (Class<?> parameter : constructor.getParameterTypes()) {
-                            parameters.append(parameter.getName()).append(" ");
-                        }
-                        if (parameters.toString().equals("")) {
-                            Debugger.info("    - zero argument");
-                        } else {
-                            Debugger.info("    - " + parameters);
-                        }
-                    }
-                    if (aClass.getDeclaredConstructors()[0].getParameterCount() == 0) {
-                        obj = aClass.getDeclaredConstructors()[0].newInstance();
-                    } else if (aClass.getDeclaredConstructors()[0].getParameterCount() == 1) {
-                        obj = aClass.getDeclaredConstructors()[0].newInstance(getMain());
-                    } else {
-                        Logger.error("Class " + aClass.getName() + " does not have a valid constructor");
-                        return;
-                    }
-
-                    subCommands.add((CommonCommand) obj);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        return subCommands;
+    default void generateSubCommands(Object... args) {
+        saveSubCommands(CommandManager.registerCommands(getCommandClasses(), getCommands(), getMain(), args));
     }
 
+    List<CommonCommand> getSubCommands();
+
+    void saveSubCommands(List<CommonCommand> subCommands);
 
     /**
      * Sends a message to a user with the platform specific API
@@ -138,13 +99,6 @@ public interface CommonCommand {
     default String getPermission() {
         return getClass().getAnnotation(Command.class).permission();
     }
-
-    /**
-     * Sets the permission string
-     *
-     * @param permission The permission string
-     */
-    void setPermission(String permission);
 
     /**
      * Gets the command usage string
@@ -217,6 +171,7 @@ public interface CommonCommand {
 
     /**
      * When the command is executed asynchronously
+     *
      * @return True if the command is executed asynchronously
      */
     default boolean runAsync() {

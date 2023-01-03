@@ -7,11 +7,15 @@ import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.CommandMain;
 import dev.lightdream.commandmanager.command.CommonCommand;
 import dev.lightdream.commandmanager.forge.util.PermissionUtil;
+import dev.lightdream.commandmanager.utils.ListUtils;
 import dev.lightdream.logger.Logger;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ public abstract class BaseCommand implements CommonCommand {
     private final CommandMain main;
     private final boolean runAsync = false;
     public List<String> aliases;
+    private List<CommonCommand> subCommands = new ArrayList<>();
 
     /**
      * @param main The main class instance
@@ -32,12 +37,17 @@ public abstract class BaseCommand implements CommonCommand {
         this.init(args);
     }
 
+    @Override
+    public CommandMain getMain() {
+        return main;
+    }
+
     /**
      * @param args CommandDispatcher<CommandSourceStack> instance
      */
     @Override
     public void registerCommand(Object... args) {
-        if(args.length==0){
+        if (args.length == 0) {
             Logger.error("No CommandDispatcher was passed to the register method!");
             return;
         }
@@ -85,8 +95,72 @@ public abstract class BaseCommand implements CommonCommand {
      * @return 0
      */
     private int internalExecute(CommandContext<CommandSourceStack> context) {
-        execute(context);
+        CommandSource source = context.getSource().source;
+
+        if (onlyForConsole()) {
+            if (!(source instanceof MinecraftServer consoleSource)) {
+                sendMessage(source, main.getLang().onlyForConsole);
+                return 0;
+            }
+            exec(consoleSource, context);
+            return 0;
+        }
+        if (onlyForPlayers()) {
+            if (!(source instanceof Player player)) {
+                sendMessage(source, main.getLang().onlyFotPlayer);
+                return 0;
+            }
+            exec(player, context);
+            return 0;
+        }
+
+        exec(source, context);
         return 0;
+    }
+
+    /**
+     * Executes the command
+     * You can Override this method
+     *
+     * @param source  The commander who is executing this command
+     * @param context The parsed command context
+     */
+    public void exec(@NotNull CommandSource source, @NotNull CommandContext<CommandSourceStack> context) {
+        if (getSubCommands().size() == 0) {
+            Logger.warn("Executing command " + getCommand() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
+        }
+
+        sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+    }
+
+    /**
+     * Executes the command
+     * You can Override this method
+     *
+     * @param console The commander who is executing this command
+     * @param context The parsed command context
+     */
+    public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<CommandSourceStack> context) {
+        if (getSubCommands().size() == 0) {
+            Logger.warn("Executing command " + getCommand() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+        }
+
+        sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+    }
+
+    /**
+     * Executes the command
+     * You can Override this method
+     *
+     * @param player  The commander who is executing this command
+     * @param context The parsed command context
+     */
+    public void exec(@NotNull Player player, @NotNull CommandContext<CommandSourceStack> context) {
+        if (getSubCommands().size() == 0) {
+            Logger.warn("Executing command " + getCommand() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
+        }
+
+        sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
     }
 
     /**
@@ -99,13 +173,6 @@ public abstract class BaseCommand implements CommonCommand {
         return new ArrayList<>();
     }
 
-    /**
-     * Get the sub commands
-     *
-     * @param context The command context
-     */
-    public abstract void execute(CommandContext<CommandSourceStack> context);
-
     @Override
     public boolean checkPermission(Object user, String permission) {
         return PermissionUtil.checkPermission((Player) user, permission);
@@ -113,13 +180,24 @@ public abstract class BaseCommand implements CommonCommand {
 
     @Override
     public void sendMessage(Object user, String message) {
-        Player player = (Player) user;
-        player.displayClientMessage(Component.literal(message), false);
+        if (user instanceof Player player) {
+            player.displayClientMessage(Component.literal(message), false);
+            return;
+        }
+        if (user instanceof MinecraftServer) {
+            Logger.info(message);
+            return;
+        }
+        Logger.info("Message sent to " + user + ": " + message);
     }
 
     @Override
-    public void setPermission(String permission) {
-        // noop
+    public List<CommonCommand> getSubCommands() {
+        return subCommands;
     }
 
+    @Override
+    public void saveSubCommands(List<CommonCommand> subCommands) {
+        this.subCommands = subCommands;
+    }
 }

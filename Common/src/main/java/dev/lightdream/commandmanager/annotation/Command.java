@@ -46,7 +46,7 @@ public @interface Command {
      *
      * @return The parent class
      */
-    Class<?> parent() default Void.class;
+    boolean isSubCommand() default false;
 
     /**
      * Minimum number of arguments

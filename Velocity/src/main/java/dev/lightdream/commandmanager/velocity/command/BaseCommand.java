@@ -21,6 +21,7 @@ import java.util.List;
 public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     private final CommandMain main;
+    public List<CommonCommand> subCommands = new ArrayList<>();
 
     /**
      * @param main The main class instance
@@ -46,7 +47,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
         commandManager.register(commandMeta, this);
     }
-
 
     /**
      * Sponge API call to execute the command
@@ -77,7 +77,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
         exec(source, args);
     }
-
 
     /**
      * Executes the command
@@ -125,11 +124,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     }
 
     @Override
-    public void setPermission(String permission) {
-        // noop
-    }
-
-    @Override
     public boolean checkPermission(Object user, String permission) {
         CommandSource source = (CommandSource) user;
         return source.hasPermission(permission);
@@ -144,5 +138,15 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     @Override
     public CommandMain getMain() {
         return main;
+    }
+
+    @Override
+    public List<CommonCommand> getSubCommands() {
+        return subCommands;
+    }
+
+    @Override
+    public void saveSubCommands(List<CommonCommand> subCommands) {
+        this.subCommands = subCommands;
     }
 }

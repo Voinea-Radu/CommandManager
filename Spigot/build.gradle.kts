@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "2.6.2"
+version = "3.0.0"
 
 repositories {
     maven ("https://repo.spongepowered.org/maven/")
@@ -48,8 +48,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
     annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
 
-    // Utils
-    implementation("org.reflections:reflections:${getVersion("reflections")}")
+
 }
 
 tasks {
