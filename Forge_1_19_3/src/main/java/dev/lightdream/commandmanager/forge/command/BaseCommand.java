@@ -23,11 +23,18 @@ public abstract class BaseCommand implements CommonCommand {
     private final boolean runAsync = false;
     public List<String> aliases;
 
+    /**
+     * @param main The main class instance
+     * @param args CommandDispatcher<CommandSourceStack> instance
+     */
     public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
         this.init(args);
     }
 
+    /**
+     * @param args CommandDispatcher<CommandSourceStack> instance
+     */
     @Override
     public void registerCommand(Object... args) {
         if(args.length==0){

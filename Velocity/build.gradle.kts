@@ -5,17 +5,18 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "1.5.0"
+version = "1.0.1"
 
 
 repositories {
     maven ("https://repo.spongepowered.org/maven/")
     maven ("https://repo.lightdream.dev/")
+    maven ("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
     // Sponge
-    implementation("org.spongepowered:spongeapi:${getVersion("spongeapi")}")
+    implementation("com.velocitypowered:velocity-api:${getVersion("velocity")}")
 
     // Project
     implementation(project(":Common")){
@@ -41,10 +42,11 @@ dependencies {
     implementation("org.reflections:reflections:${getVersion("reflections")}")
 }
 
+
 tasks {
     shadowJar {
         isZip64 = true
-        archiveFileName.set("Sponge.jar")
+        archiveFileName.set("Velocity.jar")
         dependencies {
             include(project(":Common"))
         }

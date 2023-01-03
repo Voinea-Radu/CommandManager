@@ -41,6 +41,10 @@ jobs:
           cd ../Forge_1_19_3
           echo "VERSION_FORGE_1_19_3=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_FORGE_1_19_3=CommandManager-Forge_1_19_3" >> $GITHUB_ENV
+          
+          cd ../Velocity
+          echo "VERSION_VELOCITY=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "ARTIFACT_VELOCITY=CommandManager-Velocity" >> $GITHUB_ENV
 
       - name: Automatic Releases
         uses: marvinpinto/action-automatic-releases@latest
@@ -66,7 +70,9 @@ jobs:
           VERSION_SPIGOT: ${{ env.VERSION_SPIGOT }}
           VERSION_SPONGE: ${{ env.VERSION_SPONGE }}
           VERSION_FORGE_1_19_3: ${{ env.VERSION_FORGE_1_19_3 }}
+          VERSION_VELOCITY: ${{ env.VERSION_VELOCITY }}
 
           ARTIFACT_SPIGOT: ${{ env.ARTIFACT_SPIGOT }}
           ARTIFACT_SPONGE: ${{ env.ARTIFACT_SPONGE }}
           ARTIFACT_FORGE_1_19_3: ${{ env.ARTIFACT_FORGE_1_19_3 }}
+          ARTIFACT_VELOCITY: ${{ env.ARTIFACT_VELOCITY }}

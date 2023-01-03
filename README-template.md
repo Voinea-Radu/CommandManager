@@ -4,6 +4,7 @@
 ![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-${{ env.VERSION_SPIGOT }}-red.svg)
 ![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-${{ env.VERSION_SPONGE }}-red.svg)
 ![Version-Forge_1_19_3](https://img.shields.io/badge/Version%20Forge%201.19.3-${{ env.VERSION_FORGE_1_19_3 }}-red.svg)
+![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-${{ env.VERSION_VELOCITY }}-red.svg)
 
 A command registration and manager lib. Allows the creation and registration of command without interacting with either
 Spigot or Sponge API.
@@ -42,6 +43,11 @@ Spigot or Sponge API.
         <artifactId>${{ env.ARTIFACT_FORGE_1_19_3 }}</artifactId>
         <version>${{ env.VERSION_FORGE_1_19_3 }}</version>
     </dependency>
+    <dependency>
+        <groupId>dev.lightdream</groupId>
+        <artifactId>${{ env.ARTIFACT_VELOCITY }}</artifactId>
+        <version>${{ env.VERSION_VELOCITY }}</version>
+    </dependency>
     <!-- Other dependencies -->
 </dependencies>
 ```
@@ -61,6 +67,7 @@ dependencies {
     implementation "dev.lightdream:${{ env.ARTIFACT_SPIGOT }}:${{ env.VERSION_SPIGOT }}"
     implementation "dev.lightdream:${{ env.ARTIFACT_SPONGE }}:${{ env.VERSION_SPONGE }}"
     implementation "dev.lightdream:${{ env.ARTIFACT_FORGE_1_19_3 }}:${{ env.VERSION_FORGE_1_19_3 }}"
+    implementation "dev.lightdream:${{ env.ARTIFACT_VELOCITY }}:${{ env.VERSION_VELOCITY }}"
 
     // Other dependencies
 }
