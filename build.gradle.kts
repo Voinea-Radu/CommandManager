@@ -22,6 +22,12 @@ extra["reflections"] = "0.10.2"
 extra["lombok"] = "1.18.24"
 extra["luckperms"] = "5.4"
 
+// Project version
+extra["Forge_1_19_3"] = "2.0.1"
+extra["Spigot"] = "3.0.1"
+extra["Sponge"] = "2.0.1"
+extra["Velocity"] = "2.0.1"
+
 group = "com.pokeninjas"
 version = "1.0.0"
 

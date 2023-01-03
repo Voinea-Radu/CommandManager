@@ -16,11 +16,19 @@ def runShell(command):
 
 
 def getVersion(project):
-    gradle_file = open(f"../{project}/build.gradle.kts", "r")
+    gradle_file = open(f"../build.gradle.kts", "r")
     gradle_contents = gradle_file.read()
-    version = re.findall("^version = .*", gradle_contents, flags=re.M)[0]
-    version = version.replace("version = \"", "")
-    version = version.replace("\"", "")
+
+    version = re.findall(f"^extra..{project}.. = .*", gradle_contents, flags=re.M)[0]
+
+    version = version.replace("extra", "") \
+        .replace(project, "") \
+        .replace("\"", "") \
+        .replace(" ", "") \
+        .replace("=", "") \
+        .replace("[", "") \
+        .replace("]", "")
+
     return version
 
 
@@ -45,6 +53,7 @@ def deploySpigot():
 
 def deploySponge():
     publish("CommandManager-Sponge", version_sponge, "Sponge", "Sponge.jar")
+
 
 def deployVelocity():
     publish("CommandManager-Velocity", version_velocity, "Velocity", "Velocity.jar")

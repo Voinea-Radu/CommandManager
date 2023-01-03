@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "2.0.0"
+version = getVersion("Sponge")
 
 
 repositories {

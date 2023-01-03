@@ -10,7 +10,9 @@ public interface CommandProvider {
      * Allows you to pass classes that the command manager will construct and register
      * @return A list of classes
      */
-    List<Class<? extends CommonCommand>> getCommandClasses();
+    default List<Class<? extends CommonCommand>> getCommandClasses(){
+        return new ArrayList<>();
+    }
 
     /**
      * Allows you to pass pre-constructed commands to the CommandManager
