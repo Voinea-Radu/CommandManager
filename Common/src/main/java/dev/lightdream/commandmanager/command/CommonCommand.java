@@ -49,19 +49,18 @@ public interface CommonCommand {
      */
     default void sendUsage(Object user) {
         StringBuilder helpCommandOutput = new StringBuilder();
+        helpCommandOutput.append(getCommand())
+                .append(" ")
+                .append(getUsage());
         helpCommandOutput.append("\n");
 
-        if (getMain().getLang().helpCommand.equals("")) {
-            for (CommonCommand subCommand : getSubCommands()) {
-                if (checkPermission(user, subCommand.getPermission())) {
-                    helpCommandOutput.append(subCommand.getCommand());
-                    helpCommandOutput.append(" ");
-                    helpCommandOutput.append(subCommand.getUsage());
-                    helpCommandOutput.append("\n");
-                }
+        for (CommonCommand subCommand : getSubCommands()) {
+            if (checkPermission(user, subCommand.getPermission())) {
+                helpCommandOutput.append(subCommand.getCommand());
+                helpCommandOutput.append(" ");
+                helpCommandOutput.append(subCommand.getUsage());
+                helpCommandOutput.append("\n");
             }
-        } else {
-            helpCommandOutput.append(getMain().getLang().helpCommand);
         }
 
         sendMessage(user, new MessageBuilder(helpCommandOutput.toString()));

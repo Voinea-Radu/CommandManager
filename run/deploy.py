@@ -50,7 +50,7 @@ def deployVelocity():
     publish("CommandManager-Velocity", version_velocity, "Velocity", "Velocity.jar")
 
 
-runShell("rm ../Forge-1.19.3/build/libs/*")
+runShell("rm ../Forge_1_19_3/build/libs/*")
 runShell("rm ../Spigot/build/libs/*")
 runShell("rm ../Sponge/build/libs/*")
 runShell("rm ../Velocity/build/libs/*")
