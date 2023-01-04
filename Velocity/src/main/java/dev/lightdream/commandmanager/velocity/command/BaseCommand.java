@@ -27,9 +27,9 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
      * @param main The main class instance
      * @param args ProxyServer instance
      */
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(CommandMain main, ProxyServer proxy) {
         this.main = main;
-        this.init(args);
+        this.init(proxy);
     }
 
     /**

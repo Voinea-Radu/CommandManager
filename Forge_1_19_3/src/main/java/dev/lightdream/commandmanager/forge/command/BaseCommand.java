@@ -30,11 +30,10 @@ public abstract class BaseCommand implements CommonCommand {
 
     /**
      * @param main The main class instance
-     * @param args CommandDispatcher<CommandSourceStack> instance
      */
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(CommandMain main, CommandDispatcher<CommandSourceStack> dispatcher) {
         this.main = main;
-        this.init(args);
+        this.init(dispatcher);
     }
 
     @Override

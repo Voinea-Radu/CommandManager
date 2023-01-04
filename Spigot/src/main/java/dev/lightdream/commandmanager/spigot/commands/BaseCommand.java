@@ -25,10 +25,10 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     private List<BaseCommand> subCommands = new ArrayList<>();
 
     @SneakyThrows
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(CommandMain main) {
         super("");
         this.main = main;
-        this.init(args);
+        this.init();
     }
 
     /**

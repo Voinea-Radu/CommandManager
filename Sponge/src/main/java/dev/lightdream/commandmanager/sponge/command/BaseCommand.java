@@ -30,9 +30,9 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     public List<CommonCommand> subCommands = new ArrayList<>();
     private boolean runAsync = false;
 
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(CommandMain main) {
         this.main = main;
-        this.init(args);
+        this.init();
     }
 
     @Override

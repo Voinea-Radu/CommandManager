@@ -44,8 +44,6 @@ public class CommandManager {
         commandObjects.removeAll(commandObjectsToRemove);
 
         this.commands.addAll(registerCommands(commandClasses, commandObjects, main, args));
-
-
     }
 
     @SneakyThrows
