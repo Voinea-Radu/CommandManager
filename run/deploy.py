@@ -11,9 +11,7 @@ if argsSize != 1:
 
 
 def runShell(command):
-    print(command)
     os.system(command)
-
 
 def getVersion(project):
     gradle_file = open(f"../build.gradle.kts", "r")
