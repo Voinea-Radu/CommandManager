@@ -23,20 +23,12 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     private final CommandMain main;
     public List<CommonCommand> subCommands = new ArrayList<>();
 
-    /**
-     * @param main The main class instance
-     * @param args ProxyServer instance
-     */
     public BaseCommand(CommandMain main, ProxyServer proxy) {
         this.main = main;
         this.init(proxy);
     }
 
-    /**
-     * @param args ProxyServer instance
-     */
-    @Override
-    public void registerCommand(Object... args) {
+    public final void registerCommand(Object... args) {
         ProxyServer proxy = (ProxyServer) args[0];
 
         CommandManager commandManager = proxy.getCommandManager();
@@ -48,13 +40,8 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         commandManager.register(commandMeta, this);
     }
 
-    /**
-     * Sponge API call to execute the command
-     *
-     * @param invocation The command invocation (containing the source and arguments)
-     */
     @Override
-    public void execute(Invocation invocation) {
+    public final void execute(Invocation invocation) {
         CommandSource source = invocation.source();
         List<String> args = new ArrayList<>(List.of(invocation.arguments()));
 
@@ -80,7 +67,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param source The commander who is executing this command
      * @param args   The parsed command arguments for this command
@@ -95,7 +81,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param console The commander who is executing this command
      * @param args    The parsed command arguments for this command
@@ -110,7 +95,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param player The commander who is executing this command
      * @param args   The parsed command arguments for this command
@@ -124,29 +108,29 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     }
 
     @Override
-    public boolean checkPermission(Object user, String permission) {
+    public final boolean checkPermission(Object user, String permission) {
         CommandSource source = (CommandSource) user;
         return source.hasPermission(permission);
     }
 
     @Override
-    public void sendMessage(Object user, String message) {
+    public final void sendMessage(Object user, String message) {
         CommandSource source = (CommandSource) user;
         source.sendMessage(Component.text(message));
     }
 
     @Override
-    public CommandMain getMain() {
+    public final CommandMain getMain() {
         return main;
     }
 
     @Override
-    public List<CommonCommand> getSubCommands() {
+    public final List<CommonCommand> getSubCommands() {
         return subCommands;
     }
 
     @Override
-    public void saveSubCommands(List<CommonCommand> subCommands) {
+    public final void saveSubCommands(List<CommonCommand> subCommands) {
         this.subCommands = subCommands;
     }
 }

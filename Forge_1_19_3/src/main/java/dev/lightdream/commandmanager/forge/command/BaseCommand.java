@@ -21,31 +21,24 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public abstract class BaseCommand implements CommonCommand {
 
     private final CommandMain main;
-    private final boolean runAsync = false;
-    public List<String> aliases;
     private List<CommonCommand> subCommands = new ArrayList<>();
 
-    /**
-     * @param main The main class instance
-     */
     public BaseCommand(CommandMain main, CommandDispatcher<CommandSourceStack> dispatcher) {
         this.main = main;
         this.init(dispatcher);
     }
 
     @Override
-    public CommandMain getMain() {
+    public final CommandMain getMain() {
         return main;
     }
 
-    /**
-     * @param args CommandDispatcher<CommandSourceStack> instance
-     */
     @Override
-    public void registerCommand(Object... args) {
+    public final void registerCommand(Object... args) {
         if (args.length == 0) {
             Logger.error("No CommandDispatcher was passed to the register method!");
             return;
@@ -55,11 +48,6 @@ public abstract class BaseCommand implements CommonCommand {
         dispatcher.register(getCommandBuilder());
     }
 
-    /**
-     * Generated a command builder
-     *
-     * @return The command builder
-     */
     private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder() {
         LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(getCommand());
 
@@ -87,12 +75,6 @@ public abstract class BaseCommand implements CommonCommand {
         return command;
     }
 
-    /**
-     * API call to execute the command
-     *
-     * @param context The command context
-     * @return 0
-     */
     private int internalExecute(CommandContext<CommandSourceStack> context) {
         CommandSource source = context.getSource().source;
 
@@ -119,7 +101,6 @@ public abstract class BaseCommand implements CommonCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param source  The commander who is executing this command
      * @param context The parsed command context
@@ -134,7 +115,6 @@ public abstract class BaseCommand implements CommonCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param console The commander who is executing this command
      * @param context The parsed command context
@@ -149,7 +129,6 @@ public abstract class BaseCommand implements CommonCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param player  The commander who is executing this command
      * @param context The parsed command context
@@ -164,7 +143,6 @@ public abstract class BaseCommand implements CommonCommand {
 
     /**
      * Get the command arguments
-     * You can Override this method
      *
      * @return The command arguments
      */
@@ -173,12 +151,12 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     @Override
-    public boolean checkPermission(Object user, String permission) {
+    public final boolean checkPermission(Object user, String permission) {
         return PermissionUtil.checkPermission((Player) user, permission);
     }
 
     @Override
-    public void sendMessage(Object user, String message) {
+    public final void sendMessage(Object user, String message) {
         if (user instanceof Player player) {
             player.displayClientMessage(Component.literal(message), false);
             return;
@@ -191,12 +169,12 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     @Override
-    public List<CommonCommand> getSubCommands() {
+    public final List<CommonCommand> getSubCommands() {
         return subCommands;
     }
 
     @Override
-    public void saveSubCommands(List<CommonCommand> subCommands) {
+    public final void saveSubCommands(List<CommonCommand> subCommands) {
         this.subCommands = subCommands;
     }
 }

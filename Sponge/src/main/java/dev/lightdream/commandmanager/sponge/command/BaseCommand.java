@@ -22,6 +22,7 @@ import org.spongepowered.api.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public abstract class BaseCommand implements CommandExecutor, CommonCommand {
 
     private final CommandMain main;
@@ -36,7 +37,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     }
 
     @Override
-    public void registerCommand(Object... args) {
+    public final void registerCommand(Object... args) {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getClass().getAnnotation(Command.class);
@@ -52,12 +53,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         Sponge.getCommandManager().register(main, getCommandSpec(), command.aliases());
     }
 
-    /**
-     * Gets the command specification
-     *
-     * @return The command specification
-     */
-    public CommandSpec getCommandSpec() {
+    public final CommandSpec getCommandSpec() {
         getSubCommands().forEach(commandObject -> {
             BaseCommand command = (BaseCommand) commandObject;
             spec.spec.child(command.getCommandSpec(), command.aliases);
@@ -69,7 +65,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
 
     /**
      * Gets the command string
-     * You can Override this method
      *
      * @return The command string
      */
@@ -77,13 +72,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         return new ArrayList<>();
     }
 
-    /**
-     * Sponge API call to execute the command
-     *
-     * @param src  The commander who is executing this command
-     * @param args The parsed command arguments for this command
-     * @return The command result
-     */
     @Override
     public final @NotNull CommandResult execute(@NotNull CommandSource src, @NotNull CommandContext args) {
         LambdaExecutor executor = () -> {
@@ -118,7 +106,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param source The commander who is executing this command
      * @param args   The parsed command arguments for this command
@@ -133,7 +120,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param console The commander who is executing this command
      * @param args    The parsed command arguments for this command
@@ -148,7 +134,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param player The commander who is executing this command
      * @param args   The parsed command arguments for this command
@@ -162,27 +147,27 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     }
 
     @Override
-    public List<CommonCommand> getSubCommands() {
+    public final List<CommonCommand> getSubCommands() {
         return subCommands;
     }
 
     @Override
-    public void saveSubCommands(List<CommonCommand> subCommands) {
+    public final void saveSubCommands(List<CommonCommand> subCommands) {
         this.subCommands = subCommands;
     }
 
     @Override
-    public CommandMain getMain() {
+    public final CommandMain getMain() {
         return main;
     }
 
     @Override
-    public boolean checkPermission(Object user, String permission) {
+    public final boolean checkPermission(Object user, String permission) {
         return ((Player) user).hasPermission(permission);
     }
 
     @Override
-    public void sendMessage(Object user, String message) {
+    public final void sendMessage(Object user, String message) {
         CommandSource source = (CommandSource) user;
         source.sendMessage(Text.of(message));
     }

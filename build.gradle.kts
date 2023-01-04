@@ -23,10 +23,10 @@ extra["lombok"] = "1.18.24"
 extra["luckperms"] = "5.4"
 
 // Project version
-extra["Forge_1_19_3"] = "2.0.2"
-extra["Spigot"] = "3.0.2"
-extra["Sponge"] = "2.0.2"
-extra["Velocity"] = "2.0.2"
+extra["Forge_1_19_3"] = "2.0.3"
+extra["Spigot"] = "3.0.3"
+extra["Sponge"] = "2.0.3"
+extra["Velocity"] = "2.0.3"
 
 group = "com.pokeninjas"
 version = "1.0.0"

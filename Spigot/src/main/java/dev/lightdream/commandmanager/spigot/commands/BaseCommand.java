@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public abstract class BaseCommand extends org.bukkit.command.Command implements CommonCommand {
 
     public final CommandMain main;
@@ -31,13 +32,9 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         this.init();
     }
 
-    /**
-     * Registers the command with Bukkit
-     * Do NOT Override this method
-     */
     @Override
     @SneakyThrows
-    public void registerCommand(Object... args) {
+    public final void registerCommand(Object... args) {
         this.setAliases(getAliases());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
@@ -54,7 +51,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param source The command sender
      * @param args   The arguments
@@ -69,7 +65,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param console The command sender
      * @param args    The arguments
@@ -84,7 +79,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Executes the command
-     * You can Override this method
      *
      * @param player, The command sender
      * @param args    The arguments
@@ -99,7 +93,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Spigot method to call the command
-     * Do NOT Override this method
      *
      * @param sender Source object which is executing this command
      * @param label  The alias of the command used
@@ -107,7 +100,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
      * @return Always true
      */
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
+    public final boolean execute(CommandSender sender, String label, String[] args) {
         if (args.length == 0) {
             distributeExec(sender, new ArrayList<>(Arrays.asList(args)));
             return true;
@@ -143,12 +136,11 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Distributes the execution to the correct method
-     * Do NOT Override this method
      *
      * @param sender The command sender
      * @param args   The arguments
      */
-    public void distributeExec(CommandSender sender, List<String> args) {
+    public final void distributeExec(CommandSender sender, List<String> args) {
         if (onlyForPlayers()) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(new MessageBuilder(main.getLang().onlyFotPlayer).parse());
@@ -172,7 +164,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Completes the command on tab press
-     * Do NOT Override this method
      *
      * @param sender      Source object which is executing this command
      * @param bukkitAlias the alias being used
@@ -180,7 +171,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
      * @return A list of possible completions for the final argument
      */
     @Override
-    public List<String> tabComplete(CommandSender sender, String bukkitAlias, String[] args) throws IllegalArgumentException {
+    public final List<String> tabComplete(CommandSender sender, String bukkitAlias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
             ArrayList<String> result = new ArrayList<>();
             for (BaseCommand subCommand : subCommands) {
@@ -204,7 +195,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Called when the command is completed on tab press
-     * You can Override this method
      *
      * @param sender The command sender
      * @param args   The arguments
@@ -216,45 +206,43 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     /**
      * Checks if the sender has the permission
-     * Do NOT Override this method
      *
      * @param sender     The command sender
      * @param permission The permission
      * @return If the sender has the permission
      */
-    public boolean checkPermission(Object sender, String permission) {
+    public final boolean checkPermission(Object sender, String permission) {
         return checkPermission((CommandSender) sender, permission);
     }
 
     /**
      * Checks if the sender has the permission
-     * Do NOT Override this method
      *
      * @param sender     The command sender
      * @param permission The permission
      * @return If the sender has the permission
      */
-    public boolean checkPermission(CommandSender sender, String permission) {
+    public final boolean checkPermission(CommandSender sender, String permission) {
         return ((sender.hasPermission(permission) || permission.equalsIgnoreCase("")));
     }
 
     @Override
-    public CommandMain getMain() {
+    public final CommandMain getMain() {
         return main;
     }
 
     @Override
-    public void sendMessage(Object user, String message) {
+    public final void sendMessage(Object user, String message) {
         ((CommandSender) user).sendMessage(message);
     }
 
     @Override
-    public List<CommonCommand> getSubCommands() {
+    public final List<CommonCommand> getSubCommands() {
         return new ArrayList<>(subCommands);
     }
 
     @Override
-    public void saveSubCommands(List<CommonCommand> subCommands) {
+    public final void saveSubCommands(List<CommonCommand> subCommands) {
         List<BaseCommand> newSubCommands = new ArrayList<>();
 
         for (CommonCommand subCommand : subCommands) {
