@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     private final CommandMain main;
