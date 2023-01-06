@@ -19,7 +19,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Execute Gradle build
-        run: gradle build
+        run: |
+          gradle -version
+          gradle build
 
       - name: Set version env variable
         run: |
