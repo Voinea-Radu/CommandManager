@@ -18,7 +18,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.4.2
+          gradle-version: wrapper
 
       - name: Execute Gradle build
         run: | 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Set version env variable
         run: |
-          cd ../Spigot
+          cd Spigot
           echo "VERSION_SPIGOT=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_SPIGOT=CommandManager-Spigot" >> $GITHUB_ENV
           
