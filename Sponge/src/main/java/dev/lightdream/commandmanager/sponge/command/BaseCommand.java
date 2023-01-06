@@ -1,8 +1,8 @@
 package dev.lightdream.commandmanager.sponge.command;
 
-import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.annotation.Command;
-import dev.lightdream.commandmanager.command.CommonCommand;
+import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.sponge.dto.CommandSpecWrap;
 import dev.lightdream.lambda.ScheduleUtils;
 import dev.lightdream.lambda.lambda.LambdaExecutor;
@@ -84,10 +84,11 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
                 return;
             }
             if (spec.onlyForPlayers) {
-                if (!(src instanceof Player player)) {
+                if (!(src instanceof Player )) {
                     src.sendMessage(Text.of(main.getLang().onlyFotPlayer));
                     return;
                 }
+                Player player = (Player) src;
                 exec(player, args);
                 return;
             }

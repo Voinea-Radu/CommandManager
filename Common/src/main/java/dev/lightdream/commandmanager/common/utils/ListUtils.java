@@ -1,4 +1,4 @@
-package dev.lightdream.commandmanager.utils;
+package dev.lightdream.commandmanager.common.utils;
 
 import java.util.List;
 

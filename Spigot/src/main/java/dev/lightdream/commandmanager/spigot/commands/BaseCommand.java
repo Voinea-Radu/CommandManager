@@ -1,8 +1,8 @@
 package dev.lightdream.commandmanager.spigot.commands;
 
-import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.command.CommonCommand;
-import dev.lightdream.commandmanager.utils.ListUtils;
+import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.SneakyThrows;
@@ -40,7 +40,8 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         fCommandMap.setAccessible(true);
 
         Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
-        if (commandMapObject instanceof CommandMap commandMap) {
+        if (commandMapObject instanceof CommandMap) {
+            CommandMap commandMap = (CommandMap) commandMapObject;
             commandMap.register(getCommand(), this);
         } else {
             Logger.error("Command " + getCommand() + " could not be initialized");

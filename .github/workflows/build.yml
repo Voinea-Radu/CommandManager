@@ -1,35 +1,28 @@
 name: Build
 
 on: [ push ]
-permissions: write-all
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Setup codebase
+        uses: actions/checkout@v2
 
-      - name: Set up JDK
+      - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
-          distribution: 'adopt'
-
-      - name: Git submodule update
-        run: git submodule update --init
+          distribution: temurin
+          java-version: 17
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build with Gradle
-        run: |
-          chmod u+x gradlew
-          ./gradlew build
+      - name: Execute Gradle build
+        run: gradle build
 
-      - name: Set env variable
+      - name: Set version env variable
         run: |
-          cd run
-          
           cd ../Spigot
           echo "VERSION_SPIGOT=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_SPIGOT=CommandManager-Spigot" >> $GITHUB_ENV
@@ -45,25 +38,44 @@ jobs:
           cd ../Velocity
           echo "VERSION_VELOCITY=$(../gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
           echo "ARTIFACT_VELOCITY=CommandManager-Velocity" >> $GITHUB_ENV
+          
+          cd ..
+          echo "GROUP=$(gradle properties -q | grep "group:" | awk '{print $2}')" >> $GITHUB_ENV
+          echo "REPOSITORY_NAME=$(echo ${{ github.repository }} | awk -F'/' '{print $2}')" >> $GITHUB_ENV
 
+      - name: Uploading artifacts
+        run: |
+          touch ~/.gradle/gradle.properties
+          echo "
+            gitlab.url = https://gitlab.com/api/v4/projects/41661215/packages/maven/
+            gitlab.auth.header.name = Private-Token
+            gitlab.auth.header.value = ${{ secrets.GITLAB_AUTH_HEADER_VALUE }}
+          
+            github.url = https://maven.pkg.github.com/${{ github.REPOSITORY }}
+            github.auth.username = L1ghtDream
+            github.auth.password = ${{ secrets.GITHUB_TOKEN }}
+          " > ~/.gradle/gradle.properties
+          
+          gradle publishGitHub || echo "Failed to publish to GitHub"
+          gradle publishGitLab || echo "Failed to publish to GitLab"
       - name: Automatic Releases
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest_release"
+          automatic_release_tag: "${{ env.VERSION }}"
           prerelease: false
           title: "${{ env.VERSION }}"
           files: |
-            */build/libs/*.jar
+            target/*.jar
 
       - name: "README.md Render"
         uses: varunsridharan/action-dynamic-readme@main
         with:
           committer_name: "Radu Voinea"
           committer_email: "contact@voienaradu.com"
-          commit_message: "Updated README.md"
+          commit_message: "Updated README.md versions"
           files: |
-            README-template.md=README.md
+            template/README-template.md=README.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -76,3 +88,8 @@ jobs:
           ARTIFACT_SPONGE: ${{ env.ARTIFACT_SPONGE }}
           ARTIFACT_FORGE_1_19_3: ${{ env.ARTIFACT_FORGE_1_19_3 }}
           ARTIFACT_VELOCITY: ${{ env.ARTIFACT_VELOCITY }}
+
+          GROUP: ${{ env.GROUP }}
+          GITHUB_USERNAME: ${{ github.REPOSITORY_OWNER }}
+          REPOSITORY: ${{ github.REPOSITORY }}
+          REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}

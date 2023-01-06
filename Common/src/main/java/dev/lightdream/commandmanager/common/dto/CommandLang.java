@@ -1,4 +1,4 @@
-package dev.lightdream.commandmanager.dto;
+package dev.lightdream.commandmanager.common.dto;
 
 public class CommandLang {
 

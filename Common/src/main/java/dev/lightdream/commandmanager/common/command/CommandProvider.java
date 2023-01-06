@@ -1,4 +1,4 @@
-package dev.lightdream.commandmanager.command;
+package dev.lightdream.commandmanager.common.command;
 
 import java.util.ArrayList;
 import java.util.List;

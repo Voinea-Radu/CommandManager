@@ -1,17 +1,17 @@
-package dev.lightdream.commandmanager.command;
+package dev.lightdream.commandmanager.common.command;
 
-import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.annotation.Command;
-import dev.lightdream.commandmanager.manager.CommandManager;
+import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.manager.CommandManager;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
-import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public interface CommonCommand extends CommandProvider {
+public interface CommonCommand {
 
     /**
      * Called in the constructor of the command
@@ -26,7 +26,7 @@ public interface CommonCommand extends CommandProvider {
 
         generateSubCommands(args);
 
-        if (!command.isSubCommand()) {
+        if (command.parent() != CommonCommand.class) {
             registerCommand(args);
         }
     }
@@ -65,7 +65,17 @@ public interface CommonCommand extends CommandProvider {
      * Created the objects for all sub commands
      */
     default void generateSubCommands(Object... args) {
-        saveSubCommands(CommandManager.registerCommands(getCommandClasses(), getCommands(), getMain(), args));
+        List<CommonCommand> subCommands = new ArrayList<>();
+
+        for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
+            Command command = clazz.getAnnotation(Command.class);
+
+            if (command.parent() == getClass()) {
+                subCommands.add(CommandManager.initCommand((Class<? extends CommonCommand>) clazz, getMain(), args));
+            }
+        }
+
+        saveSubCommands(subCommands);
     }
 
     List<CommonCommand> getSubCommands();

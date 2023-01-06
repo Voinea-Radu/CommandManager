@@ -7,15 +7,17 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.lightdream.commandmanager.CommandMain;
-import dev.lightdream.commandmanager.command.CommonCommand;
-import dev.lightdream.commandmanager.utils.ListUtils;
+import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("unused")
@@ -44,21 +46,23 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     @Override
     public final void execute(Invocation invocation) {
         CommandSource source = invocation.source();
-        List<String> args = new ArrayList<>(List.of(invocation.arguments()));
+        List<String> args = Arrays.stream(invocation.arguments()).collect(Collectors.toList());
 
         if (onlyForConsole()) {
-            if (!(source instanceof ConsoleCommandSource consoleSource)) {
+            if (!(source instanceof ConsoleCommandSource)) {
                 source.sendMessage(Component.text(main.getLang().onlyForConsole));
                 return;
             }
+            ConsoleCommandSource consoleSource = (ConsoleCommandSource) source;
             exec(consoleSource, args);
             return;
         }
         if (onlyForPlayers()) {
-            if (!(source instanceof Player player)) {
+            if (!(source instanceof Player)) {
                 source.sendMessage(Component.text(main.getLang().onlyFotPlayer));
                 return;
             }
+            Player player = (Player) source;
             exec(player, args);
             return;
         }

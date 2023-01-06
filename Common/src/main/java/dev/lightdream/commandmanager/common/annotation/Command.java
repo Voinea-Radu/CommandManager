@@ -1,4 +1,6 @@
-package dev.lightdream.commandmanager.annotation;
+package dev.lightdream.commandmanager.common.annotation;
+
+import dev.lightdream.commandmanager.common.command.CommonCommand;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -42,13 +44,6 @@ public @interface Command {
     boolean onlyForConsole() default false;
 
     /**
-     * The parent command class
-     *
-     * @return The parent class
-     */
-    boolean isSubCommand() default false;
-
-    /**
      * Minimum number of arguments
      *
      * @return The minimum number of arguments
@@ -61,5 +56,12 @@ public @interface Command {
      * @return true if you want the command to NOT block the main thread while executing or false if you want the command to block the main thread while executing
      */
     boolean async() default false;
+
+    /**
+     * The command parent. If the current command is a sub command set it to CommonCommand.class
+     *
+     * @return The parent command
+     */
+    Class<? extends CommonCommand> parent() default CommonCommand.class;
 
 }
