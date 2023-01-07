@@ -21,27 +21,25 @@ jobs:
           gradle-version: 7.5.1
 
       - name: Execute Gradle build
-        run: | 
-          gradle -version
-          gradle build
+        run: gradle build
 
       - name: Set version env variable
         run: |
           cd Spigot
           echo "VERSION_SPIGOT=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
-          echo "ARTIFACT_SPIGOT=CommandManager-Spigot" >> $GITHUB_ENV
+          echo "ARTIFACT_SPIGOT=$(gradle properties -q | grep "name:" | awk '{print $2}')" >> $GITHUB_ENV
           
           cd ../Sponge
           echo "VERSION_SPONGE=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
-          echo "ARTIFACT_SPONGE=CommandManager-Sponge" >> $GITHUB_ENV
+          echo "ARTIFACT_SPONGE=$(gradle properties -q | grep "name:" | awk '{print $2}')" >> $GITHUB_ENV
           
           cd ../Forge_1_19_3
           echo "VERSION_FORGE_1_19_3=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
-          echo "ARTIFACT_FORGE_1_19_3=CommandManager-Forge_1_19_3" >> $GITHUB_ENV
+          echo "ARTIFACT_FORGE_1_19_3=$(gradle properties -q | grep "name:" | awk '{print $2}')" >> $GITHUB_ENV
           
           cd ../Velocity
           echo "VERSION_VELOCITY=$(gradle properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
-          echo "ARTIFACT_VELOCITY=CommandManager-Velocity" >> $GITHUB_ENV
+          echo "ARTIFACT_VELOCITY=$(gradle properties -q | grep "name:" | awk '{print $2}')" >> $GITHUB_ENV
           
           cd ..
           echo "GROUP=$(gradle properties -q | grep "group:" | awk '{print $2}')" >> $GITHUB_ENV
@@ -63,6 +61,7 @@ jobs:
           gradle publishGitHub || echo "Failed to publish to GitHub"
           gradle publishGitLab || echo "Failed to publish to GitLab"
       - name: Automatic Releases
+        permissions: write-all
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
