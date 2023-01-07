@@ -2,6 +2,8 @@ name: Build
 
 on: [ push ]
 
+permissions: write-all
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -61,7 +63,6 @@ jobs:
           gradle publishGitHub || echo "Failed to publish to GitHub"
           gradle publishGitLab || echo "Failed to publish to GitLab"
       - name: Automatic Releases
-        permissions: write-all
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
