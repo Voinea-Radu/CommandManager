@@ -19,7 +19,7 @@ dependencies {
     implementation("com.velocitypowered:velocity-api:${getVersion("velocity")}")
 
     // Project
-    implementation(project(":Common"))
+    compileOnly(project(":Common"))
 
     // LightDream
     implementation("dev.lightdream:logger:+")
