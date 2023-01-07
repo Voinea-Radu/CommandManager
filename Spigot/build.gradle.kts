@@ -18,20 +18,12 @@ dependencies {
     implementation("org.spigotmc:spigot-api:${getVersion("spigot-api")}")
 
     // Project
-    implementation(project(":Common")){
-        exclude("org.projectlombok")
-    }
+    shadow(implementation(project(":Common"))!!)
 
     // LightDream
-    implementation("dev.lightdream:logger:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:lambda:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:message-builder:+"){
-        exclude("org.projectlombok")
-    }
+    implementation("dev.lightdream:logger:+")
+    implementation("dev.lightdream:lambda:+")
+    implementation("dev.lightdream:message-builder:+")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
@@ -45,9 +37,9 @@ dependencies {
 tasks {
     shadowJar {
         isZip64 = true
-        archiveFileName.set("Spigot.jar")
+        archiveFileName.set("${rootProject.name}.jar")
         dependencies {
-            include(project(":Common"))
+
         }
     }
 }

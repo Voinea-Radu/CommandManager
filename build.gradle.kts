@@ -13,12 +13,13 @@ extra["spongeapi"] = "7.4.0-SNAPSHOT"
 // Other
 extra["lombok"] = "1.18.24"
 extra["luckperms"] = "5.4"
+extra["jetbrains-annotations"] = "23.1.0"
 
 // Project version
-extra["Forge_1_19_3"] = "2.0.3"
-extra["Spigot"] = "3.0.3"
-extra["Sponge"] = "2.0.3"
-extra["Velocity"] = "2.0.3"
+extra["Forge_1_19_3"] = "2.0.4"
+extra["Spigot"] = "3.0.4"
+extra["Sponge"] = "2.0.4"
+extra["Velocity"] = "2.0.4"
 
 group = "dev.lightdream"
 version = "1.0.0"
