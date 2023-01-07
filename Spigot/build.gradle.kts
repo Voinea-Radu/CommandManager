@@ -109,3 +109,5 @@ tasks.register("publishGitHub") {
     dependsOn("publishMavenPublicationToGithubRepository")
     description = "Publishes to GitHub"
 }
+
+tasks.getByName("jar").finalizedBy("shadowJar")

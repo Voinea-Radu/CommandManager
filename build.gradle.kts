@@ -19,7 +19,7 @@ extra["jetbrains-annotations"] = "23.1.0"
 extra["Forge_1_19_3"] = "2.0.5"
 extra["Spigot"] = "3.0.5"
 extra["Sponge"] = "2.0.5"
-extra["Velocity"] = "2.0.5"
+extra["Velocity"] = "2.0.6"
 
 group = "dev.lightdream"
 version = "1.0.0"
