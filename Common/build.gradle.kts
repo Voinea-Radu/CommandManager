@@ -14,26 +14,18 @@ repositories {
 
 dependencies {
     // LightDream
-    implementation("dev.lightdream:logger:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:lambda:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:message-builder:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:reflections:+"){
-        exclude("org.projectlombok")
-    }
+    implementation("dev.lightdream:logger:+")
+    implementation("dev.lightdream:lambda:+")
+    implementation("dev.lightdream:message-builder:+")
+    implementation("dev.lightdream:reflections:+")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
     annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
 
     // JetBrains
-    compileOnly("org.jetbrains:annotations:23.1.0")
-    annotationProcessor("org.jetbrains:annotations:23.1.0")
+    compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
+    annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
 }
 
 fun getVersion(id: String): String {

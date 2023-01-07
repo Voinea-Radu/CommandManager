@@ -19,28 +19,20 @@ dependencies {
     implementation("com.velocitypowered:velocity-api:${getVersion("velocity")}")
 
     // Project
-    implementation(project(":Common")){
-        exclude("org.projectlombok")
-    }
+    implementation(project(":Common"))
 
     // LightDream
-    implementation("dev.lightdream:logger:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:lambda:+"){
-        exclude("org.projectlombok")
-    }
-    implementation("dev.lightdream:message-builder:+"){
-        exclude("org.projectlombok")
-    }
+    implementation("dev.lightdream:logger:+")
+    implementation("dev.lightdream:lambda:+")
+    implementation("dev.lightdream:message-builder:+")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
     annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
 
     // JetBrains
-    compileOnly("org.jetbrains:annotations:23.1.0")
-    annotationProcessor("org.jetbrains:annotations:23.1.0")
+    compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
+    annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
 }
 
 
