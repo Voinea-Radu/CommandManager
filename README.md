@@ -1,10 +1,10 @@
 # CommandManager
 
 ![Build](https://github.com/L1ghtDream/CommandManager/actions/workflows/build.yml/badge.svg)
-![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-3.0.3-red.svg)
-![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-2.0.3-red.svg)
-![Version-Forge_1_19_3](https://img.shields.io/badge/Version%20Forge%201.19.3-2.0.3-red.svg)
-![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-2.0.3-red.svg)
+![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-3.0.4-red.svg)
+![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-2.0.4-red.svg)
+![Version-Forge_1_19_3](https://img.shields.io/badge/Version%20Forge%201.19.3-2.0.4-red.svg)
+![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-2.0.4-red.svg)
 
 ## Use
 
@@ -27,23 +27,23 @@ If you want to use an older version that is not avanible in https://repo.lightdr
 <dependenies>
     <dependency>
         <groupId>dev.lightdream</groupId>
-        <artifactId>CommandManager-Spigot</artifactId>
-        <version>3.0.3</version>
+        <artifactId>command-manager-spigot</artifactId>
+        <version>3.0.4</version>
     </dependency>
     <dependency>
         <groupId>dev.lightdream</groupId>
-        <artifactId>CommandManager-Sponge</artifactId>
-        <version>2.0.3</version>
+        <artifactId>command-manager-sponge</artifactId>
+        <version>2.0.4</version>
     </dependency>
     <dependency>
         <groupId>dev.lightdream</groupId>
-        <artifactId>CommandManager-Forge_1_19_3</artifactId>
-        <version>2.0.3</version>
+        <artifactId>command-manager-forge-1-19-3</artifactId>
+        <version>2.0.4</version>
     </dependency>
     <dependency>
         <groupId>dev.lightdream</groupId>
-        <artifactId>CommandManager-Velocity</artifactId>
-        <version>2.0.3</version>
+        <artifactId>command-manager-velocity</artifactId>
+        <version>2.0.4</version>
     </dependency>
 </dependenies>
 ```
@@ -65,23 +65,23 @@ If you want to use an older version that is not avanible in https://repo.lightdr
 <dependencies>
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>CommandManager-Spigot</artifactId>
-        <version>3.0.3</version>
+        <artifactId>command-manager-spigot</artifactId>
+        <version>3.0.4</version>
     </dependency>
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>CommandManager-Sponge</artifactId>
-        <version>2.0.3</version>
+        <artifactId>command-manager-sponge</artifactId>
+        <version>2.0.4</version>
     </dependency>
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>CommandManager-Forge_1_19_3</artifactId>
-        <version>2.0.3</version>
+        <artifactId>command-manager-forge-1-19-3</artifactId>
+        <version>2.0.4</version>
     </dependency>
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>CommandManager-Velocity</artifactId>
-        <version>2.0.3</version>
+        <artifactId>command-manager-velocity</artifactId>
+        <version>2.0.4</version>
     </dependency>
 </dependencies>
 ```
@@ -104,10 +104,10 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation "dev.lightdream:CommandManager-Spigot:3.0.3"
-    implementation "dev.lightdream:CommandManager-Sponge:2.0.3"
-    implementation "dev.lightdream:CommandManager-Forge_1_19_3:2.0.3"
-    implementation "dev.lightdream:CommandManager-Velocity:2.0.3"
+    implementation "dev.lightdream:command-manager-spigot:3.0.4"
+    implementation "dev.lightdream:command-manager-sponge:2.0.4"
+    implementation "dev.lightdream:command-manager-forge-1-19-3:2.0.4"
+    implementation "dev.lightdream:command-manager-velocity:2.0.4"
 }
 ```
   </details>
@@ -122,10 +122,10 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation "com.github.L1ghtDream:CommandManager-Spigot:3.0.3"
-    implementation "com.github.L1ghtDream:CommandManager-Sponge:2.0.3"
-    implementation "com.github.L1ghtDream:CommandManager-Forge_1_19_3:2.0.3"
-    implementation "com.github.L1ghtDream:CommandManager-Velocity:2.0.3"
+    implementation "com.github.L1ghtDream:command-manager-spigot:3.0.4"
+    implementation "com.github.L1ghtDream:command-manager-sponge:2.0.4"
+    implementation "com.github.L1ghtDream:command-manager-forge-1-19-3:2.0.4"
+    implementation "com.github.L1ghtDream:command-manager-velocity:2.0.4"
 }
 ```
   </details>
@@ -145,10 +145,10 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation("dev.lightdream:CommandManager-Spigot:3.0.3")
-    implementation("dev.lightdream:CommandManager-Sponge:2.0.3")
-    implementation("dev.lightdream:CommandManager-Forge_1_19_3:2.0.3")
-    implementation("dev.lightdream:CommandManager-Velocity:2.0.3")
+    implementation("dev.lightdream:command-manager-spigot:3.0.4")
+    implementation("dev.lightdream:command-manager-sponge:2.0.4")
+    implementation("dev.lightdream:command-manager-forge-1-19-3:2.0.4")
+    implementation("dev.lightdream:command-manager-velocity:2.0.4")
 }
 ```
   </details>
@@ -163,10 +163,10 @@ repositories {
 
 ```kotlin
 dependencies {
-    implementation("com.github.L1ghtDream:CommandManager-Spigot:3.0.3")
-    implementation("com.github.L1ghtDream:CommandManager-Sponge:2.0.3")
-    implementation("com.github.L1ghtDream:CommandManager-Forge_1_19_3:2.0.3")
-    implementation("com.github.L1ghtDream:CommandManager-Velocity:2.0.3")
+    implementation("com.github.L1ghtDream:command-manager-spigot:3.0.4")
+    implementation("com.github.L1ghtDream:command-manager-sponge:2.0.4")
+    implementation("com.github.L1ghtDream:command-manager-forge-1-19-3:2.0.4")
+    implementation("com.github.L1ghtDream:command-manager-velocity:2.0.4")
 }
 ```
 
