@@ -43,7 +43,7 @@ If you want to use an older version that is not avanible in https://repo.lightdr
     <dependency>
         <groupId>${{ env.GROUP }}</groupId>
         <artifactId>${{ env.ARTIFACT_VELOCITY }}</artifactId>
-        <version>${{ env.ARTIFACT_VELOCITY }}</version>
+        <version>${{ env.VERSION_VELOCITY }}</version>
     </dependency>
 </dependenies>
 ```
@@ -81,7 +81,7 @@ If you want to use an older version that is not avanible in https://repo.lightdr
     <dependency>
         <groupId>com.github.${{ env.GITHUB_USERNAME }}</groupId>
         <artifactId>${{ env.ARTIFACT_VELOCITY }}</artifactId>
-        <version>${{ env.ARTIFACT_VELOCITY }}</version>
+        <version>${{ env.VERSION_VELOCITY }}</version>
     </dependency>
 </dependencies>
 ```
