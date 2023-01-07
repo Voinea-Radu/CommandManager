@@ -43,7 +43,7 @@ If you want to use an older version that is not avanible in https://repo.lightdr
     <dependency>
         <groupId>dev.lightdream</groupId>
         <artifactId>CommandManager-Velocity</artifactId>
-        <version>CommandManager-Velocity</version>
+        <version>2.0.3</version>
     </dependency>
 </dependenies>
 ```
@@ -81,7 +81,7 @@ If you want to use an older version that is not avanible in https://repo.lightdr
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
         <artifactId>CommandManager-Velocity</artifactId>
-        <version>CommandManager-Velocity</version>
+        <version>2.0.3</version>
     </dependency>
 </dependencies>
 ```
