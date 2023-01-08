@@ -53,7 +53,7 @@ dependencies {
 tasks {
     shadowJar {
         isZip64 = true
-        archiveFileName.set("Forge-1.19.3.jar")
+        archiveFileName.set("${rootProject.name}.jar")
         dependencies {
             include(project(":Common"))
         }

@@ -37,7 +37,7 @@ dependencies {
 tasks {
     shadowJar {
         isZip64 = true
-        archiveFileName.set("Sponge.jar")
+        archiveFileName.set("${rootProject.name}.jar")
         dependencies {
             include(project(":Common"))
         }

@@ -36,7 +36,7 @@ dependencies {
 tasks {
     shadowJar {
         isZip64 = true
-        archiveFileName.set("Spigot.jar")
+        archiveFileName.set("${rootProject.name}.jar")
         dependencies {
             include(project(":Common"))
         }

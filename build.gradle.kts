@@ -16,10 +16,10 @@ extra["luckperms"] = "5.4"
 extra["jetbrains-annotations"] = "23.1.0"
 
 // Project version
-extra["Forge_1_19_3"] = "2.0.6"
-extra["Spigot"] = "3.0.6"
-extra["Sponge"] = "2.0.6"
-extra["Velocity"] = "2.0.7"
+extra["Forge_1_19_3"] = "2.0.7"
+extra["Spigot"] = "3.0.7"
+extra["Sponge"] = "2.0.7"
+extra["Velocity"] = "2.0.11"
 
 group = "dev.lightdream"
 version = "1.0.0"
