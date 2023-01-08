@@ -35,7 +35,7 @@ dependencies {
     )
 
     // Project
-    implementation(project(":Common"))
+    implementation(project(":command-manager-common"))
 
     // LightDream
     implementation("dev.lightdream:logger:+")
@@ -55,7 +55,7 @@ tasks {
         isZip64 = true
         archiveFileName.set("${rootProject.name}.jar")
         dependencies {
-            include(project(":Common"))
+            include(project(":command-manager-common"))
         }
     }
 }
@@ -124,5 +124,3 @@ tasks.register("publishGitHub") {
     dependsOn("publishMavenPublicationToGithubRepository")
     description = "Publishes to GitHub"
 }
-
-tasks.getByName("jar").finalizedBy("shadowJar")

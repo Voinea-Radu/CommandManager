@@ -18,7 +18,7 @@ dependencies {
     implementation("org.spongepowered:spongeapi:${getVersion("spongeapi")}")
 
     // Project
-    implementation(project(":Common"))
+    implementation(project(":command-manager-common"))
 
     // LightDream
     implementation("dev.lightdream:logger:+")
@@ -39,7 +39,7 @@ tasks {
         isZip64 = true
         archiveFileName.set("${rootProject.name}.jar")
         dependencies {
-            include(project(":Common"))
+            include(project(":command-manager-common"))
         }
     }
 }

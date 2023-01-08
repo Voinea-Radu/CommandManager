@@ -10,7 +10,8 @@ pluginManagement {
     }
 }
 rootProject.name = "command-manager"
-include(":Common")
+include(":command-manager-common")
+project(":command-manager-common").projectDir = file("Common")
 
 include(":command-manager-forge-1-19-3")
 project(":command-manager-forge-1-19-3").projectDir = file("Forge_1_19_3")
