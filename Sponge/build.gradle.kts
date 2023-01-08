@@ -18,7 +18,7 @@ dependencies {
     implementation("org.spongepowered:spongeapi:${getVersion("spongeapi")}")
 
     // Project
-    compileOnly(project(":Common"))
+    implementation(project(":Common"))
 
     // LightDream
     implementation("dev.lightdream:logger:+")

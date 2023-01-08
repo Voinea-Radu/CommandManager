@@ -18,7 +18,7 @@ dependencies {
     implementation("org.spigotmc:spigot-api:${getVersion("spigot-api")}")
 
     // Project
-    compileOnly(project(":Common"))
+    implementation(project(":Common"))
 
     // LightDream
     implementation("dev.lightdream:logger:+")

@@ -19,7 +19,7 @@ dependencies {
     implementation("com.velocitypowered:velocity-api:${getVersion("velocity")}")
 
     // Project
-    compileOnly(project(":Common"))
+    implementation(project(":Common"))
 
     // LightDream
     implementation("dev.lightdream:logger:+")
@@ -39,7 +39,7 @@ dependencies {
 tasks {
     shadowJar {
         isZip64 = true
-        archiveFileName.set("Velocity.jar")
+        archiveFileName.set("${rootProject.name}.jar")
         dependencies {
             include(project(":Common"))
         }
@@ -111,4 +111,3 @@ tasks.register("publishGitHub") {
     description = "Publishes to GitHub"
 }
 
-tasks.getByName("jar").finalizedBy("shadowJar")
