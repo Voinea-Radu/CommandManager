@@ -26,7 +26,8 @@ public interface CommonCommand {
 
         generateSubCommands(args);
 
-        if (command.parent() != CommonCommand.class) {
+        // If the command is a root command (has no parent) register it
+        if (command.parent() == CommonCommand.class) {
             registerCommand(args);
         }
     }

@@ -64,6 +64,8 @@ public class CommandManager {
             passedArgsList.addAll(Arrays.asList(args));
             Object[] passedArgs = passedArgsList.toArray();
 
+            Debugger.log("Initializing command " + commandClass.getName() + " with args " + Arrays.toString(passedArgs));
+
             command = constructor.newInstance(passedArgs);
         }
 

@@ -1,6 +1,7 @@
 package dev.lightdream.commandmanager.spigot.commands;
 
 import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
@@ -30,6 +31,12 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         super("");
         this.main = main;
         this.init();
+    }
+
+    // Override the default method on org.bukkit.command.Command
+    @Override
+    public List<String> getAliases() {
+        return Arrays.asList(getClass().getAnnotation(Command.class).aliases());
     }
 
     @Override

@@ -22,9 +22,9 @@ dependencies {
     implementation(project(":command-manager-common"))
 
     // LightDream
-    implementation("dev.lightdream:logger:+")
-    implementation("dev.lightdream:lambda:+")
-    implementation("dev.lightdream:message-builder:+")
+    implementation("dev.lightdream:logger:${getVersion("logger")}")
+    implementation("dev.lightdream:lambda:${getVersion("lambda")}")
+    implementation("dev.lightdream:message-builder:${getVersion("message-builder")}")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
@@ -80,6 +80,10 @@ publishing {
         val githubUsername = project.findProperty("github.auth.username") ?: ""
         val githubPassword = project.findProperty("github.auth.password") ?: ""
 
+        val selfURL = project.findProperty("self.url") ?: ""
+        val selfUsername = project.findProperty("self.auth.username") ?: ""
+        val selfPassword = project.findProperty("self.auth.password") ?: ""
+
         maven(url = gitlabURL as String) {
             name = "gitlab"
             credentials(HttpHeaderCredentials::class) {
@@ -98,6 +102,14 @@ publishing {
                 password = githubPassword as String
             }
         }
+
+        maven(url = selfURL as String) {
+            name = "self"
+            credentials(PasswordCredentials::class) {
+                username = selfUsername as String
+                password = selfPassword as String
+            }
+        }
     }
 }
 
@@ -111,3 +123,7 @@ tasks.register("publishGitHub") {
     description = "Publishes to GitHub"
 }
 
+tasks.register("publishSelf") {
+    dependsOn("publishMavenPublicationToSelfRepository")
+    description = "Publishes to Self hosted repository"
+}

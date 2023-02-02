@@ -16,7 +16,7 @@ public @interface Command {
      *
      * @return The aliases
      */
-    String[] aliases() default {};
+    String[] aliases();
 
     /**
      * The permission string
