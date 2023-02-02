@@ -28,8 +28,8 @@ public interface CommonCommand {
     }
 
     default void init(Command command) {
-        generateSubCommands();
         setCommandAnnotation(command);
+        generateSubCommands();
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == CommonCommand.class) {
@@ -78,9 +78,7 @@ public interface CommonCommand {
         List<CommonCommand> subCommands = new ArrayList<>();
 
         for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
-            Command command = getCommandAnnotation();
-
-            if (command.parent() == getClass()) {
+            if (getCommandAnnotation().parent() == getClass()) {
                 subCommands.add(getMain().getCommandManager()
                         .initCommand((Class<? extends CommonCommand>) clazz));
             }
