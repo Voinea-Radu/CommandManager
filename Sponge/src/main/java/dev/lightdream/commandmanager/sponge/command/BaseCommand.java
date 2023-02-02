@@ -40,7 +40,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     public final void registerCommand() {
         this.spec = CommandSpecWrap.builder().build();
 
-        Command command = getClass().getAnnotation(Command.class);
+        Command command = getCommandAnnotation();
         runAsync = command.async();
 
         String permission = command.permission();

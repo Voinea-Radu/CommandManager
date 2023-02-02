@@ -29,12 +29,17 @@ public interface CommonCommand {
 
     default void init(Command command) {
         generateSubCommands();
+        setCommandAnnotation(command);
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == CommonCommand.class) {
             registerCommand();
         }
     }
+
+    void setCommandAnnotation(Command command);
+
+    Command getCommandAnnotation();
 
     /**
      * Registers the command with the platform specific API
@@ -73,7 +78,7 @@ public interface CommonCommand {
         List<CommonCommand> subCommands = new ArrayList<>();
 
         for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
-            Command command = clazz.getAnnotation(Command.class);
+            Command command = getCommandAnnotation();
 
             if (command.parent() == getClass()) {
                 subCommands.add(getMain().getCommandManager()
@@ -113,7 +118,7 @@ public interface CommonCommand {
      * @return The permission string
      */
     default String getPermission() {
-        return getClass().getAnnotation(Command.class).permission();
+        return getCommandAnnotation().permission();
     }
 
     /**
@@ -122,7 +127,7 @@ public interface CommonCommand {
      * @return The usage string
      */
     default String getUsage() {
-        return getClass().getAnnotation(Command.class).usage();
+        return getCommandAnnotation().usage();
     }
 
     /**
@@ -131,7 +136,7 @@ public interface CommonCommand {
      * @return True if only for players
      */
     default boolean onlyForPlayers() {
-        return getClass().getAnnotation(Command.class).onlyForPlayers();
+        return getCommandAnnotation().onlyForPlayers();
     }
 
     /**
@@ -140,7 +145,7 @@ public interface CommonCommand {
      * @return True if only for console
      */
     default boolean onlyForConsole() {
-        return getClass().getAnnotation(Command.class).onlyForConsole();
+        return getCommandAnnotation().onlyForConsole();
     }
 
     /**
@@ -149,7 +154,7 @@ public interface CommonCommand {
      * @return The aliases
      */
     default List<String> getAliases() {
-        return Arrays.asList(getClass().getAnnotation(Command.class).aliases());
+        return Arrays.asList(getCommandAnnotation().aliases());
     }
 
     /**
@@ -158,7 +163,7 @@ public interface CommonCommand {
      * @return The minimum amount of arguments
      */
     default int getMinimumArgs() {
-        return getClass().getAnnotation(Command.class).minimumArgs();
+        return getCommandAnnotation().minimumArgs();
     }
 
     /**
@@ -191,7 +196,7 @@ public interface CommonCommand {
      * @return True if the command is executed asynchronously
      */
     default boolean runAsync() {
-        return getClass().getAnnotation(Command.class).async();
+        return getCommandAnnotation().async();
     }
 
     /**

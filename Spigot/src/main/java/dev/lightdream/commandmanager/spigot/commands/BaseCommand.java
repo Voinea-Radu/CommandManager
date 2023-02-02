@@ -36,7 +36,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     // Override the default method on org.bukkit.command.Command
     @Override
     public List<String> getAliases() {
-        return Arrays.asList(getClass().getAnnotation(Command.class).aliases());
+        return Arrays.asList(getCommandAnnotation().aliases());
     }
 
     @Override
