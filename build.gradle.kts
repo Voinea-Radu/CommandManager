@@ -16,11 +16,11 @@ extra["luckperms"] = "5.4"
 extra["jetbrains-annotations"] = "23.1.0"
 
 // Project version
-extra["Forge_1_19_3"] = "2.1.4"
-extra["Spigot"] = "3.1.5"
-extra["Sponge"] = "2.1.4"
-extra["Velocity"] = "2.1.5"
-extra["Common"] = "1.1.10"
+extra["Forge_1_19_3"] = "2.1.5"
+extra["Spigot"] = "3.1.6"
+extra["Sponge"] = "2.1.5"
+extra["Velocity"] = "2.1.6"
+extra["Common"] = "1.1.11"
 
 // LightDream Libs
 extra["logger"] = "3.1.0"

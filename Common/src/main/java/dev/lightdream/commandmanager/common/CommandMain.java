@@ -15,4 +15,12 @@ public interface CommandMain {
 
     CommandManager getCommandManager();
 
+    /**
+     * Only use if you know what you are doing. This will disable developer logs.
+     * @return status
+     */
+    default boolean disableCommandExtendLogs() {
+        return false;
+    }
+
 }
