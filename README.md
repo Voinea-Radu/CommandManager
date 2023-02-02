@@ -4,7 +4,7 @@
 ![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-3.1.5-red.svg)
 ![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-2.1.4-red.svg)
 ![Version-Forge_1_19_3](https://img.shields.io/badge/Version%20Forge%201.19.3-2.1.4-red.svg)
-![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-2.1.4-red.svg)
+![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-2.1.5-red.svg)
 
 ## Use
 
@@ -43,7 +43,7 @@ If you want to use an older version that is not avanible in https://repo.lightdr
     <dependency>
         <groupId>dev.lightdream</groupId>
         <artifactId>command-manager-velocity</artifactId>
-        <version>2.1.4</version>
+        <version>2.1.5</version>
     </dependency>
 </dependenies>
 ```
@@ -81,7 +81,7 @@ If you want to use an older version that is not avanible in https://repo.lightdr
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
         <artifactId>command-manager-velocity</artifactId>
-        <version>2.1.4</version>
+        <version>2.1.5</version>
     </dependency>
 </dependencies>
 ```
@@ -107,7 +107,7 @@ dependencies {
     implementation "dev.lightdream:command-manager-spigot:3.1.5"
     implementation "dev.lightdream:command-manager-sponge:2.1.4"
     implementation "dev.lightdream:command-manager-forge-1-19-3:2.1.4"
-    implementation "dev.lightdream:command-manager-velocity:2.1.4"
+    implementation "dev.lightdream:command-manager-velocity:2.1.5"
 }
 ```
   </details>
@@ -125,7 +125,7 @@ dependencies {
     implementation "com.github.L1ghtDream:command-manager-spigot:3.1.5"
     implementation "com.github.L1ghtDream:command-manager-sponge:2.1.4"
     implementation "com.github.L1ghtDream:command-manager-forge-1-19-3:2.1.4"
-    implementation "com.github.L1ghtDream:command-manager-velocity:2.1.4"
+    implementation "com.github.L1ghtDream:command-manager-velocity:2.1.5"
 }
 ```
   </details>
@@ -148,7 +148,7 @@ dependencies {
     implementation("dev.lightdream:command-manager-spigot:3.1.5")
     implementation("dev.lightdream:command-manager-sponge:2.1.4")
     implementation("dev.lightdream:command-manager-forge-1-19-3:2.1.4")
-    implementation("dev.lightdream:command-manager-velocity:2.1.4")
+    implementation("dev.lightdream:command-manager-velocity:2.1.5")
 }
 ```
   </details>
@@ -166,7 +166,7 @@ dependencies {
     implementation("com.github.L1ghtDream:command-manager-spigot:3.1.5")
     implementation("com.github.L1ghtDream:command-manager-sponge:2.1.4")
     implementation("com.github.L1ghtDream:command-manager-forge-1-19-3:2.1.4")
-    implementation("com.github.L1ghtDream:command-manager-velocity:2.1.4")
+    implementation("com.github.L1ghtDream:command-manager-velocity:2.1.5")
 }
 ```
 
