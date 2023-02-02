@@ -1,6 +1,5 @@
 package dev.lightdream.commandmanager.common;
 
-import dev.lightdream.commandmanager.common.command.CommandProvider;
 import dev.lightdream.commandmanager.common.dto.CommandLang;
 import dev.lightdream.commandmanager.common.manager.CommandManager;
 import dev.lightdream.reflections.Mapper;
@@ -19,7 +18,7 @@ public interface CommandMain {
      * Only use if you know what you are doing. This will disable developer logs.
      * @return status
      */
-    default boolean disableCommandExtendLogs() {
+    default boolean disableDeveloperLogs() {
         return false;
     }
 

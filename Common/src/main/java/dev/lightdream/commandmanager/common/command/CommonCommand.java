@@ -2,8 +2,6 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
-import dev.lightdream.commandmanager.common.manager.CommandManager;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 
@@ -18,12 +16,18 @@ public interface CommonCommand {
      */
     default void init() {
         if (!getClass().isAnnotationPresent(Command.class)) {
+            if(getMain().disableDeveloperLogs()){
+                return;
+            }
             Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
             return;
         }
 
         Command command = getClass().getAnnotation(Command.class);
+        init(command);
+    }
 
+    default void init(Command command) {
         generateSubCommands();
 
         // If the command is a root command (has no parent) register it
