@@ -31,8 +31,9 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         this.init();
     }
 
-    public final void registerCommand(Object... args) {
-        ProxyServer proxy = (ProxyServer) args[0];
+    @Override
+    public final void registerCommand() {
+        ProxyServer proxy = (ProxyServer) getMain().getCommandManager().getArgs()[0];
 
         CommandManager commandManager = proxy.getCommandManager();
         CommandMeta commandMeta = commandManager.metaBuilder(getAliases().get(0))
