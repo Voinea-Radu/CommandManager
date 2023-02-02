@@ -37,7 +37,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     }
 
     @Override
-    public final void registerCommand(Object... args) {
+    public final void registerCommand() {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getClass().getAnnotation(Command.class);

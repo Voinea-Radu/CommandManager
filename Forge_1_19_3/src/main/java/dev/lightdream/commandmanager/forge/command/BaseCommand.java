@@ -27,9 +27,9 @@ public abstract class BaseCommand implements CommonCommand {
     private final CommandMain main;
     private List<CommonCommand> subCommands = new ArrayList<>();
 
-    public BaseCommand(CommandMain main, CommandDispatcher<CommandSourceStack> dispatcher) {
+    public BaseCommand(CommandMain main) {
         this.main = main;
-        this.init(dispatcher);
+        this.init();
     }
 
     @Override
@@ -38,13 +38,14 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     @Override
-    public final void registerCommand(Object... args) {
-        if (args.length == 0) {
+    public final void registerCommand() {
+        if (getMain().getCommandManager().getArgs().length == 0) {
             Logger.error("No CommandDispatcher was passed to the register method!");
             return;
         }
         //noinspection unchecked
-        CommandDispatcher<CommandSourceStack> dispatcher = (CommandDispatcher<CommandSourceStack>) args[0];
+        CommandDispatcher<CommandSourceStack> dispatcher =
+                (CommandDispatcher<CommandSourceStack>) getMain().getCommandManager().getArgs()[0];
         dispatcher.register(getCommandBuilder());
     }
 

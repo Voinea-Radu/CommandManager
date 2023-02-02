@@ -41,7 +41,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     @Override
     @SneakyThrows
-    public final void registerCommand(Object... args) {
+    public final void registerCommand() {
         this.setAliases(getAliases());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);

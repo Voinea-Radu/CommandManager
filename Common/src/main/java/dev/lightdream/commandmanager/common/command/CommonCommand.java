@@ -16,7 +16,7 @@ public interface CommonCommand {
     /**
      * Called in the constructor of the command
      */
-    default void init(Object... args) {
+    default void init() {
         if (!getClass().isAnnotationPresent(Command.class)) {
             Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
             return;
@@ -24,18 +24,18 @@ public interface CommonCommand {
 
         Command command = getClass().getAnnotation(Command.class);
 
-        generateSubCommands(args);
+        generateSubCommands();
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == CommonCommand.class) {
-            registerCommand(args);
+            registerCommand();
         }
     }
 
     /**
      * Registers the command with the platform specific API
      */
-    void registerCommand(Object... args);
+    void registerCommand();
 
     /**
      * Sends the usage of the command to the user
@@ -65,14 +65,15 @@ public interface CommonCommand {
     /**
      * Created the objects for all sub commands
      */
-    default void generateSubCommands(Object... args) {
+    default void generateSubCommands() {
         List<CommonCommand> subCommands = new ArrayList<>();
 
         for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
             Command command = clazz.getAnnotation(Command.class);
 
             if (command.parent() == getClass()) {
-                subCommands.add(CommandManager.initCommand((Class<? extends CommonCommand>) clazz, getMain(), args));
+                subCommands.add(getMain().getCommandManager()
+                        .initCommand((Class<? extends CommonCommand>) clazz));
             }
         }
 

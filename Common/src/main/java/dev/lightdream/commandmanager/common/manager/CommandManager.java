@@ -5,6 +5,7 @@ import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Constructor;
@@ -14,11 +15,15 @@ import java.util.List;
 
 public class CommandManager {
 
-    public List<CommonCommand> commands;
+    private final @Getter List<CommonCommand> commands;
+    private final @Getter CommandMain main;
+    private final @Getter Object[] args;
 
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public CommandManager(CommandMain main, Object... args) {
+        this.main = main;
+        this.args = args;
         commands = new ArrayList<>();
 
         for (Class<?> clazz : main.getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
@@ -33,18 +38,20 @@ public class CommandManager {
             }
 
             Class<? extends CommonCommand> commandClass = (Class<? extends CommonCommand>) clazz;
-
-            CommonCommand commandObject = initCommand(commandClass, main, args);
-            if (commandObject == null) {
-                continue;
-            }
-            commands.add(commandObject);
-
+            registerCommand(commandClass);
         }
     }
 
+    public void registerCommand(Class<? extends CommonCommand> command) {
+        CommonCommand commandObject = initCommand(command);
+        if (commandObject == null) {
+            return;
+        }
+        commands.add(commandObject);
+    }
+
     @SneakyThrows
-    public static CommonCommand initCommand(Class<? extends CommonCommand> commandClass, CommandMain main, Object... args) {
+    public CommonCommand initCommand(Class<? extends CommonCommand> commandClass) {
         CommonCommand command;
         //noinspection unchecked
         Constructor<CommonCommand> constructor = (Constructor<CommonCommand>) commandClass.getDeclaredConstructors()[0];

@@ -26,9 +26,9 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     private final CommandMain main;
     public List<CommonCommand> subCommands = new ArrayList<>();
 
-    public BaseCommand(CommandMain main, ProxyServer proxy) {
+    public BaseCommand(CommandMain main) {
         this.main = main;
-        this.init(proxy);
+        this.init();
     }
 
     public final void registerCommand(Object... args) {
