@@ -20,7 +20,7 @@ extra["Forge_1_19_3"] = "2.1.3"
 extra["Spigot"] = "3.1.4"
 extra["Sponge"] = "2.1.3"
 extra["Velocity"] = "2.1.3"
-extra["Common"] = "1.1.8"
+extra["Common"] = "1.1.9"
 
 // LightDream Libs
 extra["logger"] = "3.1.0"

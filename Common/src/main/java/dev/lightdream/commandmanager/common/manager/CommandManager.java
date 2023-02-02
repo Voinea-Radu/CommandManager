@@ -7,6 +7,7 @@ import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -42,11 +43,15 @@ public class CommandManager {
         }
     }
 
-    public void registerCommand(Class<? extends CommonCommand> command) {
-        CommonCommand commandObject = initCommand(command);
+    public void registerCommand(Class<? extends CommonCommand> commandClazz) {
+        CommonCommand commandObject = initCommand(commandClazz);
         if (commandObject == null) {
             return;
         }
+        commands.add(commandObject);
+    }
+
+    public void registerCommand(@NotNull CommonCommand commandObject) {
         commands.add(commandObject);
     }
 
