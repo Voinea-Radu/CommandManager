@@ -5,10 +5,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.forge.util.PermissionUtil;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -26,6 +29,9 @@ public abstract class BaseCommand implements CommonCommand {
 
     private final CommandMain main;
     private List<CommonCommand> subCommands = new ArrayList<>();
+    @Getter
+    @Setter
+    private Command commandAnnotation;
 
     public BaseCommand(CommandMain main) {
         this.main = main;

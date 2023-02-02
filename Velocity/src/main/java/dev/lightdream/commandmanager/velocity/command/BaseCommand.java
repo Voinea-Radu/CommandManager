@@ -8,9 +8,12 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +28,9 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     private final CommandMain main;
     public List<CommonCommand> subCommands = new ArrayList<>();
+    @Getter
+    @Setter
+    private Command commandAnnotation;
 
     public BaseCommand(CommandMain main) {
         this.main = main;

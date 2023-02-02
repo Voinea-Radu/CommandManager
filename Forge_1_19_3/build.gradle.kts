@@ -48,6 +48,10 @@ dependencies {
     // JetBrains
     compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
     annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
+
+    // Lombok
+    compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
+    annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
 }
 
 tasks {

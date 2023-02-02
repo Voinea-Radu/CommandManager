@@ -6,6 +6,8 @@ import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -25,6 +27,9 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     public final CommandMain main;
     private List<BaseCommand> subCommands = new ArrayList<>();
+    @Getter
+    @Setter
+    private Command commandAnnotation;
 
     @SneakyThrows
     public BaseCommand(CommandMain main) {

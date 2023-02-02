@@ -7,6 +7,8 @@ import dev.lightdream.commandmanager.sponge.dto.CommandSpecWrap;
 import dev.lightdream.lambda.ScheduleUtils;
 import dev.lightdream.lambda.lambda.LambdaExecutor;
 import dev.lightdream.logger.Logger;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
@@ -30,6 +32,9 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     public List<String> aliases;
     public List<CommonCommand> subCommands = new ArrayList<>();
     private boolean runAsync = false;
+    @Getter
+    @Setter
+    private Command commandAnnotation;
 
     public BaseCommand(CommandMain main) {
         this.main = main;
