@@ -48,6 +48,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
                 .build();
 
         commandManager.register(commandMeta, this);
+        Logger.good("Command " + getCommand() + " initialized successfully");
     }
 
     @Override

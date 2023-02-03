@@ -19,7 +19,7 @@ extra["jetbrains-annotations"] = "23.1.0"
 extra["Forge_1_19_3"] = "2.2.1"
 extra["Spigot"] = "3.2.0"
 extra["Sponge"] = "2.2.0"
-extra["Velocity"] = "2.2.2"
+extra["Velocity"] = "2.2.3"
 extra["Common"] = "1.2.0"
 
 // LightDream Libs
