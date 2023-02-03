@@ -264,4 +264,9 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
         this.subCommands = newSubCommands;
     }
+
+    @Override
+    public String getPermission() {
+        return getCommandAnnotation().permission();
+    }
 }
