@@ -34,7 +34,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
     public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
     @Override
