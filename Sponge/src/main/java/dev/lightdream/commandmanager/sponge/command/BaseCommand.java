@@ -36,13 +36,13 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     @Setter
     private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
     @Override
-    public final void registerCommand() {
+    public final void registerCommand(Object... args) {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getCommandAnnotation();

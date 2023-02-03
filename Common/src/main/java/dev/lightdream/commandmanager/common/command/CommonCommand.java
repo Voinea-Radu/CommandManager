@@ -14,7 +14,7 @@ public interface CommonCommand {
     /**
      * Called in the constructor of the command
      */
-    default void init() {
+    default void init(Object... args) {
         if (!getClass().isAnnotationPresent(Command.class)) {
             if(getMain().disableDeveloperLogs()){
                 return;
@@ -24,16 +24,16 @@ public interface CommonCommand {
         }
 
         Command command = getClass().getAnnotation(Command.class);
-        init(command);
+        init(command, args);
     }
 
-    default void init(Command command) {
+    default void init(Command command, Object... args) {
         setCommandAnnotation(command);
         generateSubCommands();
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == CommonCommand.class) {
-            registerCommand();
+            registerCommand(args);
         }
     }
 
@@ -44,7 +44,7 @@ public interface CommonCommand {
     /**
      * Registers the command with the platform specific API
      */
-    void registerCommand();
+    void registerCommand(Object... args);
 
     /**
      * Sends the usage of the command to the user

@@ -32,14 +32,14 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     @Setter
     private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
         this.init();
     }
 
     @Override
-    public final void registerCommand() {
-        ProxyServer proxy = (ProxyServer) getMain().getCommandManager().getArgs()[0];
+    public final void registerCommand(Object... args) {
+        ProxyServer proxy = (ProxyServer) args[0];
 
         CommandManager commandManager = proxy.getCommandManager();
         CommandMeta commandMeta = commandManager.metaBuilder(getAliases().get(0))

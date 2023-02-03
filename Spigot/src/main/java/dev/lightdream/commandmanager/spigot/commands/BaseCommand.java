@@ -32,10 +32,10 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     private Command commandAnnotation;
 
     @SneakyThrows
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         super("");
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
     // Override the default method on org.bukkit.command.Command
@@ -46,7 +46,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     @Override
     @SneakyThrows
-    public final void registerCommand() {
+    public final void registerCommand(Object... args) {
         this.setAliases(getAliases());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);

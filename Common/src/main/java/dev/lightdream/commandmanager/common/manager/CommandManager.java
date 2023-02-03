@@ -18,7 +18,7 @@ public class CommandManager {
 
     private final @Getter List<CommonCommand> commands;
     private final @Getter CommandMain main;
-    private final @Getter Object[] args;
+    private final Object[] args;
 
     @SuppressWarnings("unchecked")
     @SneakyThrows

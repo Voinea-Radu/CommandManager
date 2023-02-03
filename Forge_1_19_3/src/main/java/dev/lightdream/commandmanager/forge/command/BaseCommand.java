@@ -33,9 +33,9 @@ public abstract class BaseCommand implements CommonCommand {
     @Setter
     private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main) {
+    public BaseCommand(CommandMain main, Object... args) {
         this.main = main;
-        this.init();
+        this.init(args);
     }
 
     @Override
@@ -44,14 +44,14 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     @Override
-    public final void registerCommand() {
-        if (getMain().getCommandManager().getArgs().length == 0) {
+    public final void registerCommand(Object... args) {
+        if (args.length == 0) {
             Logger.error("No CommandDispatcher was passed to the register method!");
             return;
         }
         //noinspection unchecked
         CommandDispatcher<CommandSourceStack> dispatcher =
-                (CommandDispatcher<CommandSourceStack>) getMain().getCommandManager().getArgs()[0];
+                (CommandDispatcher<CommandSourceStack>) args[0];
         dispatcher.register(getCommandBuilder());
     }
 
