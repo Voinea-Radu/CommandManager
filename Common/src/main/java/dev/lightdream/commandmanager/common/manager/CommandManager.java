@@ -37,7 +37,7 @@ public class CommandManager {
             }
 
             Command command = clazz.getAnnotation(Command.class);
-            if (command.parent() != CommonCommand.class) {
+            if (command.parent() != CommonCommand.class || command.parentUnsafe() != CommonCommand.class) {
                 continue;
             }
 

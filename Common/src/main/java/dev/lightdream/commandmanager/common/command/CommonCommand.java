@@ -16,7 +16,7 @@ public interface CommonCommand {
      */
     default void init(Object... args) {
         if (!getClass().isAnnotationPresent(Command.class)) {
-            if(getMain().disableDeveloperLogs()){
+            if (getMain().disableDeveloperLogs()) {
                 return;
             }
             Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
@@ -32,14 +32,14 @@ public interface CommonCommand {
         generateSubCommands();
 
         // If the command is a root command (has no parent) register it
-        if (command.parent() == CommonCommand.class) {
+        if (command.parent() == CommonCommand.class && command.parentUnsafe() == CommonCommand.class) {
             registerCommand(args);
         }
     }
 
-    void setCommandAnnotation(Command command);
-
     Command getCommandAnnotation();
+
+    void setCommandAnnotation(Command command);
 
     /**
      * Registers the command with the platform specific API
@@ -77,14 +77,31 @@ public interface CommonCommand {
     default void generateSubCommands() {
         List<CommonCommand> subCommands = new ArrayList<>();
 
-        for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
-            if (getCommandAnnotation().parent() == getClass()) {
-                subCommands.add(getMain().getCommandManager()
-                        .initCommand((Class<? extends CommonCommand>) clazz));
+        for (Class<?> clazz : getSubCommandClasses()) {
+            if (!CommonCommand.class.isAssignableFrom(clazz)) {
+                if (getMain().disableDeveloperLogs()) {
+                    continue;
+                }
+                Logger.error("Class " + clazz.getName() + " is not a CommonCommand");
+                continue;
             }
+            subCommands.add(getMain().getCommandManager()
+                    .initCommand((Class<? extends CommonCommand>) clazz));
         }
 
         saveSubCommands(subCommands);
+    }
+
+    default List<Class<?>> getSubCommandClasses() {
+        List<Class<?>> subCommands = new ArrayList<>();
+
+        for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
+            if (getCommandAnnotation().parent() == getClass() || getCommandAnnotation().parentUnsafe() == getClass()) {
+                subCommands.add(clazz);
+            }
+        }
+
+        return subCommands;
     }
 
     List<CommonCommand> getSubCommands();
