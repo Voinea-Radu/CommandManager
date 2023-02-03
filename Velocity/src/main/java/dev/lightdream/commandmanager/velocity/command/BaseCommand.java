@@ -32,9 +32,9 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     @Setter
     private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(CommandMain main, ProxyServer proxy) {
         this.main = main;
-        this.init(args);
+        this.init(proxy);
     }
 
     @Override

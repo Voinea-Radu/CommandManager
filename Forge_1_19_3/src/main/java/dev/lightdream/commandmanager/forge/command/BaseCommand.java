@@ -33,9 +33,9 @@ public abstract class BaseCommand implements CommonCommand {
     @Setter
     private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(CommandMain main, CommandDispatcher<CommandSourceStack> dispatcher) {
         this.main = main;
-        this.init(args);
+        this.init(dispatcher);
     }
 
     @Override
