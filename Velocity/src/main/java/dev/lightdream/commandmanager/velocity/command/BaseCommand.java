@@ -56,6 +56,11 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         CommandSource source = invocation.source();
         List<String> args = Arrays.stream(invocation.arguments()).collect(Collectors.toList());
 
+        if(args.size()<getMinimumArgs()){
+            sendUsage(source);
+            return;
+        }
+
         if (onlyForConsole()) {
             if (!(source instanceof ConsoleCommandSource)) {
                 source.sendMessage(Component.text(main.getLang().onlyForConsole));

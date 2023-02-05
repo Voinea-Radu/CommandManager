@@ -68,4 +68,6 @@ public @interface Command {
     Class<? extends CommonCommand> parent() default CommonCommand.class;
 
     Class<?> parentUnsafe() default CommonCommand.class;
+
+    boolean autoRegister() default false;
 }

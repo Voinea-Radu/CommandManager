@@ -29,7 +29,7 @@ public class CommandManager {
 
         for (Class<?> clazz : main.getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
-                if(main.disableDeveloperLogs()){
+                if (main.disableDeveloperLogs()) {
                     continue;
                 }
                 Logger.error("Class " + clazz.getName() + " does not extend CommonCommand");
@@ -42,6 +42,11 @@ public class CommandManager {
             }
 
             Class<? extends CommonCommand> commandClass = (Class<? extends CommonCommand>) clazz;
+
+            if (!command.autoRegister()) {
+                return;
+            }
+
             registerCommand(commandClass);
         }
     }

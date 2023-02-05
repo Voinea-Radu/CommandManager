@@ -124,16 +124,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
                 continue;
             }
 
-            if (subCommand.onlyForPlayers() && !(sender instanceof Player)) {
-                sender.sendMessage(new MessageBuilder(main.getLang().onlyFotPlayer).toString());
-                return true;
-            }
-
-            if (subCommand.onlyForConsole() && !(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(new MessageBuilder(main.getLang().onlyForConsole).toString());
-                return true;
-            }
-
             if (!checkPermission(sender, subCommand.getPermission())) {
                 sender.sendMessage(new MessageBuilder(main.getLang().noPermission).toString());
                 return true;
@@ -154,6 +144,11 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
      * @param args   The arguments
      */
     public final void distributeExec(CommandSender sender, List<String> args) {
+        if(args.size()<getMinimumArgs()){
+            sendUsage(sender);
+            return;
+        }
+
         if (onlyForPlayers()) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(new MessageBuilder(main.getLang().onlyFotPlayer).parse());
