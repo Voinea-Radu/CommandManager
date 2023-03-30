@@ -27,7 +27,7 @@ public class CommandManager {
         this.args = args;
         commands = new ArrayList<>();
 
-        for (Class<?> clazz : main.getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
+        for (Class<?> clazz : main.getReflections().getTypesAnnotatedWith(Command.class)) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
                 if (main.disableDeveloperLogs()) {
                     continue;

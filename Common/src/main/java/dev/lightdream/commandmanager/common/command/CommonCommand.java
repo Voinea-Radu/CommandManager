@@ -95,7 +95,7 @@ public interface CommonCommand {
     default List<Class<?>> getSubCommandClasses() {
         List<Class<?>> subCommands = new ArrayList<>();
 
-        for (Class<?> clazz : getMain().getMapper().createReflections().getClassesAnnotatedWith(Command.class)) {
+        for (Class<?> clazz : getMain().getReflections().getTypesAnnotatedWith(Command.class)) {
             Command commandAnnotation = clazz.getAnnotation(Command.class);
 
             if (commandAnnotation.parent() == getClass() ||

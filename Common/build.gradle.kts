@@ -18,7 +18,9 @@ dependencies {
     implementation("dev.lightdream:logger:${getVersion("logger")}")
     implementation("dev.lightdream:lambda:${getVersion("lambda")}")
     implementation("dev.lightdream:message-builder:${getVersion("message-builder")}")
-    implementation("dev.lightdream:reflections:${getVersion("reflections")}")
+
+    // Reflections
+    implementation("org.reflections:reflections:${getVersion("reflections")}")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
@@ -53,10 +55,6 @@ publishing {
         }
     }
     repositories {
-        val gitlabURL = project.findProperty("gitlab.url") ?: ""
-        val gitlabHeaderName = project.findProperty("gitlab.auth.header.name") ?: ""
-        val gitlabHeaderValue = project.findProperty("gitlab.auth.header.value") ?: ""
-
         val githubURL = project.findProperty("github.url") ?: ""
         val githubUsername = project.findProperty("github.auth.username") ?: ""
         val githubPassword = project.findProperty("github.auth.password") ?: ""
@@ -64,17 +62,6 @@ publishing {
         val selfURL = project.findProperty("self.url") ?: ""
         val selfUsername = project.findProperty("self.auth.username") ?: ""
         val selfPassword = project.findProperty("self.auth.password") ?: ""
-
-        maven(url = gitlabURL as String) {
-            name = "gitlab"
-            credentials(HttpHeaderCredentials::class) {
-                name = gitlabHeaderName as String
-                value = gitlabHeaderValue as String
-            }
-            authentication {
-                create<HttpHeaderAuthentication>("header")
-            }
-        }
 
         maven(url = githubURL as String) {
             name = "github"
@@ -92,11 +79,6 @@ publishing {
             }
         }
     }
-}
-
-tasks.register("publishGitLab") {
-    dependsOn("publishMavenPublicationToGitlabRepository")
-    description = "Publishes to GitLab"
 }
 
 tasks.register("publishGitHub") {
