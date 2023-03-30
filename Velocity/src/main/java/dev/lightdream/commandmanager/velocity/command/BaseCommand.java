@@ -42,8 +42,8 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         ProxyServer proxy = (ProxyServer) args[0];
 
         CommandManager commandManager = proxy.getCommandManager();
-        CommandMeta commandMeta = commandManager.metaBuilder(getAliases().get(0))
-                .aliases(getAliases().subList(1, getAliases().size()).toArray(new String[0]))
+        CommandMeta commandMeta = commandManager.metaBuilder(getAliasList().get(0))
+                .aliases(getAliasList().subList(1, getAliasList().size()).toArray(new String[0]))
                 .plugin(this)
                 .build();
 

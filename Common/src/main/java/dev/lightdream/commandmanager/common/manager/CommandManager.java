@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,6 @@ public class CommandManager {
         commands.add(commandObject);
     }
 
-    @SneakyThrows
     public CommonCommand initCommand(Class<? extends CommonCommand> commandClass) {
         CommonCommand command;
         //noinspection unchecked
@@ -72,7 +72,12 @@ public class CommandManager {
         int argumentCount = constructor.getParameterCount();
 
         if (argumentCount == 0) {
-            command = constructor.newInstance();
+            try {
+                command = constructor.newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+                return null;
+            }
         } else {
             if (argumentCount - 1 != args.length) {
                 Logger.error("The constructor for command " + commandClass.getName() + " has " + argumentCount + " arguments, but " + args.length + " were passed to the CommandManager");
@@ -86,7 +91,12 @@ public class CommandManager {
 
             Debugger.log("Initializing command " + commandClass.getName() + " with args " + Arrays.toString(passedArgs));
 
-            command = constructor.newInstance(passedArgs);
+            try {
+                command = constructor.newInstance(passedArgs);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         return command;

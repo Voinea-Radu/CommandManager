@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 
@@ -127,7 +128,7 @@ public interface CommonCommand {
      * @return The command string
      */
     default String getCommand() {
-        return getAliases().get(0);
+        return getAliasList().get(0);
     }
 
     /**
@@ -171,7 +172,7 @@ public interface CommonCommand {
      *
      * @return The aliases
      */
-    default List<String> getAliases() {
+    default List<String> getAliasList() {
         return Arrays.asList(getCommandAnnotation().aliases());
     }
 
@@ -226,7 +227,7 @@ public interface CommonCommand {
     default List<String> getSubCommandsHelpMessage() {
         List<String> output = new ArrayList<>();
         getSubCommands().forEach(command -> output.add(
-                "/" + this.getAliases().get(0) + " " + command.getAliases().get(0) + " " +
+                "/" + this.getAliasList().get(0) + " " + command.getAliasList().get(0) + " " +
                         command.getUsage()
         ));
         return output;
