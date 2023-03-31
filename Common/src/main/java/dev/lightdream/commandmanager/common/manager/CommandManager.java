@@ -3,6 +3,7 @@ package dev.lightdream.commandmanager.common.manager;
 import dev.lightdream.commandmanager.common.CommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.lambda.ScheduleUtils;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class CommandManager {
         this.args = args;
         commands = new ArrayList<>();
 
+        ScheduleUtils.runTaskAsync(this::generateCommands);
+    }
+
+    private void generateCommands() {
         for (Class<?> clazz : main.getReflections().getTypesAnnotatedWith(Command.class)) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
                 if (main.disableDeveloperLogs()) {

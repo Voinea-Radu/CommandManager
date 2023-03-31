@@ -25,14 +25,14 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class BaseCommand extends org.bukkit.command.Command implements CommonCommand {
 
-    public final CommandMain main;
+    public final SpigotCommandMain main;
     private List<BaseCommand> subCommands = new ArrayList<>();
     @Getter
     @Setter
     private Command commandAnnotation;
 
     @SneakyThrows
-    public BaseCommand(CommandMain main, Object... args) {
+    public BaseCommand(SpigotCommandMain main, Object... args) {
         super("");
         this.main = main;
         this.init(args);
@@ -45,6 +45,11 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     @Override
+    public String getName() {
+        return getCommand();
+    }
+
+    @Override
     @SneakyThrows
     public final void registerCommand(Object... args) {
         this.setAliases(getAliasList());
@@ -54,7 +59,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
         if (commandMapObject instanceof CommandMap) {
             CommandMap commandMap = (CommandMap) commandMapObject;
-            commandMap.register(getCommand(), this);
+            commandMap.register(main.getPlugin().getDescription().getName(), this);
         } else {
             Logger.error("Command " + getCommand() + " could not be initialized");
             return;
@@ -144,7 +149,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
      * @param args   The arguments
      */
     public final void distributeExec(CommandSender sender, List<String> args) {
-        if(args.size()<getMinimumArgs()){
+        if (args.size() < getMinimumArgs()) {
             sendUsage(sender);
             return;
         }
