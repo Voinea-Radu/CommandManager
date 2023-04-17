@@ -137,7 +137,23 @@ public interface CommonCommand {
      * @return The permission string
      */
     default String getPermission() {
-        return getCommandAnnotation().permission();
+        String annotationPermission = getCommandAnnotation().permission();
+
+        if(annotationPermission!=null && !annotationPermission.equals("")){
+            return annotationPermission;
+        }
+
+        String basePermission = getMain().basePermission();
+
+        if(basePermission.equals("")){
+            return "";
+        }
+
+        if(!basePermission.endsWith(".")){
+            basePermission = basePermission+".";
+        }
+
+        return  basePermission + getCommand();
     }
 
     /**

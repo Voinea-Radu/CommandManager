@@ -22,4 +22,11 @@ public interface CommandMain {
         return false;
     }
 
+    /**
+     * Usually project_name.command(.)
+     * To disable use ""
+     * @return The basePermission
+     */
+    @NotNull String basePermission();
+
 }

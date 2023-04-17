@@ -48,7 +48,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         Command command = getCommandAnnotation();
         runAsync = command.async();
 
-        String permission = command.permission();
+        String permission = getPermission();
         if (!permission.equals("")) {
             spec.spec.permission(permission);
         }
