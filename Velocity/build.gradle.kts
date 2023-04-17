@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = getVersion("Velocity")
+version = getVersion("project_version")
 
 
 repositories {

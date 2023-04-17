@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = getVersion("Forge_1_19_3")
+version = getVersion("project_version")
 
 minecraft {
     mappings("parchment", getVersion("parchment"))

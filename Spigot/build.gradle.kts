@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = getVersion("Spigot")
+version = getVersion("project_version")
 
 repositories {
     maven ("https://repo.spongepowered.org/maven/")
