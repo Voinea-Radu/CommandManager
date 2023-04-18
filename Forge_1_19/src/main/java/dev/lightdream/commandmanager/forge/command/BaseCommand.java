@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,9 @@ public abstract class BaseCommand implements CommonCommand {
 
     @SneakyThrows
     private CommandSource getCommandSource(CommandContext<CommandSourceStack> context) {
-        return (CommandSource) CommandSourceStack.class.getDeclaredField(commandSourceFiled).get(context.getSource());
+        Field field = CommandSourceStack.class.getDeclaredField(commandSourceFiled);
+        field.setAccessible(true);
+        return (CommandSource) field.get(context.getSource());
     }
 
     private int internalExecute(CommandContext<CommandSourceStack> context) {
