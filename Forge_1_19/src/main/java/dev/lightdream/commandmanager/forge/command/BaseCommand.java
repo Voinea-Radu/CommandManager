@@ -1,17 +1,15 @@
 package dev.lightdream.commandmanager.forge.command;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import dev.lightdream.commandmanager.common.CommandMain;
-import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
-import dev.lightdream.commandmanager.forge.util.PermissionUtil;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
+import dev.lightdream.commandmanager.forge.CommandMain;
+import dev.lightdream.commandmanager.forge.util.PermissionUtil;
 import dev.lightdream.logger.Logger;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -27,32 +25,17 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class BaseCommand implements CommonCommand {
 
-    private final CommandMain main;
+    public static String commandSourceFiled = "field_9819";
+
     private List<CommonCommand> subCommands = new ArrayList<>();
-    @Getter
-    @Setter
-    private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main, CommandDispatcher<CommandSourceStack> dispatcher) {
-        this.main = main;
-        this.init(dispatcher);
+    public BaseCommand() {
+        this.init();
     }
 
     @Override
-    public final CommandMain getMain() {
-        return main;
-    }
-
-    @Override
-    public final void registerCommand(Object... args) {
-        if (args.length == 0) {
-            Logger.error("No CommandDispatcher was passed to the register method!");
-            return;
-        }
-        //noinspection unchecked
-        CommandDispatcher<CommandSourceStack> dispatcher =
-                (CommandDispatcher<CommandSourceStack>) args[0];
-        dispatcher.register(getCommandBuilder());
+    public final void registerCommand() {
+        CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder());
     }
 
     private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder() {
@@ -82,12 +65,17 @@ public abstract class BaseCommand implements CommonCommand {
         return command;
     }
 
+    @SneakyThrows
+    private CommandSource getCommandSource(CommandContext<CommandSourceStack> context) {
+        return (CommandSource) CommandSourceStack.class.getDeclaredField(commandSourceFiled).get(context.getSource());
+    }
+
     private int internalExecute(CommandContext<CommandSourceStack> context) {
-        CommandSource source = context.getSource().source;
+        CommandSource source = getCommandSource(context);
 
         if (onlyForConsole()) {
             if (!(source instanceof MinecraftServer consoleSource)) {
-                sendMessage(source, main.getLang().onlyForConsole);
+                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole);
                 return 0;
             }
             exec(consoleSource, context);
@@ -95,7 +83,7 @@ public abstract class BaseCommand implements CommonCommand {
         }
         if (onlyForPlayers()) {
             if (!(source instanceof Player player)) {
-                sendMessage(source, main.getLang().onlyFotPlayer);
+                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer);
                 return 0;
             }
             exec(player, context);

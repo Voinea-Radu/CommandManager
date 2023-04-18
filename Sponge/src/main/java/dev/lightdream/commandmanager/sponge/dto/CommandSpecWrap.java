@@ -18,6 +18,7 @@ public class CommandSpecWrap {
         return new Builder();
     }
 
+    @SuppressWarnings("unused")
     public CommandSpec getSpec() {
         return spec.build();
     }
@@ -31,6 +32,7 @@ public class CommandSpecWrap {
             this.spec = CommandSpec.builder();
         }
 
+        @SuppressWarnings("unused")
         public Builder onlyForPlayers(boolean onlyForPlayers) {
             this.onlyForPlayers = onlyForPlayers;
             return this;
@@ -42,6 +44,7 @@ public class CommandSpecWrap {
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder spec(CommandSpec.Builder spec) {
             this.spec = spec;
             return this;

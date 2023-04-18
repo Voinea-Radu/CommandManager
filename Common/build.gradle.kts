@@ -1,38 +1,27 @@
 plugins {
-    id("java")
+    id("java-library")
     id("maven-publish")
 }
 
 group = "dev.lightdream"
-version = getVersion("project_version")
-
-repositories {
-    maven ("https://repo.spongepowered.org/maven/")
-    maven ("https://repo.lightdream.dev/")
-    maven ("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-}
-
+version = libs.versions.project.version.get()
 
 dependencies {
     // LightDream
-    implementation("dev.lightdream:logger:${getVersion("logger")}")
-    implementation("dev.lightdream:lambda:${getVersion("lambda")}")
-    implementation("dev.lightdream:message-builder:${getVersion("message-builder")}")
+    api(libs.lightdream.logger)
+    api(libs.lightdream.lambda)
+    api(libs.lightdream.messagebuilder)
 
     // Reflections
-    implementation("org.reflections:reflections:${getVersion("reflections")}")
+    api(libs.reflections)
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
-    annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 
     // JetBrains
-    compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
-    annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
-}
-
-fun getVersion(id: String): String {
-    return rootProject.extra[id] as String
+    api(libs.jetbrains.annotations)
+    annotationProcessor(libs.jetbrains.annotations)
 }
 
 configurations.all {

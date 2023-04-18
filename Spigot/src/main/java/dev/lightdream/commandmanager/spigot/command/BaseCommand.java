@@ -1,13 +1,11 @@
-package dev.lightdream.commandmanager.spigot.commands;
+package dev.lightdream.commandmanager.spigot.command;
 
-import dev.lightdream.commandmanager.common.CommandMain;
-import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
+import dev.lightdream.commandmanager.spigot.CommandMain;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -25,17 +23,12 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class BaseCommand extends org.bukkit.command.Command implements CommonCommand {
 
-    public final SpigotCommandMain main;
     private List<BaseCommand> subCommands = new ArrayList<>();
-    @Getter
-    @Setter
-    private Command commandAnnotation;
 
     @SneakyThrows
-    public BaseCommand(SpigotCommandMain main, Object... args) {
+    public BaseCommand() {
         super("");
-        this.main = main;
-        this.init(args);
+        this.init();
     }
 
     // Override the default method on org.bukkit.command.Command
@@ -51,7 +44,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     @Override
     @SneakyThrows
-    public final void registerCommand(Object... args) {
+    public final void registerCommand() {
         this.setAliases(getAliasList());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
@@ -59,7 +52,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
         if (commandMapObject instanceof CommandMap) {
             CommandMap commandMap = (CommandMap) commandMapObject;
-            commandMap.register(main.getPlugin().getDescription().getName(), this);
+            commandMap.register(CommonCommandMain.getCommandMain(CommandMain.class).getPlugin().getDescription().getName(), this);
         } else {
             Logger.error("Command " + getCommand() + " could not be initialized");
             return;
@@ -130,7 +123,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             }
 
             if (!checkPermission(sender, subCommand.getPermission())) {
-                sender.sendMessage(new MessageBuilder(main.getLang().noPermission).toString());
+                sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission).toString());
                 return true;
             }
 
@@ -156,7 +149,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
         if (onlyForPlayers()) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(new MessageBuilder(main.getLang().onlyFotPlayer).parse());
+                sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer).parse());
                 return;
             }
             exec((Player) sender, args);
@@ -165,7 +158,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
         if (onlyForConsole()) {
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(new MessageBuilder(main.getLang().onlyForConsole).parse());
+                sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole).parse());
                 return;
             }
             exec((ConsoleCommandSender) sender, args);
@@ -237,11 +230,6 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
      */
     public final boolean checkPermission(CommandSender sender, String permission) {
         return ((sender.hasPermission(permission) || permission.equalsIgnoreCase("")));
-    }
-
-    @Override
-    public final CommandMain getMain() {
-        return main;
     }
 
     @Override

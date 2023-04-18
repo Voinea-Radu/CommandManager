@@ -10,11 +10,12 @@ pluginManagement {
     }
 }
 rootProject.name = "command-manager"
+
 include(":command-manager-common")
 project(":command-manager-common").projectDir = file("Common")
 
-include(":command-manager-forge-1-19-3")
-project(":command-manager-forge-1-19-3").projectDir = file("Forge_1_19_3")
+include(":command-manager-forge-1-19")
+project(":command-manager-forge-1-19").projectDir = file("Forge_1_19")
 
 include(":command-manager-spigot")
 project(":command-manager-spigot").projectDir = file("Spigot")
@@ -24,3 +25,6 @@ project(":command-manager-sponge").projectDir = file("Sponge")
 
 include(":command-manager-velocity")
 project(":command-manager-velocity").projectDir = file("Velocity")
+
+include(":command-manager-fabric-1-19")
+project(":command-manager-fabric-1-19").projectDir = file("Fabric_1_19")

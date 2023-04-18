@@ -2,44 +2,25 @@ plugins {
     java
 }
 
-// Main libs versions
-extra["forge"] = "44.0.41"
-extra["minecraft"] = "1.19.3"
-extra["parchment"] = "2022.12.18-1.19.3"
-extra["velocity"] = "3.1.1"
-extra["spigot-api"] = "1.8-R0.1-SNAPSHOT"
-extra["spongeapi"] = "7.4.0-SNAPSHOT"
-
-// Other
-extra["lombok"] = "1.18.24"
-extra["luckperms"] = "5.4"
-extra["jetbrains-annotations"] = "23.1.0"
-extra["reflections"] = "0.10.2"
-
-// Project version
-extra["project_version"] = "4.0.0"
-
-// LightDream Libs
-extra["logger"] = "3.1.0"
-extra["lambda"] = "4.0.0"
-extra["message-builder"] = "3.1.1"
-
-
 group = "dev.lightdream"
 version = "1.0.0"
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
 
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
-fun getVersion(id: String): String {
-    return rootProject.extra[id] as String
+subprojects{
+    repositories {
+        mavenCentral()
+        maven ("https://repo.papermc.io/repository/maven-public/")
+        maven ("https://repo.spongepowered.org/maven/")
+        maven ("https://repo.lightdream.dev/")
+        maven ("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://cursemaven.com") {
+            content {
+                includeGroup("curse.maven")
+            }
+        }
+        maven("https://maven.parchmentmc.org")
+    }
 }

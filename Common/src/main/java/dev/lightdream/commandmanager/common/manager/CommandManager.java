@@ -1,6 +1,6 @@
 package dev.lightdream.commandmanager.common.manager;
 
-import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.lambda.ScheduleUtils;
@@ -19,13 +19,10 @@ import java.util.List;
 public class CommandManager {
 
     private final @Getter List<CommonCommand> commands;
-    private final @Getter CommandMain main;
     private final Object[] args;
 
-    @SuppressWarnings("unchecked")
     @SneakyThrows
-    public CommandManager(CommandMain main, Object... args) {
-        this.main = main;
+    public CommandManager(Object... args) {
         this.args = args;
         commands = new ArrayList<>();
 
@@ -33,11 +30,8 @@ public class CommandManager {
     }
 
     private void generateCommands() {
-        for (Class<?> clazz : main.getReflections().getTypesAnnotatedWith(Command.class)) {
+        for (Class<?> clazz : CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections().getTypesAnnotatedWith(Command.class)) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
-                if (main.disableDeveloperLogs()) {
-                    continue;
-                }
                 Logger.error("Class " + clazz.getName() + " does not extend CommonCommand");
                 continue;
             }
@@ -47,6 +41,7 @@ public class CommandManager {
                 continue;
             }
 
+            //noinspection unchecked
             Class<? extends CommonCommand> commandClass = (Class<? extends CommonCommand>) clazz;
 
             if (!command.autoRegister()) {
@@ -65,6 +60,7 @@ public class CommandManager {
         commands.add(commandObject);
     }
 
+    @SuppressWarnings("unused")
     public void registerCommand(@NotNull CommonCommand commandObject) {
         commands.add(commandObject);
     }
@@ -89,9 +85,7 @@ public class CommandManager {
                 return null;
             }
 
-            List<Object> passedArgsList = new ArrayList<>();
-            passedArgsList.add(main);
-            passedArgsList.addAll(Arrays.asList(args));
+            List<Object> passedArgsList = new ArrayList<>(Arrays.asList(args));
             Object[] passedArgs = passedArgsList.toArray();
 
             Debugger.log("Initializing command " + commandClass.getName() + " with args " + Arrays.toString(passedArgs));

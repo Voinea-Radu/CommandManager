@@ -6,11 +6,11 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
-import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
+import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.logger.Logger;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,22 +26,15 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public abstract class BaseCommand implements CommonCommand, SimpleCommand {
 
-    private final CommandMain main;
     public List<CommonCommand> subCommands = new ArrayList<>();
-    @Getter
-    @Setter
-    private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main, ProxyServer proxy) {
-        this.main = main;
-        this.init(proxy);
+    public BaseCommand() {
+        this.init();
     }
 
     @Override
-    public final void registerCommand(Object... args) {
-        ProxyServer proxy = (ProxyServer) args[0];
-
-        CommandManager commandManager = proxy.getCommandManager();
+    public final void registerCommand() {
+        CommandManager commandManager = CommonCommandMain.getCommandMain(CommandMain.class).getProxy().getCommandManager();
         CommandMeta commandMeta = commandManager.metaBuilder(getAliasList().get(0))
                 .aliases(getAliasList().subList(1, getAliasList().size()).toArray(new String[0]))
                 .plugin(this)
@@ -56,14 +49,14 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         CommandSource source = invocation.source();
         List<String> args = Arrays.stream(invocation.arguments()).collect(Collectors.toList());
 
-        if(args.size()<getMinimumArgs()){
+        if (args.size() < getMinimumArgs()) {
             sendUsage(source);
             return;
         }
 
         if (onlyForConsole()) {
             if (!(source instanceof ConsoleCommandSource)) {
-                source.sendMessage(Component.text(main.getLang().onlyForConsole));
+                source.sendMessage(Component.text(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole));
                 return;
             }
             ConsoleCommandSource consoleSource = (ConsoleCommandSource) source;
@@ -72,7 +65,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         }
         if (onlyForPlayers()) {
             if (!(source instanceof Player)) {
-                source.sendMessage(Component.text(main.getLang().onlyFotPlayer));
+                source.sendMessage(Component.text(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer));
                 return;
             }
             Player player = (Player) source;
@@ -135,11 +128,6 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     public final void sendMessage(Object user, String message) {
         CommandSource source = (CommandSource) user;
         source.sendMessage(Component.text(message));
-    }
-
-    @Override
-    public final CommandMain getMain() {
-        return main;
     }
 
     @Override

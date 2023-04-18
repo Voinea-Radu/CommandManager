@@ -1,59 +1,26 @@
 plugins {
-    id("java-library")
+    id("fabric-loom") version "1.0-SNAPSHOT"
     id("maven-publish")
-    id("com.github.johnrengelman.shadow") version ("7.1.2")
+    id("java-library")
 }
 
-group = "dev.lightdream"
 version = libs.versions.project.version.get()
+group = "dev.lightdream"
 
 dependencies {
-    // Sponge
-    compileOnly(libs.sponge)
+    minecraft(libs.minecraft.v19)
+    mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
 
-    // Project
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.api)
+
     api(project(":command-manager-common"))
 
-    // Lombok
+    api(libs.luckperms)
+
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
-
-    // JetBrains
-    compileOnly(libs.jetbrains.annotations)
-    annotationProcessor(libs.jetbrains.annotations)
 }
-
-tasks {
-    shadowJar {
-        isZip64 = true
-        archiveFileName.set("${rootProject.name}.jar")
-        dependencies {
-            include(project(":command-manager-common"))
-        }
-    }
-}
-
-tasks.getByName("jar").finalizedBy("shadowJar")
-
-fun getVersion(id: String): String {
-    return rootProject.extra[id] as String
-}
-
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor(10, "seconds")
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.withType<Jar> {
-    archiveFileName.set("${rootProject.name}.jar")
-}
-
-
-tasks.getByName("jar").finalizedBy("shadowJar")
 
 publishing {
     publications {
@@ -97,4 +64,3 @@ tasks.register("publishSelf") {
     dependsOn("publishMavenPublicationToSelfRepository")
     description = "Publishes to Self hosted repository"
 }
-

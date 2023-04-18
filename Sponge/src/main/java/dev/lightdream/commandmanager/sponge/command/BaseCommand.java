@@ -1,14 +1,13 @@
 package dev.lightdream.commandmanager.sponge.command;
 
-import dev.lightdream.commandmanager.common.CommandMain;
+import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.sponge.CommandMain;
 import dev.lightdream.commandmanager.sponge.dto.CommandSpecWrap;
 import dev.lightdream.lambda.ScheduleUtils;
 import dev.lightdream.lambda.lambda.LambdaExecutor;
 import dev.lightdream.logger.Logger;
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
@@ -27,22 +26,17 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class BaseCommand implements CommandExecutor, CommonCommand {
 
-    private final CommandMain main;
     public CommandSpecWrap spec;
     public List<String> aliases;
     public List<CommonCommand> subCommands = new ArrayList<>();
     private boolean runAsync = false;
-    @Getter
-    @Setter
-    private Command commandAnnotation;
 
-    public BaseCommand(CommandMain main, Object... args) {
-        this.main = main;
-        this.init(args);
+    public BaseCommand() {
+        this.init();
     }
 
     @Override
-    public final void registerCommand(Object... args) {
+    public final void registerCommand() {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getCommandAnnotation();
@@ -55,7 +49,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         spec.onlyForConsole = command.onlyForConsole();
         spec.onlyForPlayers = command.onlyForPlayers();
 
-        Sponge.getCommandManager().register(main, getCommandSpec(), command.aliases());
+        Sponge.getCommandManager().register(CommonCommandMain.getCommandMain(CommandMain.class), getCommandSpec(), command.aliases());
     }
 
     public final CommandSpec getCommandSpec() {
@@ -82,7 +76,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         LambdaExecutor executor = () -> {
             if (spec.onlyForConsole) {
                 if (!(src instanceof ConsoleSource)) {
-                    src.sendMessage(Text.of(main.getLang().onlyForConsole));
+                    src.sendMessage(Text.of(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole));
                     return;
                 }
                 exec((ConsoleSource) src, args);
@@ -90,7 +84,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
             }
             if (spec.onlyForPlayers) {
                 if (!(src instanceof Player )) {
-                    src.sendMessage(Text.of(main.getLang().onlyFotPlayer));
+                    src.sendMessage(Text.of(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer));
                     return;
                 }
                 Player player = (Player) src;
@@ -160,11 +154,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     @Override
     public final void saveSubCommands(List<CommonCommand> subCommands) {
         this.subCommands = subCommands;
-    }
-
-    @Override
-    public final CommandMain getMain() {
-        return main;
     }
 
     @Override

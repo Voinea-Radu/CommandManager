@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 
-public interface CommandMain {
+public interface CommonCommandMain {
 
     CommandLang getLang();
 
@@ -15,18 +15,19 @@ public interface CommandMain {
     CommandManager getCommandManager();
 
     /**
-     * Only use if you know what you are doing. This will disable developer logs.
-     * @return status
-     */
-    default boolean disableDeveloperLogs() {
-        return false;
-    }
-
-    /**
      * Usually project_name.command(.)
      * To disable use ""
      * @return The basePermission
      */
     @NotNull String basePermission();
+
+    @SuppressWarnings("unused")
+    default void initializeCommandMain() {
+        Statics.setMain(this);
+    }
+
+    static <T extends CommonCommandMain> T getCommandMain(Class<T> clazz){
+        return Statics.getMainAs(clazz);
+    }
 
 }

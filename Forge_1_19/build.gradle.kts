@@ -1,73 +1,39 @@
 plugins {
-    id("java")
+    id("java-library")
     id("maven-publish")
     id("idea")
     id("net.minecraftforge.gradle") version ("5.1.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
-    id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
 group = "dev.lightdream"
-version = getVersion("project_version")
+version = libs.versions.project.version.get()
 
 minecraft {
-    mappings("parchment", getVersion("parchment"))
+    mappings("parchment", libs.versions.parchment.get())
     accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 }
-
-repositories {
-    mavenCentral()
-    maven("https://repo.lightdream.dev/")
-    maven("https://cursemaven.com") {
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-    maven("https://maven.parchmentmc.org")
-}
-
 
 dependencies {
     minecraft(
         group = "net.minecraftforge",
         name = "forge",
-        version = "${getVersion("minecraft")}-${getVersion("forge")}",
+        version = libs.versions.forge.get(),
     )
 
     // Project
-    implementation(project(":command-manager-common"))
-
-    // LightDream
-    implementation("dev.lightdream:logger:${getVersion("logger")}")
-    implementation("dev.lightdream:lambda:${getVersion("lambda")}")
-    implementation("dev.lightdream:message-builder:${getVersion("message-builder")}")
+    api(project(":command-manager-common"))
 
     // LuckPerms
-    compileOnly("net.luckperms:api:${getVersion("luckperms")}")
+    compileOnly(libs.luckperms)
 
     // JetBrains
-    compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
-    annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
+    compileOnly(libs.jetbrains.annotations)
+    annotationProcessor(libs.jetbrains.annotations)
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
-    annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
-}
-
-tasks {
-    shadowJar {
-        isZip64 = true
-        archiveFileName.set("${rootProject.name}.jar")
-        dependencies {
-            include(project(":command-manager-common"))
-        }
-    }
-}
-
-tasks.getByName("jar").finalizedBy("shadowJar")
-
-fun getVersion(id: String): String {
-    return rootProject.extra[id] as String
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 }
 
 configurations.all {

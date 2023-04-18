@@ -1,38 +1,28 @@
 plugins {
-    id("java")
+    id("java-library")
     id("maven-publish")
     id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
 group = "dev.lightdream"
-version = getVersion("project_version")
+version = libs.versions.project.version.get()
 
 
-repositories {
-    maven ("https://repo.spongepowered.org/maven/")
-    maven ("https://repo.lightdream.dev/")
-    maven ("https://repo.papermc.io/repository/maven-public/")
-}
 
 dependencies {
     // Sponge
-    implementation("com.velocitypowered:velocity-api:${getVersion("velocity")}")
+    compileOnly(libs.velocity)
 
     // Project
-    implementation(project(":command-manager-common"))
-
-    // LightDream
-    implementation("dev.lightdream:logger:${getVersion("logger")}")
-    implementation("dev.lightdream:lambda:${getVersion("lambda")}")
-    implementation("dev.lightdream:message-builder:${getVersion("message-builder")}")
+    api(project(":command-manager-common"))
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
-    annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 
     // JetBrains
-    compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
-    annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
+    compileOnly(libs.jetbrains.annotations)
+    annotationProcessor(libs.jetbrains.annotations)
 }
 
 

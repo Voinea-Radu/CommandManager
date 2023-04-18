@@ -1,36 +1,22 @@
 plugins {
-    id("java")
+    id("java-library")
     id("maven-publish")
     id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
 group = "dev.lightdream"
-version = getVersion("project_version")
-
-repositories {
-    maven ("https://repo.spongepowered.org/maven/")
-    maven ("https://repo.lightdream.dev/")
-    maven ("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-}
+version = libs.versions.project.version.get()
 
 dependencies {
     // Sponge
-    implementation("org.spigotmc:spigot-api:${getVersion("spigot-api")}")
+    api(libs.spigot)
 
     // Project
-    implementation(project(":command-manager-common"))
+    api(project(":command-manager-common"))
 
-    // LightDream
-    implementation("dev.lightdream:logger:${getVersion("logger")}")
-    implementation("dev.lightdream:lambda:${getVersion("lambda")}")
-    implementation("dev.lightdream:message-builder:${getVersion("message-builder")}")
     // Lombok
-    compileOnly("org.projectlombok:lombok:${getVersion("lombok")}")
-    annotationProcessor("org.projectlombok:lombok:${getVersion("lombok")}")
-
-    // JetBrains
-    compileOnly("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
-    annotationProcessor("org.jetbrains:annotations:${getVersion("jetbrains-annotations")}")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 }
 
 tasks {

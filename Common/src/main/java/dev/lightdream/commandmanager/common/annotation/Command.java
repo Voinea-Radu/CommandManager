@@ -11,46 +11,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Command {
 
-    /**
-     * The command aliases
-     *
-     * @return The aliases
-     */
     String[] aliases();
 
-    /**
-     * The permission string
-     *
-     * @return The permission string
-     */
     String permission() default "";
 
-    /**
-     * The command usage string
-     *
-     * @return The usage string
-     */
     String usage() default "";
 
-    /**
-     * If the command is only for players
-     *
-     * @return True if only for players
-     */
     boolean onlyForPlayers() default false;
 
-    /**
-     * If the command is only for console
-     *
-     * @return True if only for console
-     */
     boolean onlyForConsole() default false;
 
-    /**
-     * Minimum number of arguments
-     *
-     * @return The minimum number of arguments
-     */
     int minimumArgs() default 0;
 
     /**
@@ -60,11 +30,6 @@ public @interface Command {
      */
     boolean async() default false;
 
-    /**
-     * The command parent. If the current command is a sub command set it to CommonCommand.class
-     *
-     * @return The parent command
-     */
     Class<? extends CommonCommand> parent() default CommonCommand.class;
 
     Class<?> parentUnsafe() default CommonCommand.class;
