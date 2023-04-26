@@ -5,10 +5,12 @@ import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
+import org.reflections.Reflections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public interface CommonCommand {
 
@@ -77,7 +79,16 @@ public interface CommonCommand {
     default List<Class<?>> getSubCommandClasses() {
         List<Class<?>> subCommands = new ArrayList<>();
 
-        for (Class<?> clazz : CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections().getTypesAnnotatedWith(Command.class)) {
+        Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
+        Set<Class<?>> classes;
+
+        if(reflections!=null){
+            classes = reflections.getTypesAnnotatedWith(Command.class);
+        }else{
+            classes = CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses();
+        }
+
+        for (Class<?> clazz : classes) {
             Command commandAnnotation = clazz.getAnnotation(Command.class);
 
             if (commandAnnotation.parent() == getClass() ||

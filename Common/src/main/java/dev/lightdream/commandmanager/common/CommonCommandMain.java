@@ -15,7 +15,7 @@ public interface CommonCommandMain {
 
     @Nullable Reflections getReflections();
 
-    @NotNull Set<Class<?>> getClasses();
+    @NotNull Set<Class<?>> getCommandClasses();
 
     CommandManager getCommandManager();
 

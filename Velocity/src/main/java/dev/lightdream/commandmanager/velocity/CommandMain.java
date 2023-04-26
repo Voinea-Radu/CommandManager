@@ -13,7 +13,7 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull ProxyServer getProxy();
 
     @Override
-    default @NotNull Set<Class<?>> getClasses() {
+    default @NotNull Set<Class<?>> getCommandClasses() {
         return new HashSet<>();
     }
 
