@@ -3,14 +3,19 @@ package dev.lightdream.commandmanager.common;
 import dev.lightdream.commandmanager.common.dto.CommandLang;
 import dev.lightdream.commandmanager.common.manager.CommandManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
+
+import java.util.Set;
 
 
 public interface CommonCommandMain {
 
     CommandLang getLang();
 
-    @NotNull Reflections getReflections();
+    @Nullable Reflections getReflections();
+
+    @NotNull Set<Class<?>> getClasses();
 
     CommandManager getCommandManager();
 

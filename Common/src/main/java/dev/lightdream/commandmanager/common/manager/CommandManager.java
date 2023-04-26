@@ -9,12 +9,14 @@ import dev.lightdream.logger.Logger;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class CommandManager {
 
@@ -30,7 +32,16 @@ public class CommandManager {
     }
 
     private void generateCommands() {
-        for (Class<?> clazz : CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections().getTypesAnnotatedWith(Command.class)) {
+        Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
+        Set<Class<?>> classes;
+
+        if (reflections != null) {
+            classes = reflections.getTypesAnnotatedWith(Command.class);
+        } else {
+            classes = CommonCommandMain.getCommandMain(CommonCommandMain.class).getClasses();
+        }
+
+        for (Class<?> clazz : classes) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
                 Logger.error("Class " + clazz.getName() + " does not extend CommonCommand");
                 continue;
