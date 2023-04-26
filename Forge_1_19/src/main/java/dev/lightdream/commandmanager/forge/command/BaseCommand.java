@@ -8,6 +8,7 @@ import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.forge.CommandMain;
 import dev.lightdream.commandmanager.forge.util.PermissionUtil;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
@@ -15,6 +16,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +28,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class BaseCommand implements CommonCommand {
 
-    public static String commandSourceFiled = "field_9819";
+    public static String[] commandSourceFiled = {"field_9819", "f_81288_"};
 
     private List<CommonCommand> subCommands = new ArrayList<>();
 
@@ -62,19 +64,40 @@ public abstract class BaseCommand implements CommonCommand {
             command.then(argument);
         }
 
-        command.executes(this::internalExecute);
+        command.executes(context -> {
+            Debugger.log("AT LEAST HERE");
+            try {
+                return internalExecute(context);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return 0;
+        });
 
         return command;
     }
 
     @SneakyThrows
     private CommandSource getCommandSource(CommandContext<CommandSourceStack> context) {
-        Field field = CommandSourceStack.class.getDeclaredField(commandSourceFiled);
-        field.setAccessible(true);
-        return (CommandSource) field.get(context.getSource());
+        return getCommandSource(context, 0);
     }
 
-    private int internalExecute(CommandContext<CommandSourceStack> context) {
+    @SneakyThrows
+    private CommandSource getCommandSource(CommandContext<CommandSourceStack> context, int index) {
+        if (index == commandSourceFiled.length) {
+            return null;
+        }
+
+        try {
+            Field field = CommandSourceStack.class.getDeclaredField(commandSourceFiled[index]);
+            return (CommandSource) field.get(context.getSource());
+        } catch (Exception e) {
+            return getCommandSource(context, index + 1);
+        }
+    }
+
+    public int internalExecute(CommandContext<CommandSourceStack> context) {
+        Debugger.log("Executing command " + getCommand() + " for " + getCommandSource(context) + ", exec type: CommandSource, CommandContext");
         CommandSource source = getCommandSource(context);
 
         if (onlyForConsole()) {
@@ -156,15 +179,14 @@ public abstract class BaseCommand implements CommonCommand {
 
     @Override
     public final void sendMessage(Object user, String message) {
-        if (user instanceof Player player) {
+        if (user instanceof ServerPlayer player) {
             player.displayClientMessage(Component.literal(message), false);
             return;
         }
         if (user instanceof MinecraftServer) {
             Logger.info(message);
-            return;
         }
-        Logger.info("Message sent to " + user + ": " + message);
+        //Logger.info("Message sent to " + user + ": " + message);
     }
 
     @Override
