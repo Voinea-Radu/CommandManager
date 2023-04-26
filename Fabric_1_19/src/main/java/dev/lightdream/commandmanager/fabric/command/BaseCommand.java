@@ -57,10 +57,9 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     @Override
-    public final void registerCommand() {
+    public final boolean registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(getCommandBuilder()));
-
-        Logger.good("Command " + getCommand() + " initialized successfully");
+        return true;
     }
 
     @SneakyThrows

@@ -35,8 +35,9 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     @Override
-    public final void registerCommand() {
+    public final boolean registerCommand() {
         CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder());
+        return true;
     }
 
     private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder() {

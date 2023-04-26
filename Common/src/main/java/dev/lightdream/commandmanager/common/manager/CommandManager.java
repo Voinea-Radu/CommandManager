@@ -42,6 +42,8 @@ public class CommandManager {
             classes = CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses();
         }
 
+        Debugger.log("Processing " + classes.size() + " classes");
+
         for (Class<?> clazz : classes) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
                 Logger.error("Class " + clazz.getName() + " does not extend CommonCommand");

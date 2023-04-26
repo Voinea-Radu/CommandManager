@@ -36,7 +36,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     }
 
     @Override
-    public final void registerCommand() {
+    public final boolean registerCommand() {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getCommandAnnotation();
@@ -50,6 +50,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         spec.onlyForPlayers = command.onlyForPlayers();
 
         Sponge.getCommandManager().register(CommonCommandMain.getCommandMain(CommandMain.class), getCommandSpec(), command.aliases());
+        return true;
     }
 
     public final CommandSpec getCommandSpec() {

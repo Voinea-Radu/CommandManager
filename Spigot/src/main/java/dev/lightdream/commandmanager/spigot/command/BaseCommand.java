@@ -44,7 +44,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     @Override
     @SneakyThrows
-    public final void registerCommand() {
+    public final boolean registerCommand() {
         this.setAliases(getAliasList());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
@@ -55,9 +55,11 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             commandMap.register(CommonCommandMain.getCommandMain(CommandMain.class).getPlugin().getDescription().getName(), this);
         } else {
             Logger.error("Command " + getCommand() + " could not be initialized");
-            return;
+            return false;
         }
         Logger.good("Command " + getCommand() + " initialized successfully");
+
+        return true;
     }
 
     /**

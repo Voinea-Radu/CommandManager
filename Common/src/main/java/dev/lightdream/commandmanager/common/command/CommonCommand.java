@@ -26,8 +26,13 @@ public interface CommonCommand {
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == CommonCommand.class && command.parentUnsafe() == CommonCommand.class) {
-            registerCommand();
+            if(registerCommand()){
+                Logger.good("Command " + getCommand() + " initialized successfully");
+            }else{
+                Logger.good("Command " + getCommand() + " could not be initialized");
+            }
         }
+
     }
 
     default Command getCommandAnnotation() {
@@ -38,7 +43,7 @@ public interface CommonCommand {
         return getClass().getAnnotation(Command.class);
     }
 
-    void registerCommand();
+    boolean registerCommand();
 
     default void sendUsage(Object user) {
         StringBuilder helpCommandOutput = new StringBuilder();

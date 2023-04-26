@@ -33,7 +33,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
     }
 
     @Override
-    public final void registerCommand() {
+    public final boolean registerCommand() {
         CommandManager commandManager = CommonCommandMain.getCommandMain(CommandMain.class).getProxy().getCommandManager();
         CommandMeta commandMeta = commandManager.metaBuilder(getAliasList().get(0))
                 .aliases(getAliasList().subList(1, getAliasList().size()).toArray(new String[0]))
@@ -41,7 +41,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
                 .build();
 
         commandManager.register(commandMeta, this);
-        Logger.good("Command " + getCommand() + " initialized successfully");
+        return true;
     }
 
     @Override
