@@ -1,60 +1,33 @@
 # CommandManager
 
-![Build](https://github.com/L1ghtDream/CommandManager/actions/workflows/build.yml/badge.svg)
-![Version-Spigot](https://img.shields.io/badge/Version%20Spigot-3.4.9-red.svg)
-![Version-Sponge](https://img.shields.io/badge/Version%20Sponge-2.4.9-red.svg)
-![Version-Forge_1_19_3](https://img.shields.io/badge/Version%20Forge%201.19.3-2.4.9-red.svg)
-![Version-Velocity](https://img.shields.io/badge/Version%20Velocity-2.4.9-red.svg)
+![Build](../../actions/workflows/build.yml/badge.svg)
+![Version](https://img.shields.io/badge/Version-4.2.12-red.svg)
 
-## Use
+# Table Of Contents
 
-If you want to use an older version that is not avanible in https://repo.lightdream.dev you can try
-using https://archive-repo.lightdream.dev
+1. [Description](#description)
+2. [How to add to your project](#how-to-add-to-your-project)
+3. [How to use](#how-to-use)
 
-<details>
-  <summary>Maven</summary><blockquote>
-  <details><summary>repo.lightdream.dev</summary>
+## Description
+
+A cross-platform command library. You can reuse the code that you already wrote for one platform to any of them with
+minimal changes
+
+## How to add to your project
+
+The artifact can be found at the repository https://repo.lightdream.dev or https://jitpack.io (under
+com.github.L1ghtDream instead of dev.lightdream)
+
+### Maven
 
 ```xml
+
 <repositories>
     <repository>
         <id>lightdream-repo</id>
         <url>https://repo.lightdream.dev/</url>
     </repository>
-</repositories>
-```
-
-```xml
-<dependenies>
-    <dependency>
-        <groupId>dev.lightdream</groupId>
-        <artifactId>command-manager-spigot</artifactId>
-        <version>3.4.9</version>
-    </dependency>
-    <dependency>
-        <groupId>dev.lightdream</groupId>
-        <artifactId>command-manager-sponge</artifactId>
-        <version>2.4.9</version>
-    </dependency>
-    <dependency>
-        <groupId>dev.lightdream</groupId>
-        <artifactId>command-manager-forge-1-19-3</artifactId>
-        <version>2.4.9</version>
-    </dependency>
-    <dependency>
-        <groupId>dev.lightdream</groupId>
-        <artifactId>command-manager-velocity</artifactId>
-        <version>2.4.9</version>
-    </dependency>
-</dependenies>
-```
-
-  </details>
-
-  <details><summary  style="padding-left:25px">jitpack.io</summary>
-
-```xml
-<repositories>
     <repository>
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
@@ -63,123 +36,131 @@ using https://archive-repo.lightdream.dev
 ```
 
 ```xml
+
 <dependencies>
     <dependency>
-        <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>command-manager-spigot</artifactId>
-        <version>3.4.9</version>
+        <groupId>dev.lightdream</groupId>
+        <artifactId>command-manager</artifactId>
+        <version>4.2.12</version>
     </dependency>
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>command-manager-sponge</artifactId>
-        <version>2.4.9</version>
-    </dependency>
-    <dependency>
-        <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>command-manager-forge-1-19-3</artifactId>
-        <version>2.4.9</version>
-    </dependency>
-    <dependency>
-        <groupId>com.github.L1ghtDream</groupId>
-        <artifactId>command-manager-velocity</artifactId>
-        <version>2.4.9</version>
+        <artifactId>command-manager</artifactId>
+        <version>4.2.12</version>
     </dependency>
 </dependencies>
 ```
 
-</blockquote></details>
-
-</details>
-
-<details><summary>Gradle</summary><blockquote>
-
-  <details><summary>Groovy</summary><blockquote>
-
-  <details><summary>repo.lightdream.dev</summary>
-
-```groovy
-repositories {
-    maven("https://repo.lightdream.dev/")
-}
-```
-
-```groovy
-dependencies {
-    implementation "dev.lightdream:command-manager-spigot:3.4.9"
-    implementation "dev.lightdream:command-manager-sponge:2.4.9"
-    implementation "dev.lightdream:command-manager-forge-1-19-3:2.4.9"
-    implementation "dev.lightdream:command-manager-velocity:2.4.9"
-}
-```
-
-  </details>
-
-  <details><summary>jitpack.io</summary>
-
-```groovy
-repositories {
-    maven { url "https://jitpack.io" }
-}
-```
-
-```groovy
-dependencies {
-    implementation "com.github.L1ghtDream:command-manager-spigot:3.4.9"
-    implementation "com.github.L1ghtDream:command-manager-sponge:2.4.9"
-    implementation "com.github.L1ghtDream:command-manager-forge-1-19-3:2.4.9"
-    implementation "com.github.L1ghtDream:command-manager-velocity:2.4.9"
-}
-```
-
-  </details>
-</blockquote></details>
-
-  <details>
-    <summary>Kotlin</summary><blockquote>
-
-  <details>
-<summary>repo.lightdream.dev</summary>
+### Gradle - Groovy DSL
 
 ```groovy
 repositories {
     maven { url "https://repo.lightdream.dev/" }
+    maven { url "https://jitpack.io" }
 }
-```
 
-```groovy
 dependencies {
-    implementation("dev.lightdream:command-manager-spigot:3.4.9")
-    implementation("dev.lightdream:command-manager-sponge:2.4.9")
-    implementation("dev.lightdream:command-manager-forge-1-19-3:2.4.9")
-    implementation("dev.lightdream:command-manager-velocity:2.4.9")
+    implementation "dev.lightdream:command-manager:4.2.12"
+    implementation "com.github.L1ghtDream:command-manager:4.2.12"
 }
 ```
 
-  </details>
-  <details>
-  <summary style="padding-left:50px">jitpack.io</summary>
+### Gradle - Kotlin DSL
 
 ```kotlin
 repositories {
+    maven("https://repo.lightdream.dev/")
     maven("https://jitpack.io")
 }
-```
 
-```kotlin
 dependencies {
-    implementation("com.github.L1ghtDream:command-manager-spigot:3.4.9")
-    implementation("com.github.L1ghtDream:command-manager-sponge:2.4.9")
-    implementation("com.github.L1ghtDream:command-manager-forge-1-19-3:2.4.9")
-    implementation("com.github.L1ghtDream:command-manager-velocity:2.4.9")
+    implementation("dev.lightdream:command-manager:4.2.12")
+    implementation("com.github.L1ghtDream:command-manager:4.2.12")
 }
 ```
 
-</details>
+If you want to use an older version that is not available in https://repo.lightdream.dev you can try
+using https://archive-repo.lightdream.dev
 
-  </blockquote></details>
+## How to use
 
-</blockquote></details>
+### What frameworks does this support
 
+| Framework | Support      | Dependency Artifact                       | 
+|-----------|--------------|-------------------------------------------|
+| Common    | N/A          | dev.lightdrea:command-manager-common      |
+| Fabric    | 1.19         | dev.lightdrea:command-manager-fabric-1-19 |
+| Forge     | 1.19         | dev.lightdrea:command-manager-forge-1-19  |
+| Spigot    | 1.8+         | dev.lightdrea:command-manager-spigot      |
+| Sponge    | 7.4.0 (1.12) | dev.lightdrea:command-manager-sponge      |
+| Velocity  | 3.1.2+       | dev.lightdrea:command-manager-velocity    |
 
+### Creatine the main
 
+Each framework `CommandMain` may have different requirements for what needs to be provided. Follow the JavaDocs for more
+info.
+This is an example with the Velocity API
 
+```java
+public class ExampleMain implements CommandMain {
+
+    private final CommandLang lang;
+    private final CommandManager commandManager;
+    private final ProxyServer proxyServer;
+    private final Reflections reflections;
+
+    public ExampleMain(ProxyServer proxyServer, Reflections reflections) {
+        lang = new CommandLang(); // This would usually be loaded from disk using a library like FileManager
+
+        this.proxyServer = proxyServer;
+        this.reflections = reflections;
+
+        commandManager = new CommandManager();
+
+        // This is an example of a command being manually registered.
+        // This is not required dif you specify in the command annotation @Command(autoRegister = true)
+        commandManager.registerCommand(ExampleCommand.class);
+    }
+
+    @Override
+    public CommandLang getLang() {
+        return lang;
+    }
+
+    @Override
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    @Override
+    public @NotNull String basePermission() {
+        return "project.command";
+    }
+
+    @Override
+    public @NotNull ProxyServer getProxy() {
+        return proxyServer;
+    }
+
+    @Override
+    public @NotNull Reflections getReflections() {
+        return reflections;
+    }
+}
+
+```
+
+### How to create a command
+
+```java
+
+@Command(aliases = "example", autoRegister = true)
+public class ExampleCommand extends BaseCommand {
+
+    @Override
+    public void exec(@NotNull CommandSource source, @NotNull List<String> args) {
+        sendMessage(source, "ExampleCommand");
+    }
+}
+
+```
