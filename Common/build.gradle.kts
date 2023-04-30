@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = libs.versions.project.version.get()
+version = libs.versions.project.get()
 
 dependencies {
     // LightDream
@@ -24,17 +24,9 @@ dependencies {
     annotationProcessor(libs.jetbrains.annotations)
 }
 
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor(10, "seconds")
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.withType<Jar> {
-    archiveFileName.set("${rootProject.name}.jar")
 }
 
 publishing {

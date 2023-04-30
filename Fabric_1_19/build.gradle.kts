@@ -4,7 +4,7 @@ plugins {
     id("java-library")
 }
 
-version = libs.versions.project.version.get()
+version = libs.versions.project.get()
 group = "dev.lightdream"
 
 dependencies {
@@ -63,4 +63,9 @@ tasks.register("publishGitHub") {
 tasks.register("publishSelf") {
     dependsOn("publishMavenPublicationToSelfRepository")
     description = "Publishes to Self hosted repository"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }

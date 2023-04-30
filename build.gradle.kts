@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = "1.0.0"
+version = libs.versions.project.get()
 
 dependencies {
 

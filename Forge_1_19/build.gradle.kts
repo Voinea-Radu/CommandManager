@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.lightdream"
-version = libs.versions.project.version.get()
+version = libs.versions.project.get()
 
 minecraft {
     mappings("parchment", libs.versions.parchment.get())
@@ -34,10 +34,6 @@ dependencies {
     // Lombok
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
-}
-
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor(10, "seconds")
 }
 
 java {
