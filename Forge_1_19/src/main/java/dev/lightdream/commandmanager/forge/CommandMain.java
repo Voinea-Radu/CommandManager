@@ -12,7 +12,7 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull CommandDispatcher<CommandSourceStack> getDispatcher();
 
     @Override
-    default @Nullable Reflections getReflections(){
+    default @Nullable Reflections getReflections() {
         return null;
     }
 

@@ -2,7 +2,6 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import org.reflections.Reflections;
@@ -26,9 +25,9 @@ public interface CommonCommand {
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == CommonCommand.class && command.parentUnsafe() == CommonCommand.class) {
-            if(registerCommand()){
+            if (registerCommand()) {
                 Logger.good("Command " + getCommand() + " initialized successfully");
-            }else{
+            } else {
                 Logger.good("Command " + getCommand() + " could not be initialized");
             }
         }
@@ -36,7 +35,7 @@ public interface CommonCommand {
     }
 
     default Command getCommandAnnotation() {
-        if(!getClass().isAnnotationPresent(Command.class)){
+        if (!getClass().isAnnotationPresent(Command.class)) {
             throw new RuntimeException("Class " + getClass().getName() + " is not annotated with @Command but is being " +
                     "registered");
         }
@@ -64,7 +63,6 @@ public interface CommonCommand {
         sendMessage(user, new MessageBuilder(helpCommandOutput.toString()));
     }
 
-
     default void generateSubCommands() {
         List<CommonCommand> subCommands = new ArrayList<>();
 
@@ -87,9 +85,9 @@ public interface CommonCommand {
         Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
         Set<Class<?>> classes;
 
-        if(reflections!=null){
+        if (reflections != null) {
             classes = reflections.getTypesAnnotatedWith(Command.class);
-        }else{
+        } else {
             classes = CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses();
         }
 
@@ -161,10 +159,6 @@ public interface CommonCommand {
 
     void sendMessage(Object user, String message);
 
-    default boolean runAsync() {
-        return getCommandAnnotation().async();
-    }
-
     default List<String> getSubCommandsHelpMessage() {
         List<String> output = new ArrayList<>();
         getSubCommands().forEach(command -> output.add(
@@ -173,6 +167,5 @@ public interface CommonCommand {
         ));
         return output;
     }
-
 
 }

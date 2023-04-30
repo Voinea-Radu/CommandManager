@@ -30,7 +30,7 @@ public class ExampleMain implements CommandMain {
         this.reflections = reflections;
 
         commandManager = new CommandManager();
-        
+
         // This is an example of a command being manually registered.
         // This is not required dif you specify in the command annotation @Command(autoRegister = true)
         commandManager.registerCommand(ExampleCommand.class);
@@ -67,6 +67,7 @@ public class ExampleMain implements CommandMain {
 ### How to create a command
 
 ```java
+
 @Command(aliases = "example", autoRegister = true)
 public class ExampleCommand extends BaseCommand {
 

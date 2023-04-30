@@ -1,7 +1,6 @@
 package dev.lightdream.commandmanager.velocity;
 
 import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.velocity.command.BaseCommand;
 import org.jetbrains.annotations.NotNull;

@@ -11,6 +11,10 @@ import java.util.Set;
 
 public interface CommonCommandMain {
 
+    static <T extends CommonCommandMain> T getCommandMain(Class<T> clazz) {
+        return Statics.getMainAs(clazz);
+    }
+
     CommandLang getLang();
 
     @Nullable Reflections getReflections();
@@ -22,6 +26,7 @@ public interface CommonCommandMain {
     /**
      * Usually project_name.command(.)
      * To disable use ""
+     *
      * @return The basePermission
      */
     @NotNull String basePermission();
@@ -29,10 +34,6 @@ public interface CommonCommandMain {
     @SuppressWarnings("unused")
     default void initializeCommandMain() {
         Statics.setMain(this);
-    }
-
-    static <T extends CommonCommandMain> T getCommandMain(Class<T> clazz){
-        return Statics.getMainAs(clazz);
     }
 
 }

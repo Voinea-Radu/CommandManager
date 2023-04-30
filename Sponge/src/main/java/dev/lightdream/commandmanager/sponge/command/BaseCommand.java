@@ -84,7 +84,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
                 return;
             }
             if (spec.onlyForPlayers) {
-                if (!(src instanceof Player )) {
+                if (!(src instanceof Player)) {
                     src.sendMessage(Text.of(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer));
                     return;
                 }

@@ -10,11 +10,11 @@ public class Statics {
 
     @SuppressWarnings("unchecked")
     public static <T extends CommonCommandMain> T getMainAs(Class<T> clazz) {
-        if(clazz.equals(CommonCommandMain.class)){
+        if (clazz.equals(CommonCommandMain.class)) {
             return (T) main;
         }
 
-        if(clazz.isAssignableFrom(main.getClass())){
+        if (clazz.isAssignableFrom(main.getClass())) {
             return (T) main;
         }
 

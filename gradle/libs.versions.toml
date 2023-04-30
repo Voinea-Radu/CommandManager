@@ -13,7 +13,7 @@ fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.58.0+
 fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.14.19" }
 
 # Velocioty
-velocity =  { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
+velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
 
 # Spigot
 spigot = { module = "org.spigotmc:spigot-api", version = "1.8-R0.1-SNAPSHOT" }
