@@ -24,11 +24,19 @@ public class CommandManager {
     private final Object[] args;
 
     @SneakyThrows
-    public CommandManager(Object... args) {
+    public CommandManager(boolean autoRegister, Object... args) {
         this.args = args;
         commands = new ArrayList<>();
 
-        ScheduleUtils.runTaskAsync(this::generateCommands);
+        if (autoRegister) {
+            ScheduleUtils.runTaskAsync(this::generateCommands);
+        }
+    }
+
+
+    @SneakyThrows
+    public CommandManager(Object... args) {
+        this(true, args);
     }
 
     private void generateCommands() {
