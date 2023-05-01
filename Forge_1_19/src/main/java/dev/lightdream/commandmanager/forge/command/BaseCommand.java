@@ -38,7 +38,6 @@ public abstract class BaseCommand implements CommonCommand {
 
     @Override
     public final boolean registerCommand() {
-        Debugger.log("Registering command");
         CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder());
         return true;
     }
@@ -72,12 +71,9 @@ public abstract class BaseCommand implements CommonCommand {
 
         RequiredArgumentBuilder<CommandSourceStack, ?> then = null;
 
-        Debugger.log("arguments size: " + arguments.size());
-
         if (arguments.size() != 0) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
-                    Debugger.log("Adding argument " + index+1 + " to " + index + " command");
                     arguments.get(index).then(arguments.get(index + 1));
                 }
             }
@@ -87,15 +83,6 @@ public abstract class BaseCommand implements CommonCommand {
         if (then != null) {
             command.then(then);
         }
-
-        //LiteralArgumentBuilder<CommandSourceStack> then = command.then(
-        //        Commands.argument("player", IntegerArgumentType.integer(0))
-        //                .then(Commands.argument("amount", IntegerArgumentType.integer(0)))
-        //);
-
-        //for (RequiredArgumentBuilder<CommandSourceStack, ?> argument : arguments) {
-        //    command.then(argument);
-        //}
 
         command.executes(context -> {
             try {
@@ -129,7 +116,6 @@ public abstract class BaseCommand implements CommonCommand {
     }
 
     public int internalExecute(CommandContext<CommandSourceStack> context) {
-        Debugger.log("Executing command " + getCommand() + " for " + getCommandSource(context) + ", exec type: CommandSource, CommandContext");
         CommandSource source = getCommandSource(context);
 
         if (onlyForConsole()) {

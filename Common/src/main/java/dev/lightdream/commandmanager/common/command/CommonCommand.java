@@ -65,7 +65,6 @@ public interface CommonCommand {
     }
 
     default void generateSubCommands() {
-        Debugger.log("Generating sub commands for " + getClass().getName());
         List<CommonCommand> subCommands = new ArrayList<>();
 
         for (Class<?> clazz : getSubCommandClasses()) {

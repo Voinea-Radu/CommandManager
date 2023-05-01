@@ -37,7 +37,6 @@ public class CommandManager {
     }
 
     public void generateCommands() {
-        Debugger.log("Starting the generation of commands.");
         Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
         Set<Class<?>> classes;
 
@@ -46,8 +45,6 @@ public class CommandManager {
         } else {
             classes = CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses();
         }
-
-        Debugger.log("Processing " + classes.size() + " classes");
 
         for (Class<?> clazz : classes) {
             if (!CommonCommand.class.isAssignableFrom(clazz)) {
@@ -69,7 +66,6 @@ public class CommandManager {
 
             registerCommand(commandClass);
         }
-        Debugger.log("Generation of commands has been completed");
     }
 
     public void registerCommand(Class<? extends CommonCommand> commandClazz) {

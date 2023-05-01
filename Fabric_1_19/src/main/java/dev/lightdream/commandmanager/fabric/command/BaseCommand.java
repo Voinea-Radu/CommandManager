@@ -34,7 +34,6 @@ public abstract class BaseCommand implements CommonCommand {
     public List<CommonCommand> subCommands = new ArrayList<>();
 
     public BaseCommand() {
-        Debugger.log("Constructing " + this.getClass().getName());
         this.init();
     }
 
@@ -62,12 +61,9 @@ public abstract class BaseCommand implements CommonCommand {
 
         RequiredArgumentBuilder<ServerCommandSource, ?> then = null;
 
-        Debugger.log(getClass().getName() + " arguments size: " + arguments.size());
-
         if (arguments.size() != 0) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
-                    Debugger.log(getClass().getName() + " Adding argument " + (index + 1) + " to " + index + " command");
                     arguments.get(index).then(arguments.get(index + 1));
                 }
             }
@@ -75,19 +71,27 @@ public abstract class BaseCommand implements CommonCommand {
         }
 
         if (then != null) {
-            Debugger.log(getClass().getName() + " Adding arguments");
+            then.executes(context -> {
+                try {
+                    return execute(context);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+                return 0;
+            });
+
             command.then(then);
+        } else {
+            command.executes(context -> {
+                try {
+                    return execute(context);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+                return 0;
+            });
         }
 
-        command.executes(context -> {
-            try {
-                Debugger.log(getClass().getName() + "Executing...");
-                return execute(context);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-            return 0;
-        });
 
         return command;
     }
