@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -163,12 +164,12 @@ public abstract class BaseCommand implements CommonCommand {
             player.sendMessage(Text.of(message));
             return;
         }
-        if (user instanceof ServerCommandSource source) {
-            source.sendFeedback(net.minecraft.text.Text.of(message), false);
+        if (user instanceof MinecraftDedicatedServer source) {
+            source.sendMessage(net.minecraft.text.Text.of(message));
             return;
         }
 
-        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and ServerCommandSource." +
+        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and MinecraftDedicatedServer." +
                 " Trying to send message to " + user.getClass());
     }
 
