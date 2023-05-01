@@ -42,6 +42,15 @@ public abstract class BaseCommand implements CommonCommand {
         return true;
     }
 
+    /**
+     * Get the command arguments
+     *
+     * @return The command arguments
+     */
+    public @Nullable List<RequiredArgumentBuilder<CommandSourceStack, ?>> getArguments() {
+        return new ArrayList<>();
+    }
+
     private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder() {
         LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(getCommand());
 
@@ -60,12 +69,30 @@ public abstract class BaseCommand implements CommonCommand {
             command.then(subCommand.getCommandBuilder());
         }
 
-        for (RequiredArgumentBuilder<CommandSourceStack, ?> argument : arguments) {
-            command.then(argument);
+        if (arguments.size() != 0) {
+            if (arguments.size() != 1) {
+                for (int index = arguments.size() - 2; index >= 0; index--) {
+                    RequiredArgumentBuilder<CommandSourceStack, ?> preLastArgument = arguments.get(index);
+                    RequiredArgumentBuilder<CommandSourceStack, ?> lastArgument = arguments.get(index + 1);
+
+                    preLastArgument.then(lastArgument);
+                }
+            } else {
+                command.then(arguments.get(0));
+            }
         }
 
+
+        //LiteralArgumentBuilder<CommandSourceStack> then = command.then(
+        //        Commands.argument("player", IntegerArgumentType.integer(0))
+        //                .then(Commands.argument("amount", IntegerArgumentType.integer(0)))
+        //);
+
+        //for (RequiredArgumentBuilder<CommandSourceStack, ?> argument : arguments) {
+        //    command.then(argument);
+        //}
+
         command.executes(context -> {
-            Debugger.log("AT LEAST HERE");
             try {
                 return internalExecute(context);
             } catch (Throwable t) {
@@ -163,14 +190,6 @@ public abstract class BaseCommand implements CommonCommand {
         sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
     }
 
-    /**
-     * Get the command arguments
-     *
-     * @return The command arguments
-     */
-    public @Nullable List<RequiredArgumentBuilder<CommandSourceStack, ?>> getArguments() {
-        return new ArrayList<>();
-    }
 
     @Override
     public final boolean checkPermission(Object user, String permission) {
