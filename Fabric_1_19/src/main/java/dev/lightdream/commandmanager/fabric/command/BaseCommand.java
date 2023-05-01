@@ -74,7 +74,7 @@ public abstract class BaseCommand implements CommonCommand {
         }
 
         if (then != null) {
-            Debugger.log("Adding arguments");
+            Debugger.log(getClass().getName() + "Adding arguments");
             command.then(then);
         }
 
