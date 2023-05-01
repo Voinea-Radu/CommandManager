@@ -69,6 +69,8 @@ public abstract class BaseCommand implements CommonCommand {
             command.then(subCommand.getCommandBuilder());
         }
 
+        RequiredArgumentBuilder<CommandSourceStack, ?> then = null;
+
         if (arguments.size() != 0) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
@@ -77,11 +79,13 @@ public abstract class BaseCommand implements CommonCommand {
 
                     preLastArgument.then(lastArgument);
                 }
-            } else {
-                command.then(arguments.get(0));
             }
+            then = arguments.get(0);
         }
 
+        if (then != null) {
+            command.then(then);
+        }
 
         //LiteralArgumentBuilder<CommandSourceStack> then = command.then(
         //        Commands.argument("player", IntegerArgumentType.integer(0))
