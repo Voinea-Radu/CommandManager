@@ -8,7 +8,6 @@ import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -62,34 +61,19 @@ public abstract class BaseCommand implements CommonCommand {
         RequiredArgumentBuilder<ServerCommandSource, ?> then = null;
 
         if (arguments.size() != 0) {
+            arguments.get(arguments.size() - 1).executes(this::executeCatch);
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
                     arguments.get(index).then(arguments.get(index + 1));
                 }
             }
             then = arguments.get(0);
+        } else {
+            command.executes(this::executeCatch);
         }
 
         if (then != null) {
-            then.executes(context -> {
-                try {
-                    return execute(context);
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
-                return 0;
-            });
-
             command.then(then);
-        } else {
-            command.executes(context -> {
-                try {
-                    return execute(context);
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
-                return 0;
-            });
         }
 
 
@@ -107,6 +91,15 @@ public abstract class BaseCommand implements CommonCommand {
         Field field = ServerCommandSource.class.getDeclaredField(commandSourceFiled);
         field.setAccessible(true);
         return (CommandOutput) field.get(context.getSource());
+    }
+
+    public final int executeCatch(CommandContext<ServerCommandSource> context) {
+        try {
+            return execute(context);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return 0;
     }
 
     public final int execute(CommandContext<ServerCommandSource> context) {
