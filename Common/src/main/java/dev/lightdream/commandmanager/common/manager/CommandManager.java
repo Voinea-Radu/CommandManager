@@ -14,18 +14,15 @@ import org.reflections.Reflections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 public class CommandManager {
 
     private final @Getter List<CommonCommand> commands;
-    private final Object[] args;
 
     @SneakyThrows
-    public CommandManager(boolean autoRegister, Object... args) {
-        this.args = args;
+    public CommandManager(boolean autoRegister) {
         commands = new ArrayList<>();
 
         if (autoRegister) {
@@ -35,8 +32,8 @@ public class CommandManager {
 
 
     @SneakyThrows
-    public CommandManager(Object... args) {
-        this(true, args);
+    public CommandManager() {
+        this(true);
     }
 
     public void generateCommands() {
@@ -90,35 +87,21 @@ public class CommandManager {
 
     public CommonCommand initCommand(Class<? extends CommonCommand> commandClass) {
         CommonCommand command;
-        //noinspection unchecked
-        Constructor<CommonCommand> constructor = (Constructor<CommonCommand>) commandClass.getDeclaredConstructors()[0];
+        Constructor<CommonCommand> constructor;
 
-        int argumentCount = constructor.getParameterCount();
+        try {
+            //noinspection unchecked
+            constructor = (Constructor<CommonCommand>) commandClass.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            Logger.error("There is no `no args constructor` for command " + commandClass.getName());
+            return null;
+        }
 
-        if (argumentCount == 0) {
-            try {
-                command = constructor.newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            if (argumentCount - 1 != args.length) {
-                Logger.error("The constructor for command " + commandClass.getName() + " has " + argumentCount + " arguments, but " + args.length + " were passed to the CommandManager");
-                return null;
-            }
-
-            List<Object> passedArgsList = new ArrayList<>(Arrays.asList(args));
-            Object[] passedArgs = passedArgsList.toArray();
-
-            Debugger.log("Initializing command " + commandClass.getName() + " with args " + Arrays.toString(passedArgs));
-
-            try {
-                command = constructor.newInstance(passedArgs);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-                return null;
-            }
+        try {
+            command = constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
         }
 
         return command;
