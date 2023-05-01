@@ -1,7 +1,7 @@
 # CommandManager
 
 ![Build](../../actions/workflows/build.yml/badge.svg)
-![Version](https://img.shields.io/badge/Version-4.3.10-red.svg)
+![Version](https://img.shields.io/badge/Version-4.3.11-red.svg)
 
 # Table Of Contents
 
@@ -41,12 +41,12 @@ com.github.L1ghtDream instead of dev.lightdream)
     <dependency>
         <groupId>dev.lightdream</groupId>
         <artifactId>command-manager</artifactId>
-        <version>4.3.10</version>
+        <version>4.3.11</version>
     </dependency>
     <dependency>
         <groupId>com.github.L1ghtDream</groupId>
         <artifactId>command-manager</artifactId>
-        <version>4.3.10</version>
+        <version>4.3.11</version>
     </dependency>
 </dependencies>
 ```
@@ -60,8 +60,8 @@ repositories {
 }
 
 dependencies {
-    implementation "dev.lightdream:command-manager:4.3.10"
-    implementation "com.github.L1ghtDream:command-manager:4.3.10"
+    implementation "dev.lightdream:command-manager:4.3.11"
+    implementation "com.github.L1ghtDream:command-manager:4.3.11"
 }
 ```
 
@@ -74,8 +74,8 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.lightdream:command-manager:4.3.10")
-    implementation("com.github.L1ghtDream:command-manager:4.3.10")
+    implementation("dev.lightdream:command-manager:4.3.11")
+    implementation("com.github.L1ghtDream:command-manager:4.3.11")
 }
 ```
 
