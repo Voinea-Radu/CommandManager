@@ -1,6 +1,5 @@
 package dev.lightdream.commandmanager.fabric.command;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -62,12 +61,12 @@ public abstract class BaseCommand implements CommonCommand {
 
         RequiredArgumentBuilder<ServerCommandSource, ?> then = null;
 
-        Debugger.log("arguments size: " + arguments.size());
+        Debugger.log(getClass().getName() + " arguments size: " + arguments.size());
 
         if (arguments.size() != 0) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
-                    Debugger.log("Adding argument " + (index+1) + " to " + index + " command");
+                    Debugger.log(getClass().getName() + " Adding argument " + (index + 1) + " to " + index + " command");
                     arguments.get(index).then(arguments.get(index + 1));
                 }
             }
@@ -75,12 +74,13 @@ public abstract class BaseCommand implements CommonCommand {
         }
 
         if (then != null) {
+            Debugger.log("Adding arguments");
             command.then(then);
         }
 
         command.executes(context -> {
             try {
-                Debugger.log("Executing...");
+                Debugger.log(getClass().getName() + "Executing...");
                 return execute(context);
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -168,7 +168,8 @@ public abstract class BaseCommand implements CommonCommand {
             return;
         }
 
-        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and ServerCommandSource");
+        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and ServerCommandSource." +
+                " Trying to send message to " + user.getClass());
     }
 
     @Override
