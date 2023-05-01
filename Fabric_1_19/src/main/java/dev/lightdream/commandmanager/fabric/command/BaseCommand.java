@@ -67,7 +67,7 @@ public abstract class BaseCommand implements CommonCommand {
         if (arguments.size() != 0) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
-                    Debugger.log("Adding argument " + index+1 + " to " + index + " command");
+                    Debugger.log("Adding argument " + (index+1) + " to " + index + " command");
                     arguments.get(index).then(arguments.get(index + 1));
                 }
             }
@@ -80,6 +80,7 @@ public abstract class BaseCommand implements CommonCommand {
 
         command.executes(context -> {
             try {
+                Debugger.log("Executing...");
                 return execute(context);
             } catch (Throwable t) {
                 t.printStackTrace();
