@@ -1,5 +1,6 @@
 package dev.lightdream.commandmanager.fabric.command;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -41,21 +42,52 @@ public abstract class BaseCommand implements CommonCommand {
         return new ArrayList<>();
     }
 
-    public LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
-        LiteralArgumentBuilder<ServerCommandSource> builder = literal(getCommand())
-                .executes(this::execute);
+    private LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
+        LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommand());
 
-        for (RequiredArgumentBuilder<ServerCommandSource, ?> argument : getArguments()) {
-            builder.then(argument);
+        List<CommonCommand> subCommands = getSubCommands();
+        List<RequiredArgumentBuilder<ServerCommandSource, ?>> arguments = getArguments();
+
+        if (subCommands == null) {
+            subCommands = new ArrayList<>();
+        }
+        if (arguments == null) {
+            arguments = new ArrayList<>();
         }
 
-        for (CommonCommand subCommand : getSubCommands()) {
-            BaseCommand command = (BaseCommand) subCommand;
-
-            builder.then(command.getCommandBuilder());
+        for (CommonCommand subCommandObject : subCommands) {
+            BaseCommand subCommand = (BaseCommand) subCommandObject;
+            command.then(subCommand.getCommandBuilder());
         }
 
-        return builder;
+        RequiredArgumentBuilder<ServerCommandSource, ?> then = null;
+
+        Debugger.log("arguments size: " + arguments.size());
+
+        if (arguments.size() != 0) {
+            if (arguments.size() != 1) {
+                for (int index = arguments.size() - 2; index >= 0; index--) {
+                    Debugger.log("Adding argument " + index+1 + " to " + index + " command");
+                    arguments.get(index).then(arguments.get(index + 1));
+                }
+            }
+            then = arguments.get(0);
+        }
+
+        if (then != null) {
+            command.then(then);
+        }
+
+        command.executes(context -> {
+            try {
+                return execute(context);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return 0;
+        });
+
+        return command;
     }
 
     @Override

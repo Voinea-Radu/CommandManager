@@ -29,7 +29,7 @@ public interface CommonCommand {
             if (registerCommand()) {
                 Logger.good("Command " + getCommand() + " initialized successfully");
             } else {
-                Logger.good("Command " + getCommand() + " could not be initialized");
+                Logger.error("Command " + getCommand() + " could not be initialized");
             }
         }
 
