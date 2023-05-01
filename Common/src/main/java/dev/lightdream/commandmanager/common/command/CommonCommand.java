@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import org.reflections.Reflections;
@@ -64,6 +65,7 @@ public interface CommonCommand {
     }
 
     default void generateSubCommands() {
+        Debugger.log("Generating sub commands for " + getClass().getName());
         List<CommonCommand> subCommands = new ArrayList<>();
 
         for (Class<?> clazz : getSubCommandClasses()) {

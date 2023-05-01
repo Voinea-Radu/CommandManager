@@ -8,6 +8,7 @@ import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -32,6 +33,7 @@ public abstract class BaseCommand implements CommonCommand {
     public List<CommonCommand> subCommands = new ArrayList<>();
 
     public BaseCommand() {
+        Debugger.log("Constructing " + this.getClass().getName());
         this.init();
     }
 

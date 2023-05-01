@@ -38,6 +38,7 @@ public abstract class BaseCommand implements CommonCommand {
 
     @Override
     public final boolean registerCommand() {
+        Debugger.log("Registering command");
         CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder());
         return true;
     }
