@@ -47,7 +47,7 @@ public abstract class BaseCommand implements CommonCommand {
      *
      * @return The command arguments
      */
-    public @Nullable List<RequiredArgumentBuilder<CommandSourceStack, ?>> getArguments() {
+    public List<RequiredArgumentBuilder<CommandSourceStack, ?>> getArguments() {
         return new ArrayList<>();
     }
 
