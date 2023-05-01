@@ -39,7 +39,7 @@ public class CommandManager {
         this(true, args);
     }
 
-    private void generateCommands() {
+    public void generateCommands() {
         Debugger.log("Starting the generation of commands.");
         Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
         Set<Class<?>> classes;
