@@ -41,7 +41,7 @@ public abstract class BaseCommand implements CommonCommand {
         return new ArrayList<>();
     }
 
-    private LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
+    protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommand());
 
         List<CommonCommand> subCommands = getSubCommands();
@@ -74,7 +74,7 @@ public abstract class BaseCommand implements CommonCommand {
         }
 
         if (then != null) {
-            Debugger.log(getClass().getName() + "Adding arguments");
+            Debugger.log(getClass().getName() + " Adding arguments");
             command.then(then);
         }
 
