@@ -74,6 +74,7 @@ public abstract class BaseCommand implements CommonCommand {
         if (arguments.size() != 0) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
+                    Debugger.log("Adding argument " + index+1 + " to " + index + " command");
                     RequiredArgumentBuilder<CommandSourceStack, ?> preLastArgument = arguments.get(index);
                     RequiredArgumentBuilder<CommandSourceStack, ?> lastArgument = arguments.get(index + 1);
 
