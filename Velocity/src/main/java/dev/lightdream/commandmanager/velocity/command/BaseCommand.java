@@ -7,27 +7,21 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
-import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.logger.Logger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand implements CommonCommand, SimpleCommand {
+public abstract class BaseCommand extends CommonCommandImpl implements SimpleCommand {
 
-    public List<CommonCommand> subCommands = new ArrayList<>();
-
-    public BaseCommand() {
-        this.init();
-    }
 
     @Override
     public final boolean registerCommand() {
@@ -81,7 +75,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
      */
     public void exec(@NotNull CommandSource source, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommand() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
+            Logger.warn("Executing command " + getCommandString() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
         }
 
         source.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
@@ -95,7 +89,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
      */
     public void exec(@NotNull ConsoleCommandSource console, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommand() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
         console.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
@@ -109,7 +103,7 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
      */
     public void exec(@NotNull Player player, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommand() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + getCommandString() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
         player.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
@@ -127,13 +121,4 @@ public abstract class BaseCommand implements CommonCommand, SimpleCommand {
         source.sendMessage(Component.text(message));
     }
 
-    @Override
-    public final List<CommonCommand> getSubCommands() {
-        return subCommands;
-    }
-
-    @Override
-    public final void saveSubCommands(List<CommonCommand> subCommands) {
-        this.subCommands = subCommands;
-    }
 }

@@ -2,7 +2,7 @@ package dev.lightdream.commandmanager.sponge.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
-import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.sponge.CommandMain;
 import dev.lightdream.commandmanager.sponge.dto.CommandSpecWrap;
 import dev.lightdream.lambda.ScheduleUtils;
@@ -24,23 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand implements CommandExecutor, CommonCommand {
+public abstract class BaseCommand extends CommonCommandImpl implements CommandExecutor {
 
     public CommandSpecWrap spec;
-    public List<String> aliases;
-    public List<CommonCommand> subCommands = new ArrayList<>();
-    private boolean runAsync = false;
-
-    public BaseCommand() {
-        this.init();
-    }
 
     @Override
     public final boolean registerCommand() {
         this.spec = CommandSpecWrap.builder().build();
 
         Command command = getCommandAnnotation();
-        runAsync = command.async();
 
         String permission = getPermission();
         if (!permission.equals("")) {
@@ -56,7 +48,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
     public final CommandSpec getCommandSpec() {
         getSubCommands().forEach(commandObject -> {
             BaseCommand command = (BaseCommand) commandObject;
-            spec.spec.child(command.getCommandSpec(), command.aliases);
+            spec.spec.child(command.getCommandSpec(), getAliasList());
         });
         spec.spec.executor(this);
         spec.spec.arguments(getArgs().toArray(new CommandElement[0]));
@@ -96,7 +88,7 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
             exec(src, args);
         };
 
-        if (runAsync) {
+        if (async()) {
             ScheduleUtils.runTaskAsync(executor);
         } else {
             executor.execute();
@@ -145,16 +137,6 @@ public abstract class BaseCommand implements CommandExecutor, CommonCommand {
         }
 
         player.sendMessages(Text.of(getSubCommandsHelpMessage()));
-    }
-
-    @Override
-    public final List<CommonCommand> getSubCommands() {
-        return subCommands;
-    }
-
-    @Override
-    public final void saveSubCommands(List<CommonCommand> subCommands) {
-        this.subCommands = subCommands;
     }
 
     @Override

@@ -4,7 +4,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
-import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
+import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
@@ -26,24 +27,18 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.literal;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand implements CommonCommand {
+public abstract class BaseCommand extends CommonCommandImpl {
 
     public static String commandSourceFiled = "field_9819";
-
-    public List<CommonCommand> subCommands = new ArrayList<>();
-
-    public BaseCommand() {
-        this.init();
-    }
 
     public List<RequiredArgumentBuilder<ServerCommandSource, ?>> getArguments() {
         return new ArrayList<>();
     }
 
     protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
-        LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommand());
+        LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommandString());
 
-        List<CommonCommand> subCommands = getSubCommands();
+        List<ICommonCommand> subCommands = getSubCommands();
         List<RequiredArgumentBuilder<ServerCommandSource, ?>> arguments = getArguments();
 
         if (subCommands == null) {
@@ -53,7 +48,7 @@ public abstract class BaseCommand implements CommonCommand {
             arguments = new ArrayList<>();
         }
 
-        for (CommonCommand subCommandObject : subCommands) {
+        for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
             command.then(subCommand.getCommandBuilder());
         }
@@ -126,17 +121,17 @@ public abstract class BaseCommand implements CommonCommand {
         return 0;
     }
 
-    public void exec(@NotNull CommandOutput console, @NotNull CommandContext<ServerCommandSource> context) {
+    public void exec(@NotNull CommandOutput source, @NotNull CommandContext<ServerCommandSource> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommand() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
-        sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+        sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
     }
 
     public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<ServerCommandSource> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommand() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
         sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -144,7 +139,7 @@ public abstract class BaseCommand implements CommonCommand {
 
     public void exec(@NotNull ServerPlayerEntity player, @NotNull CommandContext<ServerCommandSource> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommand() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + getCommandString() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
         sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -168,15 +163,5 @@ public abstract class BaseCommand implements CommonCommand {
 
         throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and MinecraftDedicatedServer." +
                 " Trying to send message to " + user.getClass());
-    }
-
-    @Override
-    public final List<CommonCommand> getSubCommands() {
-        return subCommands;
-    }
-
-    @Override
-    public final void saveSubCommands(List<CommonCommand> subCommands) {
-        this.subCommands = subCommands;
     }
 }

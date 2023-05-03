@@ -1,6 +1,6 @@
 package dev.lightdream.commandmanager.common.annotation;
 
-import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommonCommand;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,9 +30,9 @@ public @interface Command {
      */
     boolean async() default false;
 
-    Class<? extends CommonCommand> parent() default CommonCommand.class;
+    Class<? extends ICommonCommand> parent() default ICommonCommand.class;
 
-    Class<?> parentUnsafe() default CommonCommand.class;
+    //Class<?> parentUnsafe() default CommonCommand.class;
 
     boolean autoRegister() default false;
 }

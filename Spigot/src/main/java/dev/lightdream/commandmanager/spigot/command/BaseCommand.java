@@ -1,7 +1,7 @@
 package dev.lightdream.commandmanager.spigot.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
-import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.spigot.CommandMain;
 import dev.lightdream.logger.Logger;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand extends org.bukkit.command.Command implements CommonCommand {
+public abstract class BaseCommand extends org.bukkit.command.Command implements ICommonCommand {
 
     private List<BaseCommand> subCommands = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     @Override
     public String getName() {
-        return getCommand();
+        return getCommandString();
     }
 
     @Override
@@ -54,10 +54,10 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             CommandMap commandMap = (CommandMap) commandMapObject;
             commandMap.register(CommonCommandMain.getCommandMain(CommandMain.class).getPlugin().getDescription().getName(), this);
         } else {
-            Logger.error("Command " + getCommand() + " could not be initialized");
+            Logger.error("Command " + getCommandString() + " could not be initialized");
             return false;
         }
-        Logger.good("Command " + getCommand() + " initialized successfully");
+        Logger.good("Command " + getCommandString() + " initialized successfully");
 
         return true;
     }
@@ -240,15 +240,15 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     @Override
-    public final List<CommonCommand> getSubCommands() {
+    public final List<ICommonCommand> getSubCommands() {
         return new ArrayList<>(subCommands);
     }
 
     @Override
-    public final void saveSubCommands(List<CommonCommand> subCommands) {
+    public final void setSubCommands(List<ICommonCommand> subCommands) {
         List<BaseCommand> newSubCommands = new ArrayList<>();
 
-        for (CommonCommand subCommand : subCommands) {
+        for (ICommonCommand subCommand : subCommands) {
             newSubCommands.add((BaseCommand) subCommand);
         }
 
