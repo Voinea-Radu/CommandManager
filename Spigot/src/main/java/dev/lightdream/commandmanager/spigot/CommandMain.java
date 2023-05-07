@@ -1,6 +1,7 @@
 package dev.lightdream.commandmanager.spigot;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
+import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
@@ -13,7 +14,7 @@ public interface CommandMain extends CommonCommandMain {
     Plugin getPlugin();
 
     @Override
-    default @NotNull Set<Class<?>> getCommandClasses() {
+    default @NotNull Set<Class<? extends ICommonCommand>> getCommandClasses() {
         return new HashSet<>();
     }
 

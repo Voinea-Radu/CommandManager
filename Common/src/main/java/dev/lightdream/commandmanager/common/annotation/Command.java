@@ -32,7 +32,5 @@ public @interface Command {
 
     Class<? extends ICommonCommand> parent() default ICommonCommand.class;
 
-    //Class<?> parentUnsafe() default CommonCommand.class;
-
     boolean autoRegister() default false;
 }
