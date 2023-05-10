@@ -38,7 +38,7 @@ public class CommandManager {
             }
 
             if (!command.autoRegister()) {
-                return;
+                continue;
             }
 
             registerCommand(clazz);
