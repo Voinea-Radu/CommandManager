@@ -66,6 +66,11 @@ public abstract class BaseCommand extends CommonCommandImpl implements CommandEx
 
     @Override
     public final @NotNull CommandResult execute(@NotNull CommandSource src, @NotNull CommandContext args) {
+        if (!isEnabled()) {
+            sendMessage(src, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            return CommandResult.success();
+        }
+
         LambdaExecutor executor = () -> {
             if (spec.onlyForConsole) {
                 if (!(src instanceof ConsoleSource)) {

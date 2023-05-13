@@ -100,6 +100,11 @@ public abstract class BaseCommand extends CommonCommandImpl {
     public final int execute(CommandContext<ServerCommandSource> context) {
         CommandOutput source = getSource(context);
 
+        if(!isEnabled()){
+            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            return 0;
+        }
+
         if (onlyForConsole()) {
             if (!(source instanceof MinecraftServer consoleSource)) {
                 sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole);

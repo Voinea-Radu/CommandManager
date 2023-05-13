@@ -163,4 +163,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         return output;
     }
 
+    void disable();
+    void enable();
+
 }

@@ -38,6 +38,12 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     @Override
     public final void execute(Invocation invocation) {
         CommandSource source = invocation.source();
+
+        if (!isEnabled()) {
+            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            return;
+        }
+
         List<String> args = Arrays.stream(invocation.arguments()).collect(Collectors.toList());
 
         if (args.size() < getMinimumArgs()) {

@@ -6,7 +6,6 @@ import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.logger.Logger;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -46,16 +45,29 @@ public class CommandManager {
     }
 
     public void registerCommand(Class<? extends ICommonCommand> commandClazz) {
+        for (ICommonCommand command : getCommands()) {
+            if(command.getClass().equals(commandClazz)){
+                command.enable();
+                return;
+            }
+        }
+
         ICommonCommand commandObject = initCommand(commandClazz);
         if (commandObject == null) {
             return;
         }
-        registerCommand(commandObject);
+
+        commands.add(commandObject);
     }
 
     @SuppressWarnings("unused")
-    public void registerCommand(@NotNull ICommonCommand commandObject) {
-        commands.add(commandObject);
+    public void unregisterCommand(Class<? extends ICommonCommand> commandClazz){
+        for (ICommonCommand command : getCommands()) {
+            if(command.getClass().equals(commandClazz)){
+                command.disable();
+                return;
+            }
+        }
     }
 
     public ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass) {
