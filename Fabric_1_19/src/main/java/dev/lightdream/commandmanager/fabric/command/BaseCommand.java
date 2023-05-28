@@ -105,7 +105,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
             return 0;
         }
 
-        if(checkPermission(source, getPermission())){
+        if(!checkPermission(source, getPermission())){
             sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
             return 0;
         }
