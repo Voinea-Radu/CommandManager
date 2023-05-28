@@ -105,6 +105,11 @@ public abstract class BaseCommand extends CommonCommandImpl {
             return 0;
         }
 
+        if(checkPermission(source, getPermission())){
+            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
+            return 0;
+        }
+
         if (onlyForConsole()) {
             if (!(source instanceof MinecraftServer consoleSource)) {
                 sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole);
@@ -151,8 +156,12 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     @Override
-    public final boolean checkPermission(Object user, String permission) {
-        return PermissionUtils.checkPermission((ServerPlayerEntity) user, permission);
+    public final boolean checkPermission(Object sender, String permission) {
+        if (sender instanceof ServerPlayerEntity player) {
+            return PermissionUtils.checkPermission((ServerPlayerEntity) sender, permission);
+        }
+
+        return sender instanceof MinecraftDedicatedServer source;
     }
 
     @Override
