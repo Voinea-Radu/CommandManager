@@ -1,7 +1,7 @@
 package dev.lightdream.commandmanager.fabric.command;
 
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
@@ -31,7 +31,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public static String commandSourceFiled = "field_9819";
 
-    public List<RequiredArgumentBuilder<ServerCommandSource, ?>> getArguments() {
+    public List<ArgumentBuilder<ServerCommandSource, ?>> getArguments() {
         return new ArrayList<>();
     }
 
@@ -39,7 +39,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommandString());
 
         List<ICommonCommand> subCommands = getSubCommands();
-        List<RequiredArgumentBuilder<ServerCommandSource, ?>> arguments = getArguments();
+        List<ArgumentBuilder<ServerCommandSource, ?>> arguments = getArguments();
 
         if (subCommands == null) {
             subCommands = new ArrayList<>();
@@ -53,7 +53,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
             command.then(subCommand.getCommandBuilder());
         }
 
-        RequiredArgumentBuilder<ServerCommandSource, ?> then = null;
+        ArgumentBuilder<ServerCommandSource, ?> then = null;
 
         if (arguments.size() != 0) {
             arguments.get(arguments.size() - 1).executes(this::executeCatch);
@@ -100,12 +100,12 @@ public abstract class BaseCommand extends CommonCommandImpl {
     public final int execute(CommandContext<ServerCommandSource> context) {
         CommandOutput source = getSource(context);
 
-        if(!isEnabled()){
+        if (!isEnabled()) {
             sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
             return 0;
         }
 
-        if(!checkPermission(source, getPermission())){
+        if (!checkPermission(source, getPermission())) {
             sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
             return 0;
         }
