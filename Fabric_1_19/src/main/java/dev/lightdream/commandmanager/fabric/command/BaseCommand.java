@@ -35,6 +35,10 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return new ArrayList<>();
     }
 
+    public boolean optionalArguments() {
+        return false;
+    }
+
     protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommandString());
 
@@ -63,6 +67,9 @@ public abstract class BaseCommand extends CommonCommandImpl {
                 }
             }
             then = arguments.get(0);
+            if (optionalArguments()) {
+                then.executes(this::executeCatch);
+            }
         } else {
             command.executes(this::executeCatch);
         }
