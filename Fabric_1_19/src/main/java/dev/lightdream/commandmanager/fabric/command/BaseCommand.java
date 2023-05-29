@@ -42,6 +42,10 @@ public abstract class BaseCommand extends CommonCommandImpl {
     protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommandString());
 
+        if(optionalArguments()){
+            command.executes(this::executeCatch);
+        }
+
         List<ICommonCommand> subCommands = getSubCommands();
         List<ArgumentBuilder<ServerCommandSource, ?>> arguments = getArguments();
 
@@ -67,9 +71,6 @@ public abstract class BaseCommand extends CommonCommandImpl {
                 }
             }
             then = arguments.get(0);
-            if (optionalArguments()) {
-                then.executes(this::executeCatch);
-            }
         } else {
             command.executes(this::executeCatch);
         }
