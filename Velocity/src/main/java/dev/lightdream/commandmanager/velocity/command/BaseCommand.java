@@ -44,6 +44,11 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return;
         }
 
+        if (!checkPermission(source, getPermission())) {
+            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
+            return;
+        }
+
         List<String> args = Arrays.stream(invocation.arguments()).collect(Collectors.toList());
 
         if (args.size() < getMinimumArgs()) {
