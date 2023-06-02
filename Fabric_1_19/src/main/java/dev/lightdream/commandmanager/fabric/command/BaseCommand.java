@@ -11,7 +11,6 @@ import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,7 +41,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommandString());
 
-        if(optionalArguments()){
+        if (optionalArguments()) {
             command.executes(this::executeCatch);
         }
 
@@ -85,7 +84,10 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean registerCommand() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(getCommandBuilder()));
+        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder());
+        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getPlayerManager().getPlayerList().forEach(player ->
+                CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().sendCommandTree(player));
+        //CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register());
         return true;
     }
 
