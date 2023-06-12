@@ -38,8 +38,18 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return false;
     }
 
-    protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
-        LiteralArgumentBuilder<ServerCommandSource> command = literal(getCommandString());
+    protected List<LiteralArgumentBuilder<ServerCommandSource>> getCommandBuilder() {
+        List<LiteralArgumentBuilder<ServerCommandSource>> output = new ArrayList<>();
+
+        for (String commandString : getAliasList()) {
+            output.add(constructCommandBuilder(commandString));
+        }
+
+        return output;
+    }
+
+    private LiteralArgumentBuilder<ServerCommandSource> constructCommandBuilder(String commandString){
+        LiteralArgumentBuilder<ServerCommandSource> command = literal(commandString);
 
         if (optionalArguments()) {
             command.executes(this::executeCatch);
@@ -57,7 +67,9 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
-            command.then(subCommand.getCommandBuilder());
+            for (LiteralArgumentBuilder<ServerCommandSource> subCommandBuilder : subCommand.getCommandBuilder()) {
+                command.then(subCommandBuilder);
+            }
         }
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
@@ -78,16 +90,18 @@ public abstract class BaseCommand extends CommonCommandImpl {
             command.then(then);
         }
 
-
         return command;
     }
 
     @Override
     public final boolean registerCommand() {
-        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder());
+        for (LiteralArgumentBuilder<ServerCommandSource> commandBuilder : getCommandBuilder()) {
+            CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(commandBuilder);
+        }
+
         CommonCommandMain.getCommandMain(CommandMain.class).getServer().getPlayerManager().getPlayerList().forEach(player ->
                 CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().sendCommandTree(player));
-        //CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register());
+
         return true;
     }
 
