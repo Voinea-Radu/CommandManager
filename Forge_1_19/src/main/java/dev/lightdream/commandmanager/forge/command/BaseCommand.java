@@ -40,7 +40,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder() {
-        LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(getCommandString());
+        LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(getName());
 
         List<ICommonCommand> subCommands = getSubCommands();
         List<RequiredArgumentBuilder<CommandSourceStack, ?>> arguments = getArguments();
@@ -134,7 +134,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public void exec(@NotNull CommandSource source, @NotNull CommandContext<CommandSourceStack> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
+            Logger.warn("Executing command " + getName() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
         }
 
         sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -142,7 +142,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<CommandSourceStack> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
         sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -150,7 +150,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public void exec(@NotNull Player player, @NotNull CommandContext<CommandSourceStack> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
         sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));

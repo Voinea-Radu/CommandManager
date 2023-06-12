@@ -25,8 +25,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     @Override
     public final boolean registerCommand() {
         CommandManager commandManager = CommonCommandMain.getCommandMain(CommandMain.class).getProxy().getCommandManager();
-        CommandMeta commandMeta = commandManager.metaBuilder(getAliasList().get(0))
-                .aliases(getAliasList().subList(1, getAliasList().size()).toArray(new String[0]))
+        CommandMeta commandMeta = commandManager.metaBuilder(getName())
                 .plugin(this)
                 .build();
 
@@ -52,7 +51,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         }
 
         for (ICommonCommand subCommand : getSubCommands()) {
-            if (!(subCommand.getAliasList().contains(args.get(0).toLowerCase()))) {
+            if (!(subCommand.getName().contains(args.get(0).toLowerCase()))) {
                 continue;
             }
 
@@ -97,7 +96,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
      */
     public void exec(@NotNull CommandSource source, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
+            Logger.warn("Executing command " + getName() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
         }
 
         source.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
@@ -111,7 +110,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
      */
     public void exec(@NotNull ConsoleCommandSource console, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
         console.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
@@ -125,7 +124,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
      */
     public void exec(@NotNull Player player, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + getName() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
         player.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));

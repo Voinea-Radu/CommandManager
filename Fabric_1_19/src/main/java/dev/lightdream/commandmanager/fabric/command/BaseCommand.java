@@ -38,18 +38,8 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return false;
     }
 
-    protected List<LiteralArgumentBuilder<ServerCommandSource>> getCommandBuilder() {
-        List<LiteralArgumentBuilder<ServerCommandSource>> output = new ArrayList<>();
-
-        for (String commandString : getAliasList()) {
-            output.add(constructCommandBuilder(commandString));
-        }
-
-        return output;
-    }
-
-    private LiteralArgumentBuilder<ServerCommandSource> constructCommandBuilder(String commandString){
-        LiteralArgumentBuilder<ServerCommandSource> command = literal(commandString);
+    protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
+        LiteralArgumentBuilder<ServerCommandSource> command = literal(getName());
 
         if (optionalArguments()) {
             command.executes(this::executeCatch);
@@ -67,9 +57,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
-            for (LiteralArgumentBuilder<ServerCommandSource> subCommandBuilder : subCommand.getCommandBuilder()) {
-                command.then(subCommandBuilder);
-            }
+            command.then(subCommand.getCommandBuilder());
         }
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
@@ -95,10 +83,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean registerCommand() {
-        for (LiteralArgumentBuilder<ServerCommandSource> commandBuilder : getCommandBuilder()) {
-            CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(commandBuilder);
-        }
-
+        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder());
         CommonCommandMain.getCommandMain(CommandMain.class).getServer().getPlayerManager().getPlayerList().forEach(player ->
                 CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().sendCommandTree(player));
 
@@ -157,7 +142,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public void exec(@NotNull CommandOutput source, @NotNull CommandContext<ServerCommandSource> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
         sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -165,7 +150,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<ServerCommandSource> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
         sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -173,7 +158,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public void exec(@NotNull ServerPlayerEntity player, @NotNull CommandContext<ServerCommandSource> context) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getCommandString() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
         sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));

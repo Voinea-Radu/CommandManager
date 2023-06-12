@@ -50,14 +50,9 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     @Override
-    public String getName() {
-        return getCommandString();
-    }
-
-    @Override
     @SneakyThrows
     public final boolean registerCommand() {
-        this.setAliases(getAliasList());
+        this.setAliases(Collections.singletonList(getName()));
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
 
@@ -66,17 +61,17 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             CommandMap commandMap = (CommandMap) commandMapObject;
             commandMap.register(CommonCommandMain.getCommandMain(CommandMain.class).getPlugin().getDescription().getName(), this);
         } else {
-            Logger.error("Command " + getCommandString() + " could not be initialized");
+            Logger.error("Command " + this.getName() + " could not be initialized");
             return false;
         }
-        Logger.good("Command " + getCommandString() + " initialized successfully");
+        Logger.good("Command " + this.getName() + " initialized successfully");
 
         return true;
     }
 
     public void exec(@NotNull CommandSender source, List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + this.getAliasList().get(0) + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSender, List<String>");
+            Logger.warn("Executing command " + this.getName() + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSender, List<String>");
         }
 
         source.sendMessage(ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -84,7 +79,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     public void exec(@NotNull ConsoleCommandSender console, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + this.getAliasList().get(0) + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleCommandSender, List<String>");
+            Logger.warn("Executing command " + this.getName() + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleCommandSender, List<String>");
         }
 
         console.sendMessage(ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -92,7 +87,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     public void exec(@NotNull Player player, @NotNull List<String> args) {
         if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + this.getAliasList().get(0) + " for " + player.getName() + ", but the command is not implemented. Exec type: Player, List<String>");
+            Logger.warn("Executing command " + this.getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: Player, List<String>");
         }
 
         player.sendMessage(ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
@@ -111,7 +106,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         }
 
         for (BaseCommand subCommand : subCommands) {
-            if (!(subCommand.getAliasList().contains(args[0].toLowerCase()))) {
+            if (!(subCommand.getName().contains(args[0].toLowerCase()))) {
                 continue;
             }
 
@@ -160,17 +155,15 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         if (args.length == 1) {
             ArrayList<String> result = new ArrayList<>();
             for (BaseCommand subCommand : subCommands) {
-                for (String alias : subCommand.getAliasList()) {
-                    if (alias.toLowerCase().startsWith(args[0].toLowerCase()) && checkPermission(sender, subCommand.getPermission())) {
-                        result.add(alias);
-                    }
+                if (subCommand.getName().toLowerCase().startsWith(args[0].toLowerCase()) && checkPermission(sender, subCommand.getPermission())) {
+                    result.add(subCommand.getName());
                 }
             }
             return result;
         }
 
         for (BaseCommand subCommand : subCommands) {
-            if (subCommand.getAliasList().contains(args[0]) && checkPermission(sender, subCommand.getPermission())) {
+            if (subCommand.getName().contains(args[0]) && checkPermission(sender, subCommand.getPermission())) {
                 return subCommand.onTabComplete(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
             }
         }

@@ -27,9 +27,9 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         // If the command is a root command (has no parent) register it
         if (command.parent() == ICommonCommand.class) {
             if (registerCommand()) {
-                Logger.good("Command " + getCommandString() + " initialized successfully");
+                Logger.good("Command " + getName() + " initialized successfully");
             } else {
-                Logger.error("Command " + getCommandString() + " could not be initialized");
+                Logger.error("Command " + getName() + " could not be initialized");
             }
         }
     }
@@ -69,14 +69,14 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
 
     default void sendUsage(Object user) {
         StringBuilder helpCommandOutput = new StringBuilder();
-        helpCommandOutput.append(getCommandString())
+        helpCommandOutput.append(getName())
                 .append(" ")
                 .append(getUsage());
         helpCommandOutput.append("\n");
 
         for (ICommonCommand subCommand : getSubCommands()) {
             if (checkPermission(user, subCommand.getPermission())) {
-                helpCommandOutput.append(subCommand.getCommandString());
+                helpCommandOutput.append(subCommand.getName());
                 helpCommandOutput.append(" ");
                 helpCommandOutput.append(subCommand.getUsage());
                 helpCommandOutput.append("\n");
@@ -132,7 +132,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     default String getPermission() {
         String annotationPermission = getCommandAnnotation().permission();
         String basePermission = CommonCommandMain.getCommandMain(CommonCommandMain.class).basePermission();
-        String commandPermission = getCommandString();
+        String commandPermission = getName();
 
         if (annotationPermission != null && !annotationPermission.equals("")) {
             commandPermission = annotationPermission;
@@ -157,7 +157,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     default List<String> getSubCommandsHelpMessage() {
         List<String> output = new ArrayList<>();
         getSubCommands().forEach(command -> output.add(
-                "/" + this.getAliasList().get(0) + " " + command.getAliasList().get(0) + " " +
+                "/" + this.getName() + " " + command.getName() + " " +
                         command.getUsage()
         ));
         return output;

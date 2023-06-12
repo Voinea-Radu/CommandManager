@@ -2,9 +2,6 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.annotation.Command;
 
-import java.util.Arrays;
-import java.util.List;
-
 public interface ICommandAnnotationWrapper {
 
     void setCommandAnnotation(Command commandAnnotation);
@@ -23,10 +20,6 @@ public interface ICommandAnnotationWrapper {
         return getCommandAnnotation().onlyForConsole();
     }
 
-    default List<String> getAliasList() {
-        return Arrays.asList(getCommandAnnotation().aliases());
-    }
-
     default int getMinimumArgs() {
         return getCommandAnnotation().minimumArgs();
     }
@@ -35,8 +28,8 @@ public interface ICommandAnnotationWrapper {
         return getCommandAnnotation().async();
     }
 
-    default String getCommandString() {
-        return getAliasList().get(0);
+    default String getName() {
+        return getCommandAnnotation().name();
     }
 
 

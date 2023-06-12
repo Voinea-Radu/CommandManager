@@ -41,14 +41,14 @@ public abstract class BaseCommand extends CommonCommandImpl implements CommandEx
         spec.onlyForConsole = command.onlyForConsole();
         spec.onlyForPlayers = command.onlyForPlayers();
 
-        Sponge.getCommandManager().register(CommonCommandMain.getCommandMain(CommandMain.class), getCommandSpec(), command.aliases());
+        Sponge.getCommandManager().register(CommonCommandMain.getCommandMain(CommandMain.class), getCommandSpec(), command.name());
         return true;
     }
 
     public final CommandSpec getCommandSpec() {
         getSubCommands().forEach(commandObject -> {
             BaseCommand command = (BaseCommand) commandObject;
-            spec.spec.child(command.getCommandSpec(), getAliasList());
+            spec.spec.child(command.getCommandSpec(), getName());
         });
         spec.spec.executor(this);
         spec.spec.arguments(getArgs().toArray(new CommandElement[0]));
