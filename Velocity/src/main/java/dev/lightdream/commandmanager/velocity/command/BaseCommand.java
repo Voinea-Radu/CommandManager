@@ -8,6 +8,7 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
+import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.logger.Logger;
@@ -16,12 +17,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @SuppressWarnings("unused")
 public abstract class BaseCommand extends CommonCommandImpl implements SimpleCommand {
-
 
     @Override
     public final boolean registerCommand() {
@@ -37,7 +36,10 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
     @Override
     public final void execute(Invocation invocation) {
-        CommandSource source = invocation.source();
+        distributeExecute(invocation.source(), Arrays.asList(invocation.arguments()));
+    }
+
+    private void distributeExecute(CommandSource source, List<String> args){
 
         if (!isEnabled()) {
             sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
@@ -49,7 +51,16 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return;
         }
 
-        List<String> args = Arrays.stream(invocation.arguments()).collect(Collectors.toList());
+        for (ICommonCommand subCommand : getSubCommands()) {
+            if (!(subCommand.getAliasList().contains(args.get(0).toLowerCase()))) {
+                continue;
+            }
+
+            BaseCommand baseCommand = (BaseCommand) subCommand;
+
+            baseCommand.distributeExecute(source, args.subList(1, args.size()));
+            return;
+        }
 
         if (args.size() < getMinimumArgs()) {
             sendUsage(source);
