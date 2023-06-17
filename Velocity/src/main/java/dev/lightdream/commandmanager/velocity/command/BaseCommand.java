@@ -36,7 +36,9 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         return output;
     }
 
-    public abstract @NotNull List<String> onAutoComplete(Invocation invocation);
+    public @NotNull List<String> onAutoComplete(Invocation invocation) {
+        return new ArrayList<>();
+    }
 
     @Override
     public final boolean registerCommand() {
