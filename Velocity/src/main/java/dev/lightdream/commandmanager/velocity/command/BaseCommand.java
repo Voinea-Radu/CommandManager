@@ -15,12 +15,28 @@ import dev.lightdream.logger.Logger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
 @SuppressWarnings("unused")
 public abstract class BaseCommand extends CommonCommandImpl implements SimpleCommand {
+
+    @Override
+    public List<String> suggest(Invocation invocation) {
+        List<String> output = new ArrayList<>();
+
+        for (ICommonCommand subCommand : getSubCommands()) {
+            output.add(subCommand.getName());
+        }
+
+        output.addAll(onAutoComplete(invocation));
+
+        return output;
+    }
+
+    public abstract @NotNull List<String> onAutoComplete(Invocation invocation);
 
     @Override
     public final boolean registerCommand() {
@@ -38,7 +54,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         distributeExecute(invocation.source(), Arrays.asList(invocation.arguments()));
     }
 
-    private void distributeExecute(CommandSource source, List<String> args){
+    private void distributeExecute(CommandSource source, List<String> args) {
 
         if (!isEnabled()) {
             sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
