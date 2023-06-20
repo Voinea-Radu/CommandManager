@@ -68,15 +68,17 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return;
         }
 
-        for (ICommonCommand subCommand : getSubCommands()) {
-            if (!(subCommand.getName().contains(args.get(0).toLowerCase()))) {
-                continue;
+        if (!args.isEmpty()) {
+            for (ICommonCommand subCommand : getSubCommands()) {
+                if (!(subCommand.getName().contains(args.get(0).toLowerCase()))) {
+                    continue;
+                }
+
+                BaseCommand baseCommand = (BaseCommand) subCommand;
+
+                baseCommand.distributeExecute(source, args.subList(1, args.size()));
+                return;
             }
-
-            BaseCommand baseCommand = (BaseCommand) subCommand;
-
-            baseCommand.distributeExecute(source, args.subList(1, args.size()));
-            return;
         }
 
         if (args.size() < getMinimumArgs()) {
@@ -113,7 +115,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
      * @param args   The parsed command arguments for this command
      */
     public void exec(@NotNull CommandSource source, @NotNull List<String> args) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
         }
 
@@ -127,7 +129,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
      * @param args    The parsed command arguments for this command
      */
     public void exec(@NotNull ConsoleCommandSource console, @NotNull List<String> args) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
@@ -141,7 +143,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
      * @param args   The parsed command arguments for this command
      */
     public void exec(@NotNull Player player, @NotNull List<String> args) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
