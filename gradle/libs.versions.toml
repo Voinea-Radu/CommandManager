@@ -1,5 +1,5 @@
 [versions]
-project = "4.4.18"
+project = "4.4.21"
 forge = "1.19-41.1.0"
 yarn_mappings = "1.19+build.4"
 parchment = "2022.08.14-1.19.2"
@@ -33,6 +33,6 @@ luckperms = { module = "net.luckperms:api", version = "5.4" }
 # LightDream
 lightdream_logger = { module = "dev.lightdream:logger", version = "3.3.12" }
 lightdream_lambda = { module = "dev.lightdream:lambda", version = "4.1.19" }
-lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.11" }
+lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.13" }
 
 
