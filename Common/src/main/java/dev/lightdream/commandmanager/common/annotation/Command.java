@@ -13,6 +13,8 @@ public @interface Command {
 
     String name();
 
+    String[] aliases() default {};
+
     String permission() default "";
 
     String usage() default "";
@@ -22,13 +24,6 @@ public @interface Command {
     boolean onlyForConsole() default false;
 
     int minimumArgs() default 0;
-
-    /**
-     * Whether the command should be run async (ignored on spigot platform as commands there are by default async)
-     *
-     * @return true if you want the command to NOT block the main thread while executing or false if you want the command to block the main thread while executing
-     */
-    boolean async() default false;
 
     Class<? extends ICommonCommand> parent() default ICommonCommand.class;
 

@@ -30,8 +30,8 @@ public abstract class BaseCommand extends CommonCommandImpl {
     public static String[] commandSourceFiled = {"field_9819", "f_81288_"};
 
     @Override
-    public final boolean registerCommand() {
-        CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder());
+    public final boolean registerCommand(String name) {
+        CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder(name));
         return true;
     }
 
@@ -39,8 +39,8 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return new ArrayList<>();
     }
 
-    private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder() {
-        LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(getName());
+    private LiteralArgumentBuilder<CommandSourceStack> getCommandBuilder(String name) {
+        LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(name);
 
         List<ICommonCommand> subCommands = getSubCommands();
         List<RequiredArgumentBuilder<CommandSourceStack, ?>> arguments = getArguments();
@@ -54,7 +54,9 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
-            command.then(subCommand.getCommandBuilder());
+            for (String subName : subCommand.getNames()) {
+                command.then(subCommand.getCommandBuilder(subName));
+            }
         }
 
         RequiredArgumentBuilder<CommandSourceStack, ?> then = null;

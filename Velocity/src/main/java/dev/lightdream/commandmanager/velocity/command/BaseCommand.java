@@ -41,9 +41,9 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     }
 
     @Override
-    public final boolean registerCommand() {
+    public final boolean registerCommand(String name) {
         CommandManager commandManager = CommonCommandMain.getCommandMain(CommandMain.class).getProxy().getCommandManager();
-        CommandMeta commandMeta = commandManager.metaBuilder(getName())
+        CommandMeta commandMeta = commandManager.metaBuilder(name)
                 .plugin(this)
                 .build();
 
@@ -70,7 +70,16 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
         if (!args.isEmpty()) {
             for (ICommonCommand subCommand : getSubCommands()) {
-                if (!(subCommand.getName().contains(args.get(0).toLowerCase()))) {
+                boolean found = false;
+
+                for (String name : subCommand.getNames()) {
+                    if (name.equalsIgnoreCase(args.get(0))) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
                     continue;
                 }
 

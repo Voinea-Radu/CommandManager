@@ -38,8 +38,8 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return false;
     }
 
-    protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder() {
-        LiteralArgumentBuilder<ServerCommandSource> command = literal(getName());
+    protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder(String name) {
+        LiteralArgumentBuilder<ServerCommandSource> command = literal(name);
 
         if (optionalArguments()) {
             command.executes(this::executeCatch);
@@ -57,7 +57,9 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
-            command.then(subCommand.getCommandBuilder());
+            for (String subName : subCommand.getNames()) {
+                command.then(subCommand.getCommandBuilder(subName));
+            }
         }
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
@@ -82,8 +84,8 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     @Override
-    public final boolean registerCommand() {
-        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder());
+    public final boolean registerCommand(String name) {
+        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
         CommonCommandMain.getCommandMain(CommandMain.class).getServer().getPlayerManager().getPlayerList().forEach(player ->
                 CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().sendCommandTree(player));
 
@@ -106,6 +108,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return 0;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public final int execute(CommandContext<ServerCommandSource> context) {
         CommandOutput source = getSource(context);
 

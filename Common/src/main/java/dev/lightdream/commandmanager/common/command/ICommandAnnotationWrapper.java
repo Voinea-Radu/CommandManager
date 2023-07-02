@@ -4,9 +4,22 @@ import dev.lightdream.commandmanager.common.annotation.Command;
 
 public interface ICommandAnnotationWrapper {
 
-    void setCommandAnnotation(Command commandAnnotation);
     Command getCommandAnnotation();
 
+    void setCommandAnnotation(Command commandAnnotation);
+
+    default String[] getCommandAliases() {
+        return getCommandAnnotation().aliases();
+    }
+
+    default String[] getNames() {
+        String[] names = new String[getCommandAliases().length + 1];
+        names[0] = getName();
+        for (int i = 0; i < getCommandAliases().length; i++) {
+            names[i + 1] = getCommandAliases()[i];
+        }
+        return names;
+    }
 
     default String getUsage() {
         return getCommandAnnotation().usage();
@@ -22,10 +35,6 @@ public interface ICommandAnnotationWrapper {
 
     default int getMinimumArgs() {
         return getCommandAnnotation().minimumArgs();
-    }
-
-    default boolean async() {
-        return getCommandAnnotation().async();
     }
 
     default String getName() {

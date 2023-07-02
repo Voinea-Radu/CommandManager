@@ -20,9 +20,6 @@ project(":command-manager-forge-1-19").projectDir = file("Forge_1_19")
 include(":command-manager-spigot")
 project(":command-manager-spigot").projectDir = file("Spigot")
 
-include(":command-manager-sponge")
-project(":command-manager-sponge").projectDir = file("Sponge")
-
 include(":command-manager-velocity")
 project(":command-manager-velocity").projectDir = file("Velocity")
 

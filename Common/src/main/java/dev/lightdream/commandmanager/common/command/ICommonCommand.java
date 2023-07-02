@@ -26,10 +26,12 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == ICommonCommand.class) {
-            if (registerCommand()) {
-                Logger.good("Command " + getName() + " initialized successfully");
-            } else {
-                Logger.error("Command " + getName() + " could not be initialized");
+            for (String name : getNames()) {
+                if (registerCommand(name)) {
+                    Logger.good("Command " + name + " initialized successfully");
+                } else {
+                    Logger.error("Command " + name + " could not be initialized");
+                }
             }
         }
     }
@@ -49,7 +51,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     }
 
     // Platform specific
-    boolean registerCommand();
+    boolean registerCommand(String alias);
 
     void sendMessage(Object user, String message);
 

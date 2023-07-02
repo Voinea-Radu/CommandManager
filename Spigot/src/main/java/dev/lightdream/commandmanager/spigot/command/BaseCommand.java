@@ -51,8 +51,8 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     @Override
     @SneakyThrows
-    public final boolean registerCommand() {
-        this.setAliases(Collections.singletonList(getName()));
+    public final boolean registerCommand(String name) {
+        this.setAliases(Collections.singletonList(name));
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
 
@@ -61,10 +61,8 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             CommandMap commandMap = (CommandMap) commandMapObject;
             commandMap.register(CommonCommandMain.getCommandMain(CommandMain.class).getPlugin().getDescription().getName(), this);
         } else {
-            Logger.error("Command " + this.getName() + " could not be initialized");
             return false;
         }
-        Logger.good("Command " + this.getName() + " initialized successfully");
 
         return true;
     }
@@ -100,22 +98,34 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
             return true;
         }
 
+        if (!checkPermission(sender, getPermission())) {
+            sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission).toString());
+            return true;
+        }
+
         if (args.length == 0) {
             distributeExec(sender, new ArrayList<>(Arrays.asList(args)));
             return true;
         }
 
-        for (BaseCommand subCommand : subCommands) {
-            if (!(subCommand.getName().contains(args[0].toLowerCase()))) {
+
+        for (ICommonCommand subCommand : getSubCommands()) {
+            boolean found = false;
+
+            for (String name : subCommand.getNames()) {
+                if (name.equalsIgnoreCase(args[0])) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
                 continue;
             }
 
-            if (!checkPermission(sender, subCommand.getPermission())) {
-                sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission).toString());
-                return true;
-            }
+            BaseCommand baseCommand = (BaseCommand) subCommand;
 
-            subCommand.distributeExec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
+            baseCommand.distributeExec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
             return true;
         }
 
