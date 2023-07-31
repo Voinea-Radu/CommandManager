@@ -16,7 +16,6 @@ public interface CommandMain extends CommonCommandMain {
         return new HashSet<>();
     }
 
-
     @Override
     @NotNull Reflections getReflections();
 

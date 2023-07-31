@@ -25,15 +25,18 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
     @Override
     public List<String> suggest(Invocation invocation) {
-        List<String> output = new ArrayList<>();
+        List<String> allArguments = new ArrayList<>();
+
+        int argsLength = invocation.arguments().length;
+        String lastArg = invocation.arguments()[argsLength - 1];
 
         for (ICommonCommand subCommand : getSubCommands()) {
-            output.add(subCommand.getName());
+            allArguments.add(subCommand.getName());
         }
 
-        output.addAll(onAutoComplete(invocation));
+        allArguments.addAll(onAutoComplete(invocation));
 
-        return output;
+        return ListUtils.getListThatStartsWith(allArguments, lastArg);
     }
 
     public @NotNull List<String> onAutoComplete(Invocation invocation) {

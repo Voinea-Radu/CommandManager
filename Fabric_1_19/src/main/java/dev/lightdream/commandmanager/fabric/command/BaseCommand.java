@@ -1,8 +1,13 @@
 package dev.lightdream.commandmanager.fabric.command;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestion;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.suggestion.Suggestions;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
@@ -22,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -30,7 +37,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public static String commandSourceFiled = "field_9819";
 
-    public List<ArgumentBuilder<ServerCommandSource, ?>> getArguments() {
+    public @NotNull List<ArgumentBuilder<ServerCommandSource, ?>> getArguments() {
         return new ArrayList<>();
     }
 
@@ -51,9 +58,6 @@ public abstract class BaseCommand extends CommonCommandImpl {
         if (subCommands == null) {
             subCommands = new ArrayList<>();
         }
-        if (arguments == null) {
-            arguments = new ArrayList<>();
-        }
 
         for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
@@ -61,6 +65,68 @@ public abstract class BaseCommand extends CommonCommandImpl {
                 command.then(subCommand.getCommandBuilder(subName));
             }
         }
+
+        List<ArgumentBuilder<ServerCommandSource, ?>> processedArguments = new ArrayList<>();
+
+        for (ArgumentBuilder<ServerCommandSource, ?> rawArgument : arguments) {
+            if (rawArgument instanceof RequiredArgumentBuilder<?, ?> requiredArgumentBuilder) {
+                RequiredArgumentBuilder<ServerCommandSource, String> argument;
+
+                try {
+                    //noinspection unchecked
+                    argument = (RequiredArgumentBuilder<ServerCommandSource, String>) requiredArgumentBuilder;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    processedArguments.add(rawArgument);
+                    continue;
+                }
+
+                if (!(argument.getType() instanceof StringArgumentType)) {
+                    processedArguments.add(rawArgument);
+                    continue;
+                }
+
+                SuggestionProvider<ServerCommandSource> suggestionProvider = argument.getSuggestionsProvider();
+
+                argument.suggests(
+                        (context, builder) -> {
+                            CompletableFuture<Suggestions> suggestionsFuture =
+                                    suggestionProvider.getSuggestions(context, builder);
+                            Suggestions suggestions;
+
+                            try {
+                                suggestions = suggestionsFuture.get();
+                            } catch (InterruptedException | ExecutionException e) {
+                                return builder.buildFuture();
+                            }
+
+                            List<String> suggestionList = new ArrayList<>();
+
+                            for (Suggestion suggestion : suggestions.getList()) {
+                                suggestionList.add(suggestion.getText());
+                            }
+
+                            String value = builder.getRemaining();
+                            suggestionList = ListUtils.getListThatStartsWith(suggestionList, value);
+
+                            builder = builder.restart();
+
+                            for (String suggestionString : suggestionList) {
+                                builder.suggest(suggestionString);
+                            }
+
+                            return builder.buildFuture();
+                        }
+                );
+
+                processedArguments.add(argument);
+                continue;
+            }
+
+            processedArguments.add(rawArgument);
+        }
+
+        arguments = processedArguments;
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
 
