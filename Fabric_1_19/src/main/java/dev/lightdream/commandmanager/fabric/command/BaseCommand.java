@@ -86,10 +86,16 @@ public abstract class BaseCommand extends CommonCommandImpl {
                     continue;
                 }
 
-                SuggestionProvider<ServerCommandSource> suggestionProvider = argument.getSuggestionsProvider();
+                SuggestionProvider<ServerCommandSource> argumentSuggestionProvider = argument.getSuggestionsProvider();
 
                 argument.suggests(
                         (context, builder) -> {
+                            SuggestionProvider<ServerCommandSource> suggestionProvider = argumentSuggestionProvider;
+
+                            if (suggestionProvider == null) {
+                                suggestionProvider = (tmpContext, tmpBuilder) -> new CompletableFuture<>();
+                            }
+
                             CompletableFuture<Suggestions> suggestionsFuture =
                                     suggestionProvider.getSuggestions(context, builder);
                             Suggestions suggestions;
