@@ -91,73 +91,49 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
                 argument.suggests(
                         (context, builder) -> {
-                            Debugger.log(1);
                             SuggestionProvider<ServerCommandSource> suggestionProvider = argumentSuggestionProvider;
-                            Debugger.log(2);
 
 
                             if (suggestionProvider == null) {
-                                Debugger.log(3);
                                 suggestionProvider = (tmpContext, tmpBuilder) -> Suggestions.empty();
-                                Debugger.log(4);
                             }
 
-                            Debugger.log(5);
                             CompletableFuture<Suggestions> suggestionsFuture =
                                     suggestionProvider.getSuggestions(context, builder);
-                            Debugger.log(6);
                             Suggestions suggestions;
-                            Debugger.log(7);
 
                             try {
-                                Debugger.log(8);
                                 suggestions = suggestionsFuture.get();
-                                Debugger.log(9);
                             } catch (InterruptedException | ExecutionException e) {
-                                Debugger.log(10);
                                 return builder.buildFuture();
                             }
 
-                            Debugger.log(11);
                             List<String> suggestionList = new ArrayList<>();
-                            Debugger.log(12);
 
                             for (Suggestion suggestion : suggestions.getList()) {
-                                Debugger.log(13);
                                 suggestionList.add(suggestion.getText());
-                                Debugger.log(14);
                             }
 
-                            Debugger.log(15);
                             String value = builder.getRemaining();
-                            Debugger.log(16);
                             suggestionList = ListUtils.getListThatStartsWith(suggestionList, value);
-                            Debugger.log(17);
 
                             builder = builder.restart();
-                            Debugger.log(18);
 
                             for (String suggestionString : suggestionList) {
-                                Debugger.log(19);
                                 builder.suggest(suggestionString);
-                                Debugger.log(20);
                             }
 
-                            Debugger.log(21);
                             return builder.buildFuture();
                         }
                 );
 
-                Debugger.log(22);
                 processedArguments.add(argument);
                 continue;
             }
 
-            Debugger.log(23);
             processedArguments.add(rawArgument);
         }
 
-        Debugger.log(24);
         arguments = processedArguments;
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
