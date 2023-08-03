@@ -28,6 +28,11 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         List<String> allArguments = new ArrayList<>();
 
         int argsLength = invocation.arguments().length;
+
+        if (argsLength == 0) {
+            return new ArrayList<>();
+        }
+
         String lastArg = invocation.arguments()[argsLength - 1];
 
         for (ICommonCommand subCommand : getSubCommands()) {
