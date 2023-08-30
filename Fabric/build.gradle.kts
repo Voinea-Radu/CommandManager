@@ -8,7 +8,7 @@ version = libs.versions.project.get()
 group = "dev.lightdream"
 
 dependencies {
-    minecraft(libs.minecraft.v19)
+    minecraft(libs.minecraft.v20)
     mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
 
     modImplementation(libs.fabric.loader)
