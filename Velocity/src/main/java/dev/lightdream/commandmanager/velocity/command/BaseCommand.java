@@ -11,9 +11,11 @@ import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,27 +27,61 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
     @Override
     public List<String> suggest(Invocation invocation) {
-        List<String> allArguments = new ArrayList<>();
-
         int argsLength = invocation.arguments().length;
 
         if (argsLength == 0) {
-            return new ArrayList<>();
+            return onAutoComplete(invocation);
         }
 
-        String lastArg = invocation.arguments()[argsLength - 1];
+        String lastArg1 = invocation.arguments()[argsLength - 1];
+        BaseCommand subCommand = getSubCommand(lastArg1);
+
+        if (subCommand == null) {
+            if (argsLength == 1) {
+                return ListUtils.getListThatStartsWith(onAutoComplete(invocation), lastArg1);
+            }
+
+            String lastArg2 = invocation.arguments()[argsLength - 2];
+            subCommand = getSubCommand(lastArg2);
+
+            if (subCommand == null) {
+                return ListUtils.getListThatStartsWith(onAutoComplete(invocation), lastArg2);
+            }
+
+            List<String> a = subCommand.onAutoComplete(invocation);
+
+            Debugger.log(a);
+
+            return ListUtils.getListThatStartsWith(a, lastArg1);
+        }
+
+        return ListUtils.getListThatStartsWith(onAutoComplete(invocation), lastArg1);
+    }
+
+    private @Nullable BaseCommand getSubCommand(String name) {
+        for (ICommonCommand subCommand : getSubCommands()) {
+            for (String commandName : subCommand.getNames()) {
+                if (name.equalsIgnoreCase(commandName)) {
+                    return (BaseCommand) subCommand;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public @NotNull List<String> onAutoComplete(Invocation invocation) {
+        return defaultAutoComplete();
+    }
+
+    public @NotNull List<String> defaultAutoComplete() {
+        List<String> allArguments = new ArrayList<>();
 
         for (ICommonCommand subCommand : getSubCommands()) {
             allArguments.add(subCommand.getName());
         }
 
-        allArguments.addAll(onAutoComplete(invocation));
-
-        return ListUtils.getListThatStartsWith(allArguments, lastArg);
-    }
-
-    public @NotNull List<String> onAutoComplete(Invocation invocation) {
-        return new ArrayList<>();
+        return allArguments;
     }
 
     @Override
@@ -125,12 +161,6 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         exec(source, args);
     }
 
-    /**
-     * Executes the command
-     *
-     * @param source The commander who is executing this command
-     * @param args   The parsed command arguments for this command
-     */
     public void exec(@NotNull CommandSource source, @NotNull List<String> args) {
         if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
@@ -139,12 +169,6 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         source.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
     }
 
-    /**
-     * Executes the command
-     *
-     * @param console The commander who is executing this command
-     * @param args    The parsed command arguments for this command
-     */
     public void exec(@NotNull ConsoleCommandSource console, @NotNull List<String> args) {
         if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
@@ -153,12 +177,6 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         console.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
     }
 
-    /**
-     * Executes the command
-     *
-     * @param player The commander who is executing this command
-     * @param args   The parsed command arguments for this command
-     */
     public void exec(@NotNull Player player, @NotNull List<String> args) {
         if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
