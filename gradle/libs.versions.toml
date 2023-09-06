@@ -12,6 +12,8 @@ minecraft_v20 = { module = "com.mojang:minecraft", version = "1.20.1" }
 # Fabric
 fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.87.0+1.20.1" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.14.22" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.86.1+1.20.2" }
+fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.14.22" }
 
 # Velocioty
 velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
@@ -32,8 +34,8 @@ jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.0.
 luckperms = { module = "net.luckperms:api", version = "5.4" }
 
 # LightDream
-lightdream_logger = { module = "dev.lightdream:logger", version = "3.3.13" }
-lightdream_lambda = { module = "dev.lightdream:lambda", version = "4.1.21" }
-lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.20" }
+lightdream_logger = { module = "dev.lightdream:logger", version = "3.3.14" }
+lightdream_lambda = { module = "dev.lightdream:lambda", version = "4.1.22" }
+lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.18" }
 
 
