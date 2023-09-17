@@ -39,14 +39,6 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public static String commandSourceFiled = "field_9819";
 
-    private @NotNull List<String> getArguments() {
-        return new ArrayList<>();
-    }
-
-    protected List<String> suggest(String argument) {
-        return new ArrayList<>();
-    }
-
     private @NotNull List<ArgumentBuilder<ServerCommandSource, ?>> getArgumentsBuilders() {
         List<ArgumentBuilder<ServerCommandSource, ?>> output = new ArrayList<>();
 

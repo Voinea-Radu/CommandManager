@@ -206,4 +206,11 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
     }
 
+    default @NotNull List<String> getArguments() {
+        return new ArrayList<>();
+    }
+
+    default List<String> suggest(String argument) {
+        return new ArrayList<>();
+    }
 }

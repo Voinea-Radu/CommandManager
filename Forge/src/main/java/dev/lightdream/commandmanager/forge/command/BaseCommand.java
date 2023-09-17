@@ -38,14 +38,6 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return true;
     }
 
-    private @NotNull List<String> getArguments() {
-        return new ArrayList<>();
-    }
-
-    protected List<String> suggest(String argument) {
-        return new ArrayList<>();
-    }
-
     private @NotNull List<RequiredArgumentBuilder<CommandSourceStack, String>> getArgumentsBuilders() {
         List<RequiredArgumentBuilder<CommandSourceStack, String>> output = new ArrayList<>();
 

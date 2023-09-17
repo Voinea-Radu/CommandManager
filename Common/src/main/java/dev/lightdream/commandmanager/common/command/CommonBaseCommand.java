@@ -1,6 +1,12 @@
 package dev.lightdream.commandmanager.common.command;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommonBaseCommand extends CommonCommandImpl{
+
     @Override
     public boolean registerCommand(String alias) {
         return getMain().getAdapter().convertCommand(this).registerCommand(alias);
