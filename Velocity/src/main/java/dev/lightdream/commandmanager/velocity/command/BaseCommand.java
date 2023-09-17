@@ -6,13 +6,14 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
+import dev.lightdream.commandmanager.common.platform.PlatformConsole;
+import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.logger.Debugger;
-import dev.lightdream.logger.Logger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,7 +87,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
     @Override
     public final boolean registerCommand(String name) {
-        CommandManager commandManager = CommonCommandMain.getCommandMain(CommandMain.class).getProxy().getCommandManager();
+        CommandManager commandManager = ((CommandMain) getMain()).getProxy().getCommandManager();
         CommandMeta commandMeta = commandManager.metaBuilder(name)
                 .plugin(this)
                 .build();
@@ -103,12 +104,12 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     private void distributeExecute(CommandSource source, List<String> args) {
 
         if (!isEnabled()) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            sendMessage(source, getMain().getLang().commandIsDisabled);
             return;
         }
 
         if (!checkPermission(source, getPermission())) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
+            sendMessage(source, getMain().getLang().noPermission);
             return;
         }
 
@@ -141,48 +142,24 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
         if (onlyForConsole()) {
             if (!(source instanceof ConsoleCommandSource)) {
-                source.sendMessage(Component.text(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole));
+                source.sendMessage(Component.text(getMain().getLang().onlyForConsole));
                 return;
             }
             ConsoleCommandSource consoleSource = (ConsoleCommandSource) source;
-            exec(consoleSource, args);
+            exec(new PlatformConsole(consoleSource), args);
             return;
         }
         if (onlyForPlayers()) {
             if (!(source instanceof Player)) {
-                source.sendMessage(Component.text(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer));
+                source.sendMessage(Component.text(getMain().getLang().onlyFotPlayer));
                 return;
             }
             Player player = (Player) source;
-            exec(player, args);
+            exec(new PlatformPlayer(player), args);
             return;
         }
 
-        exec(source, args);
-    }
-
-    public void exec(@NotNull CommandSource source, @NotNull List<String> args) {
-        if (getSubCommands().isEmpty()) {
-            Logger.warn("Executing command " + getName() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
-        }
-
-        source.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
-    }
-
-    public void exec(@NotNull ConsoleCommandSource console, @NotNull List<String> args) {
-        if (getSubCommands().isEmpty()) {
-            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
-        }
-
-        console.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
-    }
-
-    public void exec(@NotNull Player player, @NotNull List<String> args) {
-        if (getSubCommands().isEmpty()) {
-            Logger.warn("Executing command " + getName() + " for " + player.getUsername() + ", but the command is not implemented. Exec type: User, CommandContext");
-        }
-
-        player.sendMessage(Component.text(ListUtils.listToString(getSubCommandsHelpMessage(), "\n")));
+        exec(new PlatformCommandSender(source), args);
     }
 
     @Override

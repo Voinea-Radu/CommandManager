@@ -2,8 +2,13 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
+import dev.lightdream.commandmanager.common.platform.PlatformConsole;
+import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
+import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
@@ -13,7 +18,13 @@ import java.util.Set;
 
 public interface ICommonCommand extends ICommandAnnotationWrapper {
 
-    default void init() {
+    void setMain(CommonCommandMain<?,?,?> commandMain);
+
+    CommonCommandMain<?,?,?> getMain();
+
+    default void init(@NotNull CommonCommandMain<?,?,?> main) {
+        setMain(main);
+
         if (!getClass().isAnnotationPresent(Command.class)) {
             Logger.error("Class " + getClass().getName() + " is not annotated as @Command");
             return;
@@ -22,7 +33,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         Command command = getClass().getAnnotation(Command.class);
         setCommandAnnotation(command);
 
-        generateSubCommands(this);
+        generateSubCommands();
 
         // If the command is a root command (has no parent) register it
         if (command.parent() == ICommonCommand.class) {
@@ -36,14 +47,13 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         }
     }
 
-    default void generateSubCommands(ICommonCommand parentCommand) {
+    default void generateSubCommands() {
         List<ICommonCommand> subCommands = new ArrayList<>();
 
         for (Class<? extends ICommonCommand> clazz : getSubCommandClasses()) {
             subCommands.add(
-                    CommonCommandMain.getCommandMain(CommonCommandMain.class)
-                            .getCommandManager()
-                            .initCommand(clazz, parentCommand)
+                    getMain().getCommandManager()
+                            .initCommand(clazz, this)
             );
         }
 
@@ -92,7 +102,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     default List<Class<? extends ICommonCommand>> getSubCommandClasses() {
         List<Class<? extends ICommonCommand>> subCommands = new ArrayList<>();
 
-        Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
+        Reflections reflections = getMain().getReflections();
         Set<Class<? extends ICommonCommand>> classes = new HashSet<>();
 
         if (reflections != null) {
@@ -102,7 +112,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
                 }
             }
         } else {
-            for (Class<? extends ICommonCommand> clazz : CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses()) {
+            for (Class<? extends ICommonCommand> clazz : getMain().getCommandClassesFinal()) {
                 if (ICommonCommand.class.isAssignableFrom(clazz)) {
                     classes.add(clazz);
                 }
@@ -133,14 +143,14 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
 
     default String getPermission() {
         String annotationPermission = getCommandAnnotation().permission();
-        String basePermission = CommonCommandMain.getCommandMain(CommonCommandMain.class).basePermission();
+        String basePermission = getMain().basePermission();
         String commandPermission = getName();
 
-        if (annotationPermission != null && !annotationPermission.equals("")) {
+        if (annotationPermission != null && !annotationPermission.isEmpty()) {
             commandPermission = annotationPermission;
         }
 
-        if (basePermission.equals("")) {
+        if (basePermission.isEmpty()) {
             return commandPermission;
         }
 
@@ -166,6 +176,34 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     }
 
     void disable();
+
     void enable();
+
+    @SuppressWarnings("unused")
+    default void exec(@NotNull PlatformCommandSender source, @NotNull List<String> arguments) {
+        if (getSubCommands().isEmpty()) {
+            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+        }
+
+        sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+    }
+
+    @SuppressWarnings("unused")
+    default void exec(@NotNull PlatformConsole console, @NotNull List<String> arguments) {
+        if (getSubCommands().isEmpty()) {
+            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+        }
+
+        sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+    }
+
+    @SuppressWarnings("unused")
+    default void exec(@NotNull PlatformPlayer player, @NotNull List<String> arguments) {
+        if (getSubCommands().isEmpty()) {
+            Logger.warn("Executing command " + getName() + " for player, but the command is not implemented. Exec type: User, CommandContext");
+        }
+
+        sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+    }
 
 }

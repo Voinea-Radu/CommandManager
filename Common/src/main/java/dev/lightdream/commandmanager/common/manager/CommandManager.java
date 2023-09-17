@@ -15,9 +15,12 @@ import java.util.List;
 public class CommandManager {
 
     private final @Getter List<ICommonCommand> commands = new ArrayList<>();
+    private final @Getter CommonCommandMain<?,?,?> main;
 
     @SneakyThrows
-    public CommandManager(boolean autoRegister) {
+    public CommandManager(CommonCommandMain<?,?,?> main, boolean autoRegister) {
+        this.main=main;
+
         if (autoRegister) {
             generateCommands();
         }
@@ -25,12 +28,12 @@ public class CommandManager {
 
     @SuppressWarnings("unused")
     @SneakyThrows
-    public CommandManager() {
-        this(true);
+    public CommandManager(CommonCommandMain<?,?,?> commandMain) {
+        this(commandMain,true);
     }
 
     public void generateCommands() {
-        for (Class<? extends ICommonCommand> clazz : CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClassesFinal()) {
+        for (Class<? extends ICommonCommand> clazz : main.getCommandClassesFinal()) {
             Command command = clazz.getAnnotation(Command.class);
             if (command.parent() != ICommonCommand.class) {
                 continue;
@@ -85,9 +88,12 @@ public class CommandManager {
         try {
             command = constructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
             return null;
         }
+
+        command.init(main);
 
         return command;
     }
@@ -95,6 +101,7 @@ public class CommandManager {
     public ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass, ICommonCommand parentCommand) {
         ICommonCommand command = initCommand(commandClass);
         command.setParentCommand(parentCommand);
+
         return command;
     }
 }

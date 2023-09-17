@@ -8,16 +8,17 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
+import dev.lightdream.commandmanager.common.platform.PlatformConsole;
+import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
-import dev.lightdream.logger.Debugger;
-import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
@@ -38,23 +39,37 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     public static String commandSourceFiled = "field_9819";
 
-    public @NotNull List<ArgumentBuilder<ServerCommandSource, ?>> getArguments() {
+    private @NotNull List<String> getArguments() {
         return new ArrayList<>();
     }
 
-    public boolean optionalArguments() {
-        return false;
+    protected List<String> suggest(String argument) {
+        return new ArrayList<>();
+    }
+
+    private @NotNull List<ArgumentBuilder<ServerCommandSource, ?>> getArgumentsBuilders() {
+        List<ArgumentBuilder<ServerCommandSource, ?>> output = new ArrayList<>();
+
+        for (String argument : getArguments()) {
+            output.add(
+                    CommandManager.argument(argument, StringArgumentType.string())
+                            .suggests((context, builder) -> {
+                                for (String suggestion : suggest(argument)) {
+                                    builder.suggest(suggestion);
+                                }
+                                return builder.buildFuture();
+                            })
+            );
+        }
+
+        return output;
     }
 
     protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder(String name) {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(name);
 
-        if (optionalArguments()) {
-            command.executes(this::executeCatch);
-        }
-
         List<ICommonCommand> subCommands = getSubCommands();
-        List<ArgumentBuilder<ServerCommandSource, ?>> arguments = getArguments();
+        List<ArgumentBuilder<ServerCommandSource, ?>> arguments = getArgumentsBuilders();
 
         if (subCommands == null) {
             subCommands = new ArrayList<>();
@@ -77,6 +92,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
                     //noinspection unchecked
                     argument = (RequiredArgumentBuilder<ServerCommandSource, String>) requiredArgumentBuilder;
                 } catch (Exception e) {
+                    //noinspection CallToPrintStackTrace
                     e.printStackTrace();
                     processedArguments.add(rawArgument);
                     continue;
@@ -138,7 +154,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
 
-        if (arguments.size() != 0) {
+        if (!arguments.isEmpty()) {
             arguments.get(arguments.size() - 1).executes(this::executeCatch);
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
@@ -159,9 +175,10 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean registerCommand(String name) {
-        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
-        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getPlayerManager().getPlayerList().forEach(player ->
-                CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().sendCommandTree(player));
+        ((CommandMain) getMain()).getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
+        ((CommandMain) getMain()).getServer().getPlayerManager().getPlayerList().forEach(player ->
+                ((CommandMain) getMain()).getServer().getCommandManager().sendCommandTree(player)
+        );
 
         return true;
     }
@@ -177,6 +194,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         try {
             return execute(context);
         } catch (Throwable t) {
+            //noinspection CallToPrintStackTrace
             t.printStackTrace();
         }
         return 0;
@@ -185,60 +203,47 @@ public abstract class BaseCommand extends CommonCommandImpl {
     @SuppressWarnings("SameReturnValue")
     public final int execute(CommandContext<ServerCommandSource> context) {
         CommandOutput source = getSource(context);
+        List<String> argumentsList = convertToArgumentsList(context);
 
         if (!isEnabled()) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            sendMessage(source, getMain().getLang().commandIsDisabled);
             return 0;
         }
 
         if (!checkPermission(source, getPermission())) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
+            sendMessage(source, getMain().getLang().noPermission);
             return 0;
         }
 
         if (onlyForConsole()) {
             if (!(source instanceof MinecraftServer consoleSource)) {
-                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole);
+                sendMessage(source, getMain().getLang().onlyForConsole);
                 return 0;
             }
-            exec(consoleSource, context);
+            exec(new PlatformConsole(consoleSource), argumentsList);
             return 0;
         }
         if (onlyForPlayers()) {
             if (!(source instanceof ServerPlayerEntity player)) {
-                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer);
+                sendMessage(source, getMain().getLang().onlyFotPlayer);
                 return 0;
             }
-            exec(player, context);
+            exec(new PlatformPlayer(player), argumentsList);
             return 0;
         }
 
-        exec(source, context);
+        exec(new PlatformCommandSender(source), argumentsList);
         return 0;
     }
 
-    public void exec(@NotNull CommandOutput source, @NotNull CommandContext<ServerCommandSource> context) {
-        if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+    public List<String> convertToArgumentsList(CommandContext<ServerCommandSource> context) {
+        List<String> arguments = new ArrayList<>();
+
+        for (String argument : getArguments()) {
+            arguments.add(context.getArgument(argument, String.class));
         }
 
-        sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
-    }
-
-    public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<ServerCommandSource> context) {
-        if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
-        }
-
-        sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
-    }
-
-    public void exec(@NotNull ServerPlayerEntity player, @NotNull CommandContext<ServerCommandSource> context) {
-        if (getSubCommands().size() == 0) {
-            Logger.warn("Executing command " + getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
-        }
-
-        sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+        return arguments;
     }
 
     @Override

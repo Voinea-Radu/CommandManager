@@ -1,5 +1,8 @@
 package dev.lightdream.commandmanager.velocity;
 
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.ConsoleCommandSource;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
@@ -9,7 +12,11 @@ import org.reflections.Reflections;
 import java.util.HashSet;
 import java.util.Set;
 
-public interface CommandMain extends CommonCommandMain {
+public interface CommandMain extends CommonCommandMain<
+        Player,
+        CommandSource,
+        ConsoleCommandSource
+        > {
 
     @NotNull ProxyServer getProxy();
 

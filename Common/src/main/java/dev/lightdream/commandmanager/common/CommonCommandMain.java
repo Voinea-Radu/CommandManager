@@ -4,6 +4,7 @@ import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.dto.CommandLang;
 import dev.lightdream.commandmanager.common.manager.CommandManager;
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.logger.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,8 +14,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public interface CommonCommandMain {
+public interface CommonCommandMain<
+        Player,
+        CommandSender,
+        ConsoleCommandSender
+        > {
 
+    @Deprecated
     static <T extends CommonCommandMain> T getCommandMain(Class<T> clazz) {
         return Statics.getMainAs(clazz);
     }
@@ -53,10 +59,16 @@ public interface CommonCommandMain {
                 classes.add((Class<? extends ICommonCommand>) clazz);
             }
         } else {
-            classes = CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses();
+            classes = getCommandClasses();
         }
 
         return classes;
     }
+
+    default Adapter<Player, CommandSender, ConsoleCommandSender> getAdapter(){
+        return new Adapter<>();
+    }
+
+
 
 }
