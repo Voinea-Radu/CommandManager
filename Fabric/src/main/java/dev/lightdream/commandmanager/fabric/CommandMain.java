@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.fabric;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.fabric.command.BaseCommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,7 +15,8 @@ import java.util.Set;
 public interface CommandMain extends CommonCommandMain<
         ServerPlayerEntity,
         MinecraftServer,
-        CommandOutput
+        CommandOutput,
+        BaseCommand
         > {
 
     @Override

@@ -10,7 +10,7 @@ import java.util.List;
 @Getter @Setter
 public abstract class CommonCommandImpl implements ICommonCommand {
 
-    private CommonCommandMain<?,?,?> main;
+    private CommonCommandMain<?,?,?,?> main;
     private Command commandAnnotation;
     private ICommonCommand parentCommand;
     private List<ICommonCommand> subCommands;

@@ -1,9 +1,13 @@
 package dev.lightdream.commandmanager.common.platform;
 
+import dev.lightdream.commandmanager.common.command.CommonBaseCommand;
+import dev.lightdream.commandmanager.common.command.ICommonCommand;
+
 public class Adapter<
         Player,
         CommandSender,
-        ConsoleCommandSender
+        ConsoleCommandSender,
+        BaseCommand extends ICommonCommand
         > {
 
     // From platform to native
@@ -33,5 +37,10 @@ public class Adapter<
 
     public PlatformConsole convertConsole(ConsoleCommandSender player) {
         return new PlatformConsole(player);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BaseCommand convertCommand(CommonBaseCommand command) {
+        return (BaseCommand) command;
     }
 }

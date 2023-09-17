@@ -17,13 +17,9 @@ import java.util.Set;
 public interface CommonCommandMain<
         Player,
         CommandSender,
-        ConsoleCommandSender
+        ConsoleCommandSender,
+        BaseCommand extends ICommonCommand
         > {
-
-    @Deprecated
-    static <T extends CommonCommandMain> T getCommandMain(Class<T> clazz) {
-        return Statics.getMainAs(clazz);
-    }
 
     CommandLang getLang();
 
@@ -65,10 +61,8 @@ public interface CommonCommandMain<
         return classes;
     }
 
-    default Adapter<Player, CommandSender, ConsoleCommandSender> getAdapter(){
+    default Adapter<Player, CommandSender, ConsoleCommandSender, BaseCommand> getAdapter(){
         return new Adapter<>();
     }
-
-
 
 }

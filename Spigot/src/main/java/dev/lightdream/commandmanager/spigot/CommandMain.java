@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.spigot;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.spigot.command.BaseCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -15,7 +16,8 @@ import java.util.Set;
 public interface CommandMain extends CommonCommandMain<
         Player,
         CommandSender,
-        ConsoleCommandSender
+        ConsoleCommandSender,
+        BaseCommand
         > {
 
     Plugin getPlugin();

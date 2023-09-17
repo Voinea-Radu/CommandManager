@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.velocity.command.BaseCommand;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
@@ -15,7 +16,8 @@ import java.util.Set;
 public interface CommandMain extends CommonCommandMain<
         Player,
         CommandSource,
-        ConsoleCommandSource
+        ConsoleCommandSource,
+        BaseCommand
         > {
 
     @NotNull ProxyServer getProxy();
