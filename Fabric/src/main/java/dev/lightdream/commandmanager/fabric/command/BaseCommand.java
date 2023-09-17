@@ -15,7 +15,7 @@ import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
-import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
+import dev.lightdream.commandmanager.common.platform.PermissionUtils;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
@@ -241,7 +241,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     @Override
     public final boolean checkPermission(Object sender, String permission) {
         if (sender instanceof ServerPlayerEntity player) {
-            return PermissionUtils.checkPermission((ServerPlayerEntity) sender, permission);
+            return PermissionUtils.checkPermission(new PlatformPlayer(sender) , permission);
         }
 
         return sender instanceof MinecraftDedicatedServer source;

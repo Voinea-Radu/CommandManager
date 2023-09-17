@@ -4,14 +4,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.PermissionUtils;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.forge.CommandMain;
-import dev.lightdream.commandmanager.forge.util.PermissionUtil;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
@@ -169,7 +168,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean checkPermission(Object user, String permission) {
-        return PermissionUtil.checkPermission((Player) user, permission);
+        return PermissionUtils.checkPermission(new PlatformPlayer<>(user), permission);
     }
 
     @Override

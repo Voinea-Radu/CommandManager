@@ -12,8 +12,8 @@ public class Adapter<
 
     // From platform to native
     @SuppressWarnings("unchecked")
-    public Player convertPlayer(PlatformPlayer player) {
-        return (Player) player.object;
+    public Player convertPlayer(PlatformPlayer<?> player) {
+        return (Player) player.getNativePlayer();
     }
 
     @SuppressWarnings("unchecked")
@@ -27,8 +27,8 @@ public class Adapter<
     }
 
     // From native to platform
-    public PlatformPlayer convertPlayer(Player player) {
-        return new PlatformPlayer(player);
+    public PlatformPlayer<?> convertPlayer(Player player) {
+        return new PlatformPlayer<>(player);
     }
 
     public PlatformCommandSender convertCommandSender(CommandSender commandSender) {

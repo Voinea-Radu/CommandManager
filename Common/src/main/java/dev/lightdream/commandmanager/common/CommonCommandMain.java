@@ -64,5 +64,4 @@ public interface CommonCommandMain<
     default Adapter<Player, CommandSender, ConsoleCommandSender, BaseCommand> getAdapter(){
         return new Adapter<>();
     }
-
 }

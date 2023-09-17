@@ -22,6 +22,9 @@ dependencies {
     // JetBrains
     api(libs.jetbrains.annotations)
     annotationProcessor(libs.jetbrains.annotations)
+
+    //Other
+    api(libs.luckperms)
 }
 
 java {

@@ -1,10 +1,19 @@
 package dev.lightdream.commandmanager.common.platform;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
-public class PlatformPlayer {
+@Getter
+public class PlatformPlayer<T> {
 
-    public Object object;
+    private @NotNull T nativePlayer;
+
+    @SuppressWarnings("unchecked")
+    public @NotNull Class<T> getNativePlayerClass(){
+        return (Class<T>) nativePlayer.getClass();
+    }
 
 }

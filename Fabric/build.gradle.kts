@@ -16,8 +16,6 @@ dependencies {
 
     api(project(":command-manager-common"))
 
-    api(libs.luckperms)
-
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
 }
