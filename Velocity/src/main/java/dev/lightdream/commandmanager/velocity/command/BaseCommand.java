@@ -8,9 +8,6 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
-import dev.lightdream.commandmanager.common.platform.PlatformConsole;
-import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
@@ -166,7 +163,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         return (CommandMain) super.getMain();
     }
 
-    protected VelocityAdapter getAdapter(){
+    protected VelocityAdapter getAdapter() {
         return getMain().getAdapter();
     }
 

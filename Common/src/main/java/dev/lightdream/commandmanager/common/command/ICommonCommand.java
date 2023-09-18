@@ -18,11 +18,11 @@ import java.util.Set;
 
 public interface ICommonCommand extends ICommandAnnotationWrapper {
 
-    void setMain(CommonCommandMain<?,?,?,?> commandMain);
+    void setMain(CommonCommandMain<?, ?, ?, ?> commandMain);
 
-    CommonCommandMain<?,?,?,?> getMain();
+    CommonCommandMain<?, ?, ?, ?> getMain();
 
-    default void init(@NotNull CommonCommandMain<?,?,?,?> main) {
+    default void init(@NotNull CommonCommandMain<?, ?, ?, ?> main) {
         setMain(main);
 
         if (!getClass().isAnnotationPresent(Command.class)) {

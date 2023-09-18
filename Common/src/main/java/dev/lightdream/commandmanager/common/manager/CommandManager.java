@@ -16,11 +16,11 @@ import java.util.List;
 public class CommandManager {
 
     private final List<ICommonCommand> commands = new ArrayList<>();
-    private final CommonCommandMain<?,?,?,?> main;
+    private final CommonCommandMain<?, ?, ?, ?> main;
 
     @SneakyThrows
-    public CommandManager(CommonCommandMain<?,?,?,?> main, boolean autoRegister) {
-        this.main=main;
+    public CommandManager(CommonCommandMain<?, ?, ?, ?> main, boolean autoRegister) {
+        this.main = main;
 
         if (autoRegister) {
             generateCommands();
@@ -29,8 +29,8 @@ public class CommandManager {
 
     @SuppressWarnings("unused")
     @SneakyThrows
-    public CommandManager(CommonCommandMain<?,?,?,?> commandMain) {
-        this(commandMain,true);
+    public CommandManager(CommonCommandMain<?, ?, ?, ?> commandMain) {
+        this(commandMain, true);
     }
 
     public void generateCommands() {
@@ -50,7 +50,7 @@ public class CommandManager {
 
     public void registerCommand(Class<? extends ICommonCommand> commandClazz) {
         for (ICommonCommand command : getCommands()) {
-            if(command.getClass().equals(commandClazz)){
+            if (command.getClass().equals(commandClazz)) {
                 command.enable();
                 return;
             }
@@ -65,9 +65,9 @@ public class CommandManager {
     }
 
     @SuppressWarnings("unused")
-    public void unregisterCommand(Class<? extends ICommonCommand> commandClazz){
+    public void unregisterCommand(Class<? extends ICommonCommand> commandClazz) {
         for (ICommonCommand command : getCommands()) {
-            if(command.getClass().equals(commandClazz)){
+            if (command.getClass().equals(commandClazz)) {
                 command.disable();
                 return;
             }

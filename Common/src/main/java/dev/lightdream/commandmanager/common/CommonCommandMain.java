@@ -42,7 +42,7 @@ public interface CommonCommandMain<
         Statics.setMain(this);
     }
 
-    default Set<Class<? extends ICommonCommand>> getCommandClassesFinal(){
+    default Set<Class<? extends ICommonCommand>> getCommandClassesFinal() {
         Set<Class<? extends ICommonCommand>> classes = new HashSet<>();
 
         if (getReflections() != null) {

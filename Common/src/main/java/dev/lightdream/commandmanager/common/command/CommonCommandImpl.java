@@ -4,15 +4,14 @@ import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 public abstract class CommonCommandImpl implements ICommonCommand {
 
-    private CommonCommandMain<?,?,?,?> main;
+    private CommonCommandMain<?, ?, ?, ?> main;
     private Command commandAnnotation;
     private ICommonCommand parentCommand;
     private List<ICommonCommand> subCommands;
@@ -27,7 +26,6 @@ public abstract class CommonCommandImpl implements ICommonCommand {
     public void enable() {
         this.enabled = true;
     }
-
 
 
 }

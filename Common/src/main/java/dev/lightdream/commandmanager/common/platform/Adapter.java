@@ -24,7 +24,7 @@ public abstract class Adapter<
     }
 
     // From native to platform
-    public abstract PlatformPlayer<Player> convertPlayer(Player player) ;
+    public abstract PlatformPlayer<Player> convertPlayer(Player player);
 
     public abstract PlatformCommandSender<CommandSender> convertCommandSender(CommandSender commandSender);
 

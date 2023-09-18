@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class FabricAdapter extends Adapter<ServerPlayerEntity,CommandOutput, MinecraftServer , BaseCommand> {
+public class FabricAdapter extends Adapter<ServerPlayerEntity, CommandOutput, MinecraftServer, BaseCommand> {
     @Override
     public PlatformPlayer<ServerPlayerEntity> convertPlayer(ServerPlayerEntity player) {
         return new FabricPlayer(player);

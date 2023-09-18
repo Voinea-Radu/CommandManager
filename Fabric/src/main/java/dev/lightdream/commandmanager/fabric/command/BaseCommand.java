@@ -8,15 +8,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
-import dev.lightdream.commandmanager.common.platform.PlatformConsole;
-import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
+import dev.lightdream.commandmanager.common.platform.PermissionUtils;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
-import dev.lightdream.commandmanager.common.platform.PermissionUtils;
 import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
@@ -235,7 +231,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return (CommandMain) super.getMain();
     }
 
-    protected FabricAdapter getAdapter(){
+    protected FabricAdapter getAdapter() {
         return getMain().getAdapter();
     }
 
