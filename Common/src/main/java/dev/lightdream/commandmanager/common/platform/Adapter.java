@@ -3,7 +3,7 @@ package dev.lightdream.commandmanager.common.platform;
 import dev.lightdream.commandmanager.common.command.CommonBaseCommand;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 
-public class Adapter<
+public abstract class Adapter<
         Player,
         CommandSender,
         ConsoleCommandSender,
@@ -11,33 +11,24 @@ public class Adapter<
         > {
 
     // From platform to native
-    @SuppressWarnings("unchecked")
-    public Player convertPlayer(PlatformPlayer<?> player) {
-        return (Player) player.getNativePlayer();
+    public Player convertPlayer(PlatformPlayer<Player> player) {
+        return player.getNativePlayer();
     }
 
-    @SuppressWarnings("unchecked")
-    public CommandSender convertCommandSender(PlatformCommandSender commandSender) {
-        return (CommandSender) commandSender.object;
+    public CommandSender convertCommandSender(PlatformCommandSender<CommandSender> commandSender) {
+        return commandSender.getNativeCommandSender();
     }
 
-    @SuppressWarnings("unchecked")
-    public ConsoleCommandSender convertConsole(PlatformConsole console) {
-        return (ConsoleCommandSender) console.object;
+    public ConsoleCommandSender convertConsole(PlatformConsole<ConsoleCommandSender> console) {
+        return console.getNativeConsole();
     }
 
     // From native to platform
-    public PlatformPlayer<?> convertPlayer(Player player) {
-        return new PlatformPlayer<>(player);
-    }
+    public abstract PlatformPlayer<Player> convertPlayer(Player player) ;
 
-    public PlatformCommandSender convertCommandSender(CommandSender commandSender) {
-        return new PlatformCommandSender(commandSender);
-    }
+    public abstract PlatformCommandSender<CommandSender> convertCommandSender(CommandSender commandSender);
 
-    public PlatformConsole convertConsole(ConsoleCommandSender player) {
-        return new PlatformConsole(player);
-    }
+    public abstract PlatformConsole<ConsoleCommandSender> convertConsole(ConsoleCommandSender player);
 
     @SuppressWarnings("unchecked")
     public BaseCommand convertCommand(CommonBaseCommand command) {

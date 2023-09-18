@@ -2,10 +2,8 @@ package dev.lightdream.commandmanager.spigot.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
-import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
-import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.spigot.CommandMain;
+import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -26,6 +24,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
     private List<BaseCommand> subCommands = new ArrayList<>();
     private @Getter boolean enabled = true;
+    private CommandMain main;
 
     @SneakyThrows
     public BaseCommand() {
@@ -119,7 +118,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
                 sender.sendMessage(new MessageBuilder(getMain().getLang().onlyFotPlayer).parse());
                 return;
             }
-            exec(new PlatformPlayer(sender), args);
+            exec(getAdapter().convertPlayer((Player) sender), args);
             return;
         }
 
@@ -128,11 +127,25 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
                 sender.sendMessage(new MessageBuilder(getMain().getLang().onlyForConsole).parse());
                 return;
             }
-            exec(new PlatformConsole(sender), args);
+            exec(getAdapter().convertConsole((ConsoleCommandSender) sender), args);
             return;
         }
 
-        exec(new PlatformCommandSender(sender), args);
+        exec(getAdapter().convertCommandSender(sender), args);
+    }
+
+    @Override
+    public CommandMain getMain() {
+        return main;
+    }
+
+    @Override
+    public void setMain(CommonCommandMain<?, ?, ?, ?> commandMain) {
+        this.main = (CommandMain) commandMain;
+    }
+
+    protected SpigotAdapter getAdapter() {
+        return getMain().getAdapter();
     }
 
     @Override

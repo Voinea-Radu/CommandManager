@@ -1,10 +1,12 @@
 package dev.lightdream.commandmanager.common.platform;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
-public class PlatformCommandSender {
+@Getter
+public abstract class PlatformCommandSender<NativeCommandSender> {
 
-    public Object object;
+    private NativeCommandSender nativeCommandSender;
 
 }

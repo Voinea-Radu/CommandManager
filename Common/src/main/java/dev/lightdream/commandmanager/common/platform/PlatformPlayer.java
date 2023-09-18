@@ -7,13 +7,13 @@ import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
 @Getter
-public class PlatformPlayer<T> {
+public abstract class PlatformPlayer<NativePlayer> {
 
-    private @NotNull T nativePlayer;
+    private NativePlayer nativePlayer;
 
-    @SuppressWarnings("unchecked")
-    public @NotNull Class<T> getNativePlayerClass(){
-        return (Class<T>) nativePlayer.getClass();
+    public Class<NativePlayer> getNativePlayerClass() {
+        //noinspection unchecked
+        return (Class<NativePlayer>) nativePlayer.getClass();
     }
 
 }

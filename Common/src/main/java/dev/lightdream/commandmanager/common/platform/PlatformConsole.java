@@ -1,10 +1,12 @@
 package dev.lightdream.commandmanager.common.platform;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
-public class PlatformConsole {
+@Getter
+public abstract class PlatformConsole<NativeConsole> {
 
-    public Object object;
+    public NativeConsole nativeConsole;
 
 }

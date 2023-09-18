@@ -2,7 +2,9 @@ package dev.lightdream.commandmanager.fabric;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.fabric.command.BaseCommand;
+import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,8 +16,8 @@ import java.util.Set;
 
 public interface CommandMain extends CommonCommandMain<
         ServerPlayerEntity,
-        MinecraftServer,
         CommandOutput,
+        MinecraftServer,
         BaseCommand
         > {
 
@@ -28,4 +30,9 @@ public interface CommandMain extends CommonCommandMain<
     @NotNull Reflections getReflections();
 
     MinecraftServer getServer();
+
+    @Override
+    default FabricAdapter getAdapter() {
+        return new FabricAdapter();
+    }
 }

@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
+import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
@@ -16,6 +17,7 @@ import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.common.platform.PermissionUtils;
+import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
@@ -194,38 +196,47 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @SuppressWarnings("SameReturnValue")
     public final int execute(CommandContext<ServerCommandSource> context) {
-        CommandOutput source = getSource(context);
+        CommandOutput sender = getSource(context);
         List<String> argumentsList = convertToArgumentsList(context);
 
         if (!isEnabled()) {
-            sendMessage(source, getMain().getLang().commandIsDisabled);
+            sendMessage(sender, getMain().getLang().commandIsDisabled);
             return 0;
         }
 
-        if (!checkPermission(source, getPermission())) {
-            sendMessage(source, getMain().getLang().noPermission);
+        if (!checkPermission(sender, getPermission())) {
+            sendMessage(sender, getMain().getLang().noPermission);
             return 0;
         }
 
         if (onlyForConsole()) {
-            if (!(source instanceof MinecraftServer consoleSource)) {
-                sendMessage(source, getMain().getLang().onlyForConsole);
+            if (!(sender instanceof MinecraftServer consoleSource)) {
+                sendMessage(sender, getMain().getLang().onlyForConsole);
                 return 0;
             }
-            exec(new PlatformConsole(consoleSource), argumentsList);
+            exec(getAdapter().convertConsole(consoleSource), argumentsList);
             return 0;
         }
         if (onlyForPlayers()) {
-            if (!(source instanceof ServerPlayerEntity player)) {
-                sendMessage(source, getMain().getLang().onlyFotPlayer);
+            if (!(sender instanceof ServerPlayerEntity player)) {
+                sendMessage(sender, getMain().getLang().onlyFotPlayer);
                 return 0;
             }
-            exec(new PlatformPlayer(player), argumentsList);
+            exec(getAdapter().convertPlayer(player), argumentsList);
             return 0;
         }
 
-        exec(new PlatformCommandSender(source), argumentsList);
+        exec(getAdapter().convertCommandSender(sender), argumentsList);
         return 0;
+    }
+
+    @Override
+    public CommandMain getMain() {
+        return (CommandMain) super.getMain();
+    }
+
+    protected FabricAdapter getAdapter(){
+        return getMain().getAdapter();
     }
 
     public List<String> convertToArgumentsList(CommandContext<ServerCommandSource> context) {
@@ -241,7 +252,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     @Override
     public final boolean checkPermission(Object sender, String permission) {
         if (sender instanceof ServerPlayerEntity player) {
-            return PermissionUtils.checkPermission(new PlatformPlayer(sender) , permission);
+            return PermissionUtils.checkPermission(getAdapter().convertPlayer(player), permission);
         }
 
         return sender instanceof MinecraftDedicatedServer source;

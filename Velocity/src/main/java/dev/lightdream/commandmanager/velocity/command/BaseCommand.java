@@ -13,6 +13,7 @@ import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
+import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
 import dev.lightdream.logger.Debugger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -101,15 +102,15 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         distributeExecute(invocation.source(), Arrays.asList(invocation.arguments()));
     }
 
-    private void distributeExecute(CommandSource source, List<String> args) {
+    private void distributeExecute(CommandSource sender, List<String> args) {
 
         if (!isEnabled()) {
-            sendMessage(source, getMain().getLang().commandIsDisabled);
+            sendMessage(sender, getMain().getLang().commandIsDisabled);
             return;
         }
 
-        if (!checkPermission(source, getPermission())) {
-            sendMessage(source, getMain().getLang().noPermission);
+        if (!checkPermission(sender, getPermission())) {
+            sendMessage(sender, getMain().getLang().noPermission);
             return;
         }
 
@@ -130,37 +131,45 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
                 BaseCommand baseCommand = (BaseCommand) subCommand;
 
-                baseCommand.distributeExecute(source, args.subList(1, args.size()));
+                baseCommand.distributeExecute(sender, args.subList(1, args.size()));
                 return;
             }
         }
 
         if (args.size() < getMinimumArgs()) {
-            sendUsage(source);
+            sendUsage(sender);
             return;
         }
 
         if (onlyForConsole()) {
-            if (!(source instanceof ConsoleCommandSource)) {
-                source.sendMessage(Component.text(getMain().getLang().onlyForConsole));
+            if (!(sender instanceof ConsoleCommandSource)) {
+                sender.sendMessage(Component.text(getMain().getLang().onlyForConsole));
                 return;
             }
-            ConsoleCommandSource consoleSource = (ConsoleCommandSource) source;
-            exec(new PlatformConsole(consoleSource), args);
+            exec(getAdapter().convertConsole((ConsoleCommandSource) sender), args);
             return;
         }
         if (onlyForPlayers()) {
-            if (!(source instanceof Player)) {
-                source.sendMessage(Component.text(getMain().getLang().onlyFotPlayer));
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(Component.text(getMain().getLang().onlyFotPlayer));
                 return;
             }
-            Player player = (Player) source;
-            exec(new PlatformPlayer(player), args);
+            exec(getAdapter().convertPlayer((Player) sender), args);
             return;
         }
 
-        exec(new PlatformCommandSender(source), args);
+        exec(getAdapter().convertCommandSender(sender), args);
     }
+
+    @Override
+    public CommandMain getMain() {
+        return (CommandMain) super.getMain();
+    }
+
+    protected VelocityAdapter getAdapter(){
+        return getMain().getAdapter();
+    }
+
 
     @Override
     public final boolean checkPermission(Object user, String permission) {
