@@ -14,12 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public interface CommonCommandMain<
-        Player,
-        CommandSender,
-        ConsoleCommandSender,
-        BaseCommand extends ICommonCommand
-        > {
+public interface CommonCommandMain {
 
     CommandLang getLang();
 
@@ -36,11 +31,6 @@ public interface CommonCommandMain<
      * @return The basePermission
      */
     @NotNull String basePermission();
-
-    @SuppressWarnings("unused")
-    default void initializeCommandMain() {
-        Statics.setMain(this);
-    }
 
     default Set<Class<? extends ICommonCommand>> getCommandClassesFinal() {
         Set<Class<? extends ICommonCommand>> classes = new HashSet<>();
@@ -61,5 +51,5 @@ public interface CommonCommandMain<
         return classes;
     }
 
-    Adapter<Player, CommandSender, ConsoleCommandSender, BaseCommand> getAdapter();
+    Adapter getAdapter();
 }

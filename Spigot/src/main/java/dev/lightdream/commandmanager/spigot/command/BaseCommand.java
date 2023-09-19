@@ -57,7 +57,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
         if (commandMapObject instanceof CommandMap) {
             CommandMap commandMap = (CommandMap) commandMapObject;
-            commandMap.register(((CommandMain) getMain()).getPlugin().getDescription().getName(), this);
+            commandMap.register(getMain().getPlugin().getDescription().getName(), this);
         } else {
             return false;
         }
@@ -140,7 +140,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     @Override
-    public void setMain(CommonCommandMain<?, ?, ?, ?> commandMain) {
+    public void setMain(CommonCommandMain commandMain) {
         this.main = (CommandMain) commandMain;
     }
 

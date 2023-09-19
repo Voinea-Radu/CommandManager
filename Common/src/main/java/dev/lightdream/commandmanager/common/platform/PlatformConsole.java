@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public abstract class PlatformConsole<NativeConsole> {
+public abstract class PlatformConsole {
 
-    public NativeConsole nativeConsole;
+    public Object nativeConsole;
 
 }

@@ -14,12 +14,7 @@ import org.reflections.Reflections;
 import java.util.HashSet;
 import java.util.Set;
 
-public interface CommandMain extends CommonCommandMain<
-        Player,
-        CommandSender,
-        ConsoleCommandSender,
-        BaseCommand
-        > {
+public interface CommandMain extends CommonCommandMain {
 
     Plugin getPlugin();
 

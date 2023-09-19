@@ -30,7 +30,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean registerCommand(String name) {
-        ((CommandMain) getMain()).getDispatcher().register(getCommandBuilder(name));
+        getMain().getDispatcher().register(getCommandBuilder(name));
         return true;
     }
 
@@ -62,9 +62,6 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         if (subCommands == null) {
             subCommands = new ArrayList<>();
-        }
-        if (arguments == null) {
-            arguments = new ArrayList<>();
         }
 
         for (ICommonCommand subCommandObject : subCommands) {

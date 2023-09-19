@@ -9,19 +9,51 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class SpigotAdapter extends Adapter<Player, CommandSender, ConsoleCommandSender, BaseCommand> {
+public class SpigotAdapter extends Adapter {
     @Override
-    public PlatformPlayer<Player> convertPlayer(Player player) {
+    public Player convertPlayer(PlatformPlayer player) {
+        return (Player) player.getNativePlayer();
+    }
+
+    @Override
+    public <T> PlatformPlayer convertPlayer(T playerObject) {
+        if (!(playerObject instanceof Player)) {
+            throw new RuntimeException("Can not convert from " + playerObject.getClass().getName() + " to " +
+                    PlatformPlayer.class.getName());
+        }
+        Player player = (Player) playerObject;
         return new SpigotPlayer(player);
     }
 
     @Override
-    public PlatformCommandSender<CommandSender> convertCommandSender(CommandSender commandSender) {
-        return new SpigotCommandSender(commandSender);
+    public CommandSender convertCommandSender(PlatformCommandSender commandSender) {
+        return (CommandSender) commandSender.getNativeCommandSender();
     }
 
     @Override
-    public PlatformConsole<ConsoleCommandSender> convertConsole(ConsoleCommandSender consoleCommandSender) {
-        return new SpigotConsole(consoleCommandSender);
+    public <T> PlatformCommandSender convertCommandSender(T commandSenderObject) {
+        if (!(commandSenderObject instanceof CommandSender)) {
+            throw new RuntimeException("Can not convert from " + commandSenderObject.getClass().getName() + " to " +
+                    PlatformCommandSender.class.getName());
+        }
+
+        CommandSender player = (CommandSender) commandSenderObject;
+        return new SpigotCommandSender(player);
+    }
+
+    @Override
+    public ConsoleCommandSender convertConsole(PlatformConsole console) {
+        return (ConsoleCommandSender) console.getNativeConsole();
+    }
+
+    @Override
+    public <T> PlatformConsole convertConsole(T consoleObject) {
+        if (!(consoleObject instanceof ConsoleCommandSender)) {
+            throw new RuntimeException("Can not convert from " + consoleObject.getClass().getName() + " to " +
+                    PlatformConsole.class.getName());
+        }
+
+        ConsoleCommandSender console = (ConsoleCommandSender) consoleObject;
+        return new SpigotConsole(console);
     }
 }

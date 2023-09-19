@@ -3,35 +3,24 @@ package dev.lightdream.commandmanager.common.platform;
 import dev.lightdream.commandmanager.common.command.CommonBaseCommand;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 
-public abstract class Adapter<
-        Player,
-        CommandSender,
-        ConsoleCommandSender,
-        BaseCommand extends ICommonCommand
-        > {
+public abstract class Adapter{
 
-    // From platform to native
-    public Player convertPlayer(PlatformPlayer<Player> player) {
-        return player.getNativePlayer();
-    }
+    public abstract Object convertPlayer(PlatformPlayer player) ;
 
-    public CommandSender convertCommandSender(PlatformCommandSender<CommandSender> commandSender) {
-        return commandSender.getNativeCommandSender();
-    }
+    public abstract <T> PlatformPlayer convertPlayer(T playerObject);
 
-    public ConsoleCommandSender convertConsole(PlatformConsole<ConsoleCommandSender> console) {
-        return console.getNativeConsole();
-    }
 
-    // From native to platform
-    public abstract PlatformPlayer<Player> convertPlayer(Player player);
+    public abstract Object convertCommandSender(PlatformCommandSender commandSender) ;
 
-    public abstract PlatformCommandSender<CommandSender> convertCommandSender(CommandSender commandSender);
+    public abstract <T> PlatformCommandSender convertCommandSender(T commandSenderObject);
 
-    public abstract PlatformConsole<ConsoleCommandSender> convertConsole(ConsoleCommandSender player);
 
-    @SuppressWarnings("unchecked")
-    public BaseCommand convertCommand(CommonBaseCommand command) {
-        return (BaseCommand) command;
+    public abstract Object convertConsole(PlatformConsole console);
+
+    public abstract <T> PlatformConsole convertConsole(T consoleObject);
+
+
+    public ICommonCommand convertCommand(CommonBaseCommand command) {
+        return command;
     }
 }

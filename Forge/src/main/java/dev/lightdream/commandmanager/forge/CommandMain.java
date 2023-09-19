@@ -12,12 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
 
-public interface CommandMain extends CommonCommandMain<
-        ServerPlayer,
-        CommandSource,
-        MinecraftServer,
-        BaseCommand
-        > {
+public interface CommandMain extends CommonCommandMain {
 
     @NotNull CommandDispatcher<CommandSourceStack> getDispatcher();
 

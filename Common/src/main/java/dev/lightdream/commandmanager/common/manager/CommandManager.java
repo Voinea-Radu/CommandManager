@@ -16,10 +16,10 @@ import java.util.List;
 public class CommandManager {
 
     private final List<ICommonCommand> commands = new ArrayList<>();
-    private final CommonCommandMain<?, ?, ?, ?> main;
+    private final CommonCommandMain main;
 
     @SneakyThrows
-    public CommandManager(CommonCommandMain<?, ?, ?, ?> main, boolean autoRegister) {
+    public CommandManager(CommonCommandMain main, boolean autoRegister) {
         this.main = main;
 
         if (autoRegister) {
@@ -29,7 +29,7 @@ public class CommandManager {
 
     @SuppressWarnings("unused")
     @SneakyThrows
-    public CommandManager(CommonCommandMain<?, ?, ?, ?> commandMain) {
+    public CommandManager(CommonCommandMain commandMain) {
         this(commandMain, true);
     }
 

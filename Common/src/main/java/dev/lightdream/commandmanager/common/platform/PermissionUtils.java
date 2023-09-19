@@ -6,12 +6,14 @@ import net.luckperms.api.platform.PlayerAdapter;
 
 public class PermissionUtils {
 
-    public static <T> boolean checkPermission(PlatformPlayer<T> player, String permission) {
+    public static boolean checkPermission(PlatformPlayer player, String permission) {
         try {
             LuckPerms luckPerms = LuckPermsProvider.get();
 
-            PlayerAdapter<T> playerAdapter = luckPerms.getPlayerAdapter(player.getNativePlayerClass());
+            //noinspection rawtypes
+            PlayerAdapter playerAdapter = luckPerms.getPlayerAdapter(player.getNativePlayerClass());
 
+            //noinspection unchecked
             return playerAdapter.getPermissionData(player.getNativePlayer()).checkPermission(permission).asBoolean();
         } catch (Exception e) {
             // No LuckPerms - has no permission

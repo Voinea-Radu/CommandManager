@@ -165,9 +165,9 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean registerCommand(String name) {
-        ((CommandMain) getMain()).getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
-        ((CommandMain) getMain()).getServer().getPlayerManager().getPlayerList().forEach(player ->
-                ((CommandMain) getMain()).getServer().getCommandManager().sendCommandTree(player)
+        getMain().getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
+        getMain().getServer().getPlayerManager().getPlayerList().forEach(player ->
+                getMain().getServer().getCommandManager().sendCommandTree(player)
         );
 
         return true;

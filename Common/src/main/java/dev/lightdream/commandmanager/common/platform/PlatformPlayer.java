@@ -5,13 +5,12 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public abstract class PlatformPlayer<NativePlayer> {
+public abstract class PlatformPlayer {
 
-    private NativePlayer nativePlayer;
+    private Object nativePlayer;
 
-    public Class<NativePlayer> getNativePlayerClass() {
-        //noinspection unchecked
-        return (Class<NativePlayer>) nativePlayer.getClass();
+    public Class<?> getNativePlayerClass() {
+        return nativePlayer.getClass();
     }
 
 }

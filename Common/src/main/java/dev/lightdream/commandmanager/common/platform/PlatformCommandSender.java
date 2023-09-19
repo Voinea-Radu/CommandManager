@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public abstract class PlatformCommandSender<NativeCommandSender> {
+public abstract class PlatformCommandSender {
 
-    private NativeCommandSender nativeCommandSender;
+    private Object nativeCommandSender;
 
 }
