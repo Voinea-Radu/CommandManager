@@ -145,7 +145,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     protected SpigotAdapter getAdapter() {
-        return getMain().getAdapter();
+        return (SpigotAdapter) getMain().getAdapter();
     }
 
     @Override

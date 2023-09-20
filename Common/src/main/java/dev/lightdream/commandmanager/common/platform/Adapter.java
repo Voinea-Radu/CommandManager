@@ -23,4 +23,12 @@ public abstract class Adapter{
     public ICommonCommand convertCommand(CommonBaseCommand command) {
         return command;
     }
+
+    protected RuntimeException createConversionError(Class<?> fromClass, Class<?> toClass){
+        return new RuntimeException("Can not convert from " + fromClass.getName() + " to " + toClass.getName());
+    }
+
+    protected RuntimeException createConversionError(Object fromObject, Class<?> toClass) {
+        return createConversionError(fromObject.getClass(), toClass);
+    }
 }

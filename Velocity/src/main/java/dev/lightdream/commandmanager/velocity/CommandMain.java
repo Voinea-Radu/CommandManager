@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.velocity.command.BaseCommand;
 import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull Reflections getReflections();
 
     @Override
-    default VelocityAdapter getAdapter() {
+    default Adapter getAdapter() {
         return new VelocityAdapter();
     }
 }

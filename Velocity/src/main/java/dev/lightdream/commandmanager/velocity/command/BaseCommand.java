@@ -164,9 +164,8 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     }
 
     protected VelocityAdapter getAdapter() {
-        return getMain().getAdapter();
+        return (VelocityAdapter) getMain().getAdapter();
     }
-
 
     @Override
     public final boolean checkPermission(Object user, String permission) {

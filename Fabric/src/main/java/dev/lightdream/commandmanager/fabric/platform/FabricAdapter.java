@@ -16,11 +16,11 @@ public class FabricAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformPlayer convertPlayer(T playerObject) {
+    public <T> FabricPlayer convertPlayer(T playerObject) {
         if (!(playerObject instanceof ServerPlayerEntity player)) {
-            throw new RuntimeException("Can not convert from " + playerObject.getClass().getName() + " to " +
-                    PlatformPlayer.class.getName());
+            throw createConversionError(playerObject, FabricPlayer.class);
         }
+
         return new FabricPlayer(player);
     }
 
@@ -30,11 +30,11 @@ public class FabricAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformCommandSender convertCommandSender(T commandSenderObject) {
+    public <T> FabricCommandSender convertCommandSender(T commandSenderObject) {
         if (!(commandSenderObject instanceof ServerPlayerEntity commandSender)) {
-            throw new RuntimeException("Can not convert from " + commandSenderObject.getClass().getName() + " to " +
-                    PlatformCommandSender.class.getName());
+            throw createConversionError(commandSenderObject, PlatformCommandSender.class);
         }
+
         return new FabricCommandSender(commandSender);
     }
 
@@ -44,11 +44,11 @@ public class FabricAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformConsole convertConsole(T consoleObject) {
+    public <T> FabricConsole convertConsole(T consoleObject) {
         if (!(consoleObject instanceof MinecraftServer console)) {
-            throw new RuntimeException("Can not convert from " + consoleObject.getClass().getName() + " to " +
-                    PlatformConsole.class.getName());
+            throw createConversionError(consoleObject, FabricConsole.class);
         }
+
         return new FabricConsole(console);
     }
 }

@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.fabric;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.fabric.command.BaseCommand;
 import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import net.minecraft.server.MinecraftServer;
@@ -26,7 +27,7 @@ public interface CommandMain extends CommonCommandMain {
     MinecraftServer getServer();
 
     @Override
-    default FabricAdapter getAdapter() {
+    default Adapter getAdapter() {
         return new FabricAdapter();
     }
 }

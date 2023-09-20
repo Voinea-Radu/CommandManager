@@ -164,9 +164,8 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     protected ForgeAdapter getAdapter() {
-        return getMain().getAdapter();
+        return (ForgeAdapter) getMain().getAdapter();
     }
-
 
     @Override
     public final boolean checkPermission(Object user, String permission) {

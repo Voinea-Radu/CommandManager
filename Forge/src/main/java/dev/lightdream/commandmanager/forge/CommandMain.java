@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.forge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.lightdream.commandmanager.common.CommonCommandMain;
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.forge.command.BaseCommand;
 import dev.lightdream.commandmanager.forge.platform.ForgeAdapter;
 import net.minecraft.commands.CommandSource;
@@ -22,7 +23,7 @@ public interface CommandMain extends CommonCommandMain {
     }
 
     @Override
-    default ForgeAdapter getAdapter() {
+    default Adapter getAdapter() {
         return new ForgeAdapter();
     }
 }

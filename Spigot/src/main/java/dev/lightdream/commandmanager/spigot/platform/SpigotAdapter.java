@@ -16,11 +16,11 @@ public class SpigotAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformPlayer convertPlayer(T playerObject) {
+    public <T> SpigotPlayer convertPlayer(T playerObject) {
         if (!(playerObject instanceof Player)) {
-            throw new RuntimeException("Can not convert from " + playerObject.getClass().getName() + " to " +
-                    PlatformPlayer.class.getName());
+            throw createConversionError(playerObject, SpigotPlayer.class);
         }
+
         Player player = (Player) playerObject;
         return new SpigotPlayer(player);
     }
@@ -31,10 +31,9 @@ public class SpigotAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformCommandSender convertCommandSender(T commandSenderObject) {
+    public <T> SpigotCommandSender convertCommandSender(T commandSenderObject) {
         if (!(commandSenderObject instanceof CommandSender)) {
-            throw new RuntimeException("Can not convert from " + commandSenderObject.getClass().getName() + " to " +
-                    PlatformCommandSender.class.getName());
+            throw createConversionError(commandSenderObject, SpigotCommandSender.class);
         }
 
         CommandSender player = (CommandSender) commandSenderObject;
@@ -47,10 +46,9 @@ public class SpigotAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformConsole convertConsole(T consoleObject) {
+    public <T> SpigotConsole convertConsole(T consoleObject) {
         if (!(consoleObject instanceof ConsoleCommandSender)) {
-            throw new RuntimeException("Can not convert from " + consoleObject.getClass().getName() + " to " +
-                    PlatformConsole.class.getName());
+            throw createConversionError(consoleObject, SpigotConsole.class);
         }
 
         ConsoleCommandSender console = (ConsoleCommandSender) consoleObject;

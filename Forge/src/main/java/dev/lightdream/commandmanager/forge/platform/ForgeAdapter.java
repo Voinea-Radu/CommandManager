@@ -16,11 +16,11 @@ public class ForgeAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformPlayer convertPlayer(T playerObject) {
+    public <T> ForgePlayer convertPlayer(T playerObject) {
         if (!(playerObject instanceof ServerPlayer player)) {
-            throw new RuntimeException("Can not convert from " + playerObject.getClass().getName() + " to " +
-                    PlatformPlayer.class.getName());
+            throw createConversionError(playerObject, ForgePlayer.class);
         }
+
         return new ForgePlayer(player);
     }
 
@@ -30,11 +30,11 @@ public class ForgeAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformCommandSender convertCommandSender(T commandSenderObject) {
+    public <T> ForgeCommandSender convertCommandSender(T commandSenderObject) {
         if (!(commandSenderObject instanceof CommandSource commandSender)) {
-            throw new RuntimeException("Can not convert from " + commandSenderObject.getClass().getName() + " to " +
-                    PlatformCommandSender.class.getName());
+            throw createConversionError(commandSenderObject, ForgeCommandSender.class);
         }
+
         return new ForgeCommandSender(commandSender);
     }
 
@@ -44,11 +44,11 @@ public class ForgeAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformConsole convertConsole(T consoleObject) {
+    public <T> ForgeConsole convertConsole(T consoleObject) {
         if (!(consoleObject instanceof MinecraftServer console)) {
-            throw new RuntimeException("Can not convert from " + consoleObject.getClass().getName() + " to " +
-                    PlatformConsole.class.getName());
+            throw createConversionError(consoleObject, PlatformConsole.class);
         }
+
         return new ForgeConsole(console);
     }
 }

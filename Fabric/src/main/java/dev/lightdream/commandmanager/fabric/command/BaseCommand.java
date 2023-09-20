@@ -232,7 +232,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     protected FabricAdapter getAdapter() {
-        return getMain().getAdapter();
+        return (FabricAdapter) getMain().getAdapter();
     }
 
     public List<String> convertToArgumentsList(CommandContext<ServerCommandSource> context) {

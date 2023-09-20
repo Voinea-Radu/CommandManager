@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.spigot;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.spigot.command.BaseCommand;
 import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull Reflections getReflections();
 
     @Override
-    default SpigotAdapter getAdapter() {
+    default Adapter getAdapter() {
         return new SpigotAdapter();
     }
 }

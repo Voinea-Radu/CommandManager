@@ -16,11 +16,11 @@ public class VelocityAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformPlayer convertPlayer(T playerObject) {
+    public <T> VelocityPlayer convertPlayer(T playerObject) {
         if (!(playerObject instanceof Player)) {
-            throw new RuntimeException("Can not convert from " + playerObject.getClass().getName() + " to " +
-                    PlatformPlayer.class.getName());
+            throw createConversionError(playerObject, VelocityPlayer.class);
         }
+
         Player player = (Player) playerObject;
         return new VelocityPlayer(player);
     }
@@ -31,10 +31,9 @@ public class VelocityAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformCommandSender convertCommandSender(T commandSenderObject) {
+    public <T> VelocityCommandSender convertCommandSender(T commandSenderObject) {
         if (!(commandSenderObject instanceof CommandSource)) {
-            throw new RuntimeException("Can not convert from " + commandSenderObject.getClass().getName() + " to " +
-                    PlatformCommandSender.class.getName());
+            throw createConversionError(commandSenderObject, VelocityCommandSender.class);
         }
 
         CommandSource player = (CommandSource) commandSenderObject;
@@ -47,10 +46,9 @@ public class VelocityAdapter extends Adapter {
     }
 
     @Override
-    public <T> PlatformConsole convertConsole(T consoleObject) {
+    public <T> VelocityConsole convertConsole(T consoleObject) {
         if (!(consoleObject instanceof ConsoleCommandSource)) {
-            throw new RuntimeException("Can not convert from " + consoleObject.getClass().getName() + " to " +
-                    PlatformConsole.class.getName());
+            throw createConversionError(consoleObject, VelocityConsole.class);
         }
 
         ConsoleCommandSource console = (ConsoleCommandSource) consoleObject;
