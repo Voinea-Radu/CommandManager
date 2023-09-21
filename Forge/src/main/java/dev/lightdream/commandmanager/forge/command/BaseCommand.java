@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PermissionUtils;
 import dev.lightdream.commandmanager.forge.CommandMain;
 import dev.lightdream.commandmanager.forge.platform.ForgeAdapter;
@@ -121,6 +122,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     public int internalExecute(CommandContext<CommandSourceStack> context) {
         CommandSource sender = getCommandSource(context);
         List<String> argumentsList = convertToArgumentsList(context);
+        ArgumentList arguments = new ArgumentList(argumentsList, this);
 
         if (!isEnabled()) {
             sendMessage(sender, getMain().getLang().commandIsDisabled);
@@ -132,7 +134,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
                 sendMessage(sender, getMain().getLang().onlyForConsole);
                 return 0;
             }
-            exec(getAdapter().convertConsole(consoleSource), argumentsList);
+            exec(getAdapter().convertConsole(consoleSource), arguments);
             return 0;
         }
         if (onlyForPlayers()) {
@@ -140,11 +142,11 @@ public abstract class BaseCommand extends CommonCommandImpl {
                 sendMessage(sender, getMain().getLang().onlyFotPlayer);
                 return 0;
             }
-            exec(getAdapter().convertPlayer(player), argumentsList);
+            exec(getAdapter().convertPlayer(player), arguments);
             return 0;
         }
 
-        exec(getAdapter().convertCommandSender(sender), argumentsList);
+        exec(getAdapter().convertCommandSender(sender), arguments);
         return 0;
     }
 

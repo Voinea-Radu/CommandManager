@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.spigot.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.spigot.CommandMain;
 import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import dev.lightdream.messagebuilder.MessageBuilder;
@@ -107,18 +108,20 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         return true;
     }
 
-    public final void distributeExec(CommandSender sender, List<String> args) {
-        if (args.size() < getMinimumArgs()) {
+    public final void distributeExec(CommandSender sender, List<String> argumentsList) {
+        if (argumentsList.size() < getMinimumArgs()) {
             sendUsage(sender);
             return;
         }
+
+        ArgumentList arguments = new ArgumentList(argumentsList, this);
 
         if (onlyForPlayers()) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(new MessageBuilder(getMain().getLang().onlyFotPlayer).parse());
                 return;
             }
-            exec(getAdapter().convertPlayer((Player) sender), args);
+            exec(getAdapter().convertPlayer((Player) sender), arguments);
             return;
         }
 
@@ -127,11 +130,11 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
                 sender.sendMessage(new MessageBuilder(getMain().getLang().onlyForConsole).parse());
                 return;
             }
-            exec(getAdapter().convertConsole((ConsoleCommandSender) sender), args);
+            exec(getAdapter().convertConsole((ConsoleCommandSender) sender), arguments);
             return;
         }
 
-        exec(getAdapter().convertCommandSender(sender), args);
+        exec(getAdapter().convertCommandSender(sender), arguments);
     }
 
     @Override

@@ -2,6 +2,7 @@ package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
@@ -180,7 +181,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     void enable();
 
     @SuppressWarnings("unused")
-    default void exec(@NotNull PlatformCommandSender source, @NotNull List<String> arguments) {
+    default void exec(@NotNull PlatformCommandSender source, @NotNull ArgumentList arguments) {
         if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
@@ -189,7 +190,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     }
 
     @SuppressWarnings("unused")
-    default void exec(@NotNull PlatformConsole console, @NotNull List<String> arguments) {
+    default void exec(@NotNull PlatformConsole console, @NotNull ArgumentList arguments) {
         if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
@@ -198,7 +199,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     }
 
     @SuppressWarnings("unused")
-    default void exec(@NotNull PlatformPlayer player, @NotNull List<String> arguments) {
+    default void exec(@NotNull PlatformPlayer player, @NotNull ArgumentList arguments) {
         if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for player, but the command is not implemented. Exec type: User, CommandContext");
         }

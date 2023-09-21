@@ -8,6 +8,7 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
@@ -99,8 +100,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         distributeExecute(invocation.source(), Arrays.asList(invocation.arguments()));
     }
 
-    private void distributeExecute(CommandSource sender, List<String> args) {
-
+    private void distributeExecute(CommandSource sender, List<String> argumentsList) {
         if (!isEnabled()) {
             sendMessage(sender, getMain().getLang().commandIsDisabled);
             return;
@@ -111,12 +111,12 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return;
         }
 
-        if (!args.isEmpty()) {
+        if (!argumentsList.isEmpty()) {
             for (ICommonCommand subCommand : getSubCommands()) {
                 boolean found = false;
 
                 for (String name : subCommand.getNames()) {
-                    if (name.equalsIgnoreCase(args.get(0))) {
+                    if (name.equalsIgnoreCase(argumentsList.get(0))) {
                         found = true;
                         break;
                     }
@@ -128,22 +128,24 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
                 BaseCommand baseCommand = (BaseCommand) subCommand;
 
-                baseCommand.distributeExecute(sender, args.subList(1, args.size()));
+                baseCommand.distributeExecute(sender, argumentsList.subList(1, argumentsList.size()));
                 return;
             }
         }
 
-        if (args.size() < getMinimumArgs()) {
+        if (argumentsList.size() < getMinimumArgs()) {
             sendUsage(sender);
             return;
         }
+
+        ArgumentList arguments = new ArgumentList(argumentsList, this);
 
         if (onlyForConsole()) {
             if (!(sender instanceof ConsoleCommandSource)) {
                 sender.sendMessage(Component.text(getMain().getLang().onlyForConsole));
                 return;
             }
-            exec(getAdapter().convertConsole((ConsoleCommandSource) sender), args);
+            exec(getAdapter().convertConsole((ConsoleCommandSource) sender), arguments);
             return;
         }
         if (onlyForPlayers()) {
@@ -151,11 +153,11 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
                 sender.sendMessage(Component.text(getMain().getLang().onlyFotPlayer));
                 return;
             }
-            exec(getAdapter().convertPlayer((Player) sender), args);
+            exec(getAdapter().convertPlayer((Player) sender), arguments);
             return;
         }
 
-        exec(getAdapter().convertCommandSender(sender), args);
+        exec(getAdapter().convertCommandSender(sender), arguments);
     }
 
     @Override
