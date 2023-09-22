@@ -1,12 +1,10 @@
 package dev.lightdream.commandmanager.spigot.command;
 
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.spigot.CommandMain;
 import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import dev.lightdream.messagebuilder.MessageBuilder;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -17,41 +15,89 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand extends org.bukkit.command.Command implements ICommonCommand {
+public abstract class BaseCommand extends SpigotCommonCommandImpl {
 
-    private List<BaseCommand> subCommands = new ArrayList<>();
-    private @Getter boolean enabled = true;
-    private CommandMain main;
+    @Override
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        internalExecute(sender, Arrays.asList(args));
+        return true;
+    }
 
-    @SneakyThrows
-    public BaseCommand() {
-        super("");
+    private void internalExecute(CommandSender sender, List<String> arguments) {
+        if (!isEnabled()) {
+            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            return;
+        }
+
+        if (!checkPermission(sender, getPermission())) {
+            sender.sendMessage(new MessageBuilder(getMain().getLang().noPermission).toString());
+            return;
+        }
+
+        if (arguments.isEmpty()) {
+            distributeExec(sender, arguments);
+            return;
+        }
+
+        for (ICommonCommand subCommand : getSubCommands()) {
+            for (String name : subCommand.getNames()) {
+                if (name.equalsIgnoreCase(arguments.get(0))) {
+                    BaseCommand baseCommand = (BaseCommand) subCommand;
+
+                    baseCommand.distributeExec(sender, arguments.subList(1, arguments.size()));
+                    return;
+                }
+            }
+        }
+
+        distributeExec(sender, arguments);
+    }
+
+    private void distributeExec(CommandSender sender, List<String> argumentsList) {
+        if (argumentsList.size() != getArguments().size()) {
+            sendUsage(sender);
+            return;
+        }
+
+        ArgumentList arguments = new ArgumentList(argumentsList, this);
+
+        switch (getOnlyFor()) {
+            case PLAYER:
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(new MessageBuilder(getMain().getLang().onlyFotPlayer).parse());
+                    return;
+                }
+                execute(getAdapter().convertPlayer((Player) sender), arguments);
+                break;
+            case CONSOLE:
+                if (!(sender instanceof ConsoleCommandSender)) {
+                    sender.sendMessage(new MessageBuilder(getMain().getLang().onlyForConsole).parse());
+                    return;
+                }
+                execute(getAdapter().convertConsole((ConsoleCommandSender) sender), arguments);
+                break;
+            case BOTH:
+                execute(getAdapter().convertCommandSender(sender), arguments);
+                break;
+        }
     }
 
     @Override
-    public void disable() {
-        this.enabled = false;
+    public CommandMain getMain() {
+        return (CommandMain) super.getMain();
     }
 
-    @Override
-    public void enable() {
-        this.enabled = true;
+    protected SpigotAdapter getAdapter() {
+        return (SpigotAdapter) getMain().getAdapter();
     }
 
-    // Override the default method on org.bukkit.command.Command
+    @SneakyThrows(value = {IllegalAccessException.class, NoSuchFieldException.class})
     @Override
-    public List<String> getAliases() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    @SneakyThrows
-    public final boolean registerCommand(String name) {
-        this.setAliases(Collections.singletonList(name));
+    public boolean registerCommand(String alias) {
+        this.setAliases(getNames());
         Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
         fCommandMap.setAccessible(true);
 
@@ -59,149 +105,64 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         if (commandMapObject instanceof CommandMap) {
             CommandMap commandMap = (CommandMap) commandMapObject;
             commandMap.register(getMain().getPlugin().getDescription().getName(), this);
-        } else {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public final boolean execute(CommandSender sender, String label, String[] args) {
-        if (!isEnabled()) {
-            sendMessage(sender, getMain().getLang().commandIsDisabled);
             return true;
         }
 
-        if (!checkPermission(sender, getPermission())) {
-            sender.sendMessage(new MessageBuilder(getMain().getLang().noPermission).toString());
-            return true;
-        }
-
-        if (args.length == 0) {
-            distributeExec(sender, new ArrayList<>(Arrays.asList(args)));
-            return true;
-        }
-
-
-        for (ICommonCommand subCommand : getSubCommands()) {
-            boolean found = false;
-
-            for (String name : subCommand.getNames()) {
-                if (name.equalsIgnoreCase(args[0])) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                continue;
-            }
-
-            BaseCommand baseCommand = (BaseCommand) subCommand;
-
-            baseCommand.distributeExec(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
-            return true;
-        }
-
-        distributeExec(sender, new ArrayList<>(Arrays.asList(args)));
-        return true;
-    }
-
-    public final void distributeExec(CommandSender sender, List<String> argumentsList) {
-        if (argumentsList.size() < getMinimumArgs()) {
-            sendUsage(sender);
-            return;
-        }
-
-        ArgumentList arguments = new ArgumentList(argumentsList, this);
-
-        if (onlyForPlayers()) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(new MessageBuilder(getMain().getLang().onlyFotPlayer).parse());
-                return;
-            }
-            exec(getAdapter().convertPlayer((Player) sender), arguments);
-            return;
-        }
-
-        if (onlyForConsole()) {
-            if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(new MessageBuilder(getMain().getLang().onlyForConsole).parse());
-                return;
-            }
-            exec(getAdapter().convertConsole((ConsoleCommandSender) sender), arguments);
-            return;
-        }
-
-        exec(getAdapter().convertCommandSender(sender), arguments);
+        return false;
     }
 
     @Override
-    public CommandMain getMain() {
-        return main;
-    }
-
-    @Override
-    public void setMain(CommonCommandMain commandMain) {
-        this.main = (CommandMain) commandMain;
-    }
-
-    protected SpigotAdapter getAdapter() {
-        return (SpigotAdapter) getMain().getAdapter();
-    }
-
-    @Override
-    public final List<String> tabComplete(CommandSender sender, String bukkitAlias, String[] args) throws IllegalArgumentException {
-        if (args.length == 1) {
-            ArrayList<String> result = new ArrayList<>();
-            for (BaseCommand subCommand : subCommands) {
-                if (subCommand.getName().toLowerCase().startsWith(args[0].toLowerCase()) && checkPermission(sender, subCommand.getPermission())) {
-                    result.add(subCommand.getName());
-                }
-            }
-            return result;
-        }
-
-        for (BaseCommand subCommand : subCommands) {
-            if (subCommand.getName().contains(args[0]) && checkPermission(sender, subCommand.getPermission())) {
-                return subCommand.onTabComplete(sender, new ArrayList<>(Arrays.asList(args).subList(1, args.length)));
-            }
-        }
-
-        return onTabComplete(sender, new ArrayList<>(Arrays.asList(args)));
-    }
-
-    public List<String> onTabComplete(CommandSender sender, List<String> args) {
-        return Collections.emptyList();
-    }
-
-    public final boolean checkPermission(Object sender, String permission) {
-        return checkPermission((CommandSender) sender, permission);
-    }
-
-    public final boolean checkPermission(CommandSender sender, String permission) {
-        return ((sender.hasPermission(permission) || permission.equalsIgnoreCase("")));
-    }
-
-    @Override
-    public final void sendMessage(Object user, String message) {
+    public void sendMessage(Object user, String message) {
         ((CommandSender) user).sendMessage(message);
     }
 
     @Override
-    public final List<ICommonCommand> getSubCommands() {
-        return new ArrayList<>(subCommands);
+    public boolean checkPermission(Object user, String permission) {
+        return ((CommandSender) user).hasPermission(permission);
     }
 
     @Override
-    public final void setSubCommands(List<ICommonCommand> subCommands) {
-        List<BaseCommand> newSubCommands = new ArrayList<>();
+    public final List<String> tabComplete(CommandSender sender, String bukkitAlias, String[] args) throws IllegalArgumentException {
+        return tabComplete(sender, Arrays.asList(args));
+    }
 
-        for (ICommonCommand subCommand : subCommands) {
-            newSubCommands.add((BaseCommand) subCommand);
+    public final List<String> tabComplete(CommandSender sender, List<String> arguments) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
         }
 
-        this.subCommands = newSubCommands;
+        Player player = (Player) sender;
+
+        if (arguments.size() == 1) {
+            ArrayList<String> output = new ArrayList<>();
+
+            for (ICommonCommand subCommand : getSubCommands()) {
+                for (String name : subCommand.getNames()) {
+                    if (name.toLowerCase().contains(arguments.get(0).toLowerCase())) {
+                        output.add(name);
+                    }
+                }
+            }
+
+            return output;
+        }
+
+        for (ICommonCommand subCommand : getSubCommands()) {
+            for (String name : subCommand.getNames()) {
+                if (name.equalsIgnoreCase(arguments.get(0))) {
+                    if (!checkPermission(sender, subCommand.getPermission())) {
+                        continue;
+                    }
+
+                    BaseCommand baseCommand = (BaseCommand) subCommand;
+
+                    return baseCommand.tabComplete(sender, new ArrayList<>(arguments.subList(1, arguments.size())));
+                }
+            }
+        }
+
+        String argument = getArguments().get((arguments.size() - 1) % getArguments().size());
+
+        return suggest(getAdapter().convertPlayer(player), argument);
     }
 }

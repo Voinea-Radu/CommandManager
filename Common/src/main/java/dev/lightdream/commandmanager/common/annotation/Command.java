@@ -1,6 +1,7 @@
 package dev.lightdream.commandmanager.common.annotation;
 
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.enums.OnlyFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,19 +12,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Command {
 
-    String name();
-
     String[] aliases() default {};
 
-    String permission() default "";
-
-    String usage() default "";
-
-    boolean onlyForPlayers() default false;
-
-    boolean onlyForConsole() default false;
-
-    int minimumArgs() default 0;
+    OnlyFor onlyFor() default OnlyFor.BOTH;
 
     Class<? extends ICommonCommand> parent() default ICommonCommand.class;
 

@@ -1,6 +1,13 @@
 package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.enums.OnlyFor;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public interface ICommandAnnotationWrapper {
 
@@ -8,38 +15,31 @@ public interface ICommandAnnotationWrapper {
 
     void setCommandAnnotation(Command commandAnnotation);
 
-    default String[] getCommandAliases() {
-        return getCommandAnnotation().aliases();
+    default String getPrimaryName() {
+        return getNames().get(0);
     }
 
-    default String[] getNames() {
-        String[] names = new String[getCommandAliases().length + 1];
-        names[0] = getName();
-        for (int i = 0; i < getCommandAliases().length; i++) {
-            names[i + 1] = getCommandAliases()[i];
-        }
-        return names;
+    default List<String> getNames() {
+        return Arrays.asList(getCommandAnnotation().aliases());
     }
 
-    default String getUsage() {
-        return getCommandAnnotation().usage();
+    default OnlyFor getOnlyFor() {
+        return getCommandAnnotation().onlyFor();
     }
 
-    default boolean onlyForPlayers() {
-        return getCommandAnnotation().onlyForPlayers();
+    default boolean onlyForConsole(){
+        return getOnlyFor() == OnlyFor.CONSOLE;
     }
 
-    default boolean onlyForConsole() {
-        return getCommandAnnotation().onlyForConsole();
+    default boolean onlyForPlayers(){
+        return getOnlyFor() == OnlyFor.PLAYER;
     }
 
-    default int getMinimumArgs() {
-        return getCommandAnnotation().minimumArgs();
+    default @NotNull Class<? extends ICommonCommand> getParent() {
+        return getCommandAnnotation().parent();
     }
 
-    default String getName() {
-        return getCommandAnnotation().name();
+    default boolean isAutoRegistrable() {
+        return getCommandAnnotation().autoRegister();
     }
-
-
 }

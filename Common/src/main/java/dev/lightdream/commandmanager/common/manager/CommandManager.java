@@ -56,10 +56,12 @@ public class CommandManager {
             }
         }
 
-        ICommonCommand commandObject = initCommand(commandClazz);
+        ICommonCommand commandObject = createCommand(commandClazz);
         if (commandObject == null) {
             return;
         }
+
+        commandObject.init(main);
 
         commands.add(commandObject);
     }
@@ -74,7 +76,7 @@ public class CommandManager {
         }
     }
 
-    public ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass) {
+    public ICommonCommand createCommand(Class<? extends ICommonCommand> commandClass) {
         ICommonCommand command;
         Constructor<ICommonCommand> constructor;
 
@@ -93,15 +95,6 @@ public class CommandManager {
             e.printStackTrace();
             return null;
         }
-
-        command.init(main);
-
-        return command;
-    }
-
-    public ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass, ICommonCommand parentCommand) {
-        ICommonCommand command = initCommand(commandClass);
-        command.setParentCommand(parentCommand);
 
         return command;
     }

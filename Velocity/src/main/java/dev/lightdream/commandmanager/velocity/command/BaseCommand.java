@@ -12,7 +12,7 @@ import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
-import dev.lightdream.logger.Debugger;
+import dev.lightdream.messagebuilder.MessageBuilder;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,78 +26,37 @@ import java.util.List;
 public abstract class BaseCommand extends CommonCommandImpl implements SimpleCommand {
 
     @Override
-    public List<String> suggest(Invocation invocation) {
-        int argsLength = invocation.arguments().length;
+    public void execute(Invocation invocation) {
+        CommandSource sender = invocation.source();
+        List<String> arguments = Arrays.asList(invocation.arguments());
 
-        if (argsLength == 0) {
-            return onAutoComplete(invocation);
+        if (!isEnabled()) {
+            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            return;
         }
 
-        String lastArg1 = invocation.arguments()[argsLength - 1];
-        BaseCommand subCommand = getSubCommand(lastArg1);
-
-        if (subCommand == null) {
-            if (argsLength == 1) {
-                return ListUtils.getListThatStartsWith(onAutoComplete(invocation), lastArg1);
-            }
-
-            String lastArg2 = invocation.arguments()[argsLength - 2];
-            subCommand = getSubCommand(lastArg2);
-
-            if (subCommand == null) {
-                return ListUtils.getListThatStartsWith(onAutoComplete(invocation), lastArg2);
-            }
-
-            List<String> a = subCommand.onAutoComplete(invocation);
-
-            Debugger.log(a);
-
-            return ListUtils.getListThatStartsWith(a, lastArg1);
+        if (!checkPermission(sender, getPermission())) {
+            sender.sendMessage(Component.text(new MessageBuilder(getMain().getLang().noPermission).toString()));
+            return;
         }
 
-        return ListUtils.getListThatStartsWith(onAutoComplete(invocation), lastArg1);
-    }
+        if (arguments.isEmpty()) {
+            distributeExecute(sender, arguments);
+            return;
+        }
 
-    private @Nullable BaseCommand getSubCommand(String name) {
         for (ICommonCommand subCommand : getSubCommands()) {
-            for (String commandName : subCommand.getNames()) {
-                if (name.equalsIgnoreCase(commandName)) {
-                    return (BaseCommand) subCommand;
+            for (String name : subCommand.getNames()) {
+                if (name.equalsIgnoreCase(arguments.get(0))) {
+                    BaseCommand baseCommand = (BaseCommand) subCommand;
+
+                    baseCommand.distributeExecute(sender, arguments.subList(1, arguments.size()));
+                    return;
                 }
             }
         }
 
-        return null;
-    }
-
-    public @NotNull List<String> onAutoComplete(Invocation invocation) {
-        return defaultAutoComplete();
-    }
-
-    public @NotNull List<String> defaultAutoComplete() {
-        List<String> allArguments = new ArrayList<>();
-
-        for (ICommonCommand subCommand : getSubCommands()) {
-            allArguments.add(subCommand.getName());
-        }
-
-        return allArguments;
-    }
-
-    @Override
-    public final boolean registerCommand(String name) {
-        CommandManager commandManager = ((CommandMain) getMain()).getProxy().getCommandManager();
-        CommandMeta commandMeta = commandManager.metaBuilder(name)
-                .plugin(this)
-                .build();
-
-        commandManager.register(commandMeta, this);
-        return true;
-    }
-
-    @Override
-    public final void execute(Invocation invocation) {
-        distributeExecute(invocation.source(), Arrays.asList(invocation.arguments()));
+        distributeExecute(sender, arguments);
     }
 
     private void distributeExecute(CommandSource sender, List<String> argumentsList) {
@@ -111,33 +70,6 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return;
         }
 
-        if (!argumentsList.isEmpty()) {
-            for (ICommonCommand subCommand : getSubCommands()) {
-                boolean found = false;
-
-                for (String name : subCommand.getNames()) {
-                    if (name.equalsIgnoreCase(argumentsList.get(0))) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    continue;
-                }
-
-                BaseCommand baseCommand = (BaseCommand) subCommand;
-
-                baseCommand.distributeExecute(sender, argumentsList.subList(1, argumentsList.size()));
-                return;
-            }
-        }
-
-        if (argumentsList.size() < getMinimumArgs()) {
-            sendUsage(sender);
-            return;
-        }
-
         ArgumentList arguments = new ArgumentList(argumentsList, this);
 
         if (onlyForConsole()) {
@@ -145,7 +77,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
                 sender.sendMessage(Component.text(getMain().getLang().onlyForConsole));
                 return;
             }
-            exec(getAdapter().convertConsole((ConsoleCommandSource) sender), arguments);
+            execute(getAdapter().convertConsole((ConsoleCommandSource) sender), arguments);
             return;
         }
         if (onlyForPlayers()) {
@@ -153,11 +85,34 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
                 sender.sendMessage(Component.text(getMain().getLang().onlyFotPlayer));
                 return;
             }
-            exec(getAdapter().convertPlayer((Player) sender), arguments);
+            execute(getAdapter().convertPlayer((Player) sender), arguments);
             return;
         }
 
-        exec(getAdapter().convertCommandSender(sender), arguments);
+        execute(getAdapter().convertCommandSender(sender), arguments);
+    }
+
+    @Override
+    public final boolean registerCommand(String name) {
+        CommandManager commandManager = getMain().getProxy().getCommandManager();
+        CommandMeta commandMeta = commandManager.metaBuilder(name)
+                .plugin(this)
+                .build();
+
+        commandManager.register(commandMeta, this);
+        return true;
+    }
+
+    @Override
+    public final void sendMessage(Object user, String message) {
+        CommandSource source = (CommandSource) user;
+        source.sendMessage(Component.text(message));
+    }
+
+    @Override
+    public final boolean checkPermission(Object user, String permission) {
+        CommandSource source = (CommandSource) user;
+        return source.hasPermission(permission);
     }
 
     @Override
@@ -170,15 +125,47 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     }
 
     @Override
-    public final boolean checkPermission(Object user, String permission) {
-        CommandSource source = (CommandSource) user;
-        return source.hasPermission(permission);
+    public List<String> suggest(Invocation invocation) {
+        return tabComplete(invocation.source(), Arrays.asList(invocation.arguments()));
     }
 
-    @Override
-    public final void sendMessage(Object user, String message) {
-        CommandSource source = (CommandSource) user;
-        source.sendMessage(Component.text(message));
-    }
+    private List<String> tabComplete(CommandSource sender, List<String> arguments){
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
 
+        Player player = (Player) sender;
+
+        if (arguments.size() == 1) {
+            ArrayList<String> output = new ArrayList<>();
+
+            for (ICommonCommand subCommand : getSubCommands()) {
+                for (String name : subCommand.getNames()) {
+                    if (name.toLowerCase().contains(arguments.get(0).toLowerCase())) {
+                        output.add(name);
+                    }
+                }
+            }
+
+            return output;
+        }
+
+        for (ICommonCommand subCommand : getSubCommands()) {
+            for (String name : subCommand.getNames()) {
+                if (name.equalsIgnoreCase(arguments.get(0))) {
+                    if (!checkPermission(sender, subCommand.getPermission())) {
+                        continue;
+                    }
+
+                    BaseCommand baseCommand = (BaseCommand) subCommand;
+
+                    return baseCommand.tabComplete(sender, new ArrayList<>(arguments.subList(1, arguments.size())));
+                }
+            }
+        }
+
+        String argument = getArguments().get((arguments.size() - 1) % getArguments().size());
+
+        return suggest(getAdapter().convertPlayer(player), argument);
+    }
 }

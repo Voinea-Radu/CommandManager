@@ -26,7 +26,6 @@ public interface CommonCommandMain {
 
     /**
      * Usually project_name.command(.)
-     * To disable use ""
      *
      * @return The basePermission
      */

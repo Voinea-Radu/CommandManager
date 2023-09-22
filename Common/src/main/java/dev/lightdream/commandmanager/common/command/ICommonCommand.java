@@ -19,9 +19,9 @@ import java.util.Set;
 
 public interface ICommonCommand extends ICommandAnnotationWrapper {
 
-    void setMain(CommonCommandMain commandMain);
-
     CommonCommandMain getMain();
+
+    void setMain(CommonCommandMain commandMain);
 
     default void init(@NotNull CommonCommandMain main) {
         setMain(main);
@@ -52,10 +52,10 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         List<ICommonCommand> subCommands = new ArrayList<>();
 
         for (Class<? extends ICommonCommand> clazz : getSubCommandClasses()) {
-            subCommands.add(
-                    getMain().getCommandManager()
-                            .initCommand(clazz, this)
-            );
+            ICommonCommand subCommand = getMain().getCommandManager().createCommand(clazz);
+            subCommand.setParentCommand(this);
+
+            subCommands.add(subCommand);
         }
 
         setSubCommands(subCommands);
@@ -77,19 +77,17 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
 
     void setSubCommands(List<ICommonCommand> subCommands);
 
-
     // Default utility methods
-
     default void sendUsage(Object user) {
         StringBuilder helpCommandOutput = new StringBuilder();
-        helpCommandOutput.append(getName())
+        helpCommandOutput.append(getPrimaryName())
                 .append(" ")
                 .append(getUsage());
         helpCommandOutput.append("\n");
 
         for (ICommonCommand subCommand : getSubCommands()) {
             if (checkPermission(user, subCommand.getPermission())) {
-                helpCommandOutput.append(subCommand.getName());
+                helpCommandOutput.append(subCommand.getPrimaryName());
                 helpCommandOutput.append(" ");
                 helpCommandOutput.append(subCommand.getUsage());
                 helpCommandOutput.append("\n");
@@ -99,7 +97,19 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         sendMessage(user, new MessageBuilder(helpCommandOutput.toString()));
     }
 
-    @SuppressWarnings("unchecked")
+    default String getUsage() {
+        StringBuilder usage = new StringBuilder();
+
+        for (String argument : getArguments()) {
+            usage
+                    .append("[")
+                    .append(argument)
+                    .append("] ");
+        }
+
+        return usage.toString();
+    }
+
     default List<Class<? extends ICommonCommand>> getSubCommandClasses() {
         List<Class<? extends ICommonCommand>> subCommands = new ArrayList<>();
 
@@ -109,6 +119,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         if (reflections != null) {
             for (Class<?> clazz : reflections.getTypesAnnotatedWith(Command.class)) {
                 if (ICommonCommand.class.isAssignableFrom(clazz)) {
+                    //noinspection unchecked
                     classes.add((Class<? extends ICommonCommand>) clazz);
                 }
             }
@@ -141,39 +152,18 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         sendMessage(user, message.parse());
     }
 
-
     default String getPermission() {
-        String annotationPermission = getCommandAnnotation().permission();
         String basePermission = getMain().basePermission();
-        String commandPermission = getName();
-
-        if (annotationPermission != null && !annotationPermission.isEmpty()) {
-            commandPermission = annotationPermission;
-        }
-
-        if (basePermission.isEmpty()) {
-            return commandPermission;
-        }
 
         if (!basePermission.endsWith(".")) {
             basePermission = basePermission + ".";
         }
 
-        if (getCommandAnnotation().parent() != ICommonCommand.class && getCommandAnnotation().parent() != null) {
-            return getParentCommand().getPermission() + "." + commandPermission;
+        if (getParent() != ICommonCommand.class && getParent() != null) {
+            return getParentCommand().getPermission() + "." + getPrimaryName();
         }
 
-        return basePermission + commandPermission;
-    }
-
-
-    default List<String> getSubCommandsHelpMessage() {
-        List<String> output = new ArrayList<>();
-        getSubCommands().forEach(command -> output.add(
-                "/" + this.getName() + " " + command.getName() + " " +
-                        command.getUsage()
-        ));
-        return output;
+        return basePermission + getPrimaryName();
     }
 
     void disable();
@@ -181,37 +171,37 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     void enable();
 
     @SuppressWarnings("unused")
-    default void exec(@NotNull PlatformCommandSender source, @NotNull ArgumentList arguments) {
+    default void execute(@NotNull PlatformCommandSender source, @NotNull ArgumentList arguments) {
         if (getSubCommands().isEmpty()) {
-            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getPrimaryName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
-        sendMessage(source, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+        sendUsage(source);
     }
 
     @SuppressWarnings("unused")
-    default void exec(@NotNull PlatformConsole console, @NotNull ArgumentList arguments) {
+    default void execute(@NotNull PlatformConsole console, @NotNull ArgumentList arguments) {
         if (getSubCommands().isEmpty()) {
-            Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
+            Logger.warn("Executing command " + getPrimaryName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
-        sendMessage(console, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+        sendUsage(console);
     }
 
     @SuppressWarnings("unused")
-    default void exec(@NotNull PlatformPlayer player, @NotNull ArgumentList arguments) {
+    default void execute(@NotNull PlatformPlayer player, @NotNull ArgumentList arguments) {
         if (getSubCommands().isEmpty()) {
-            Logger.warn("Executing command " + getName() + " for player, but the command is not implemented. Exec type: User, CommandContext");
+            Logger.warn("Executing command " + getPrimaryName() + " for player, but the command is not implemented. Exec type: User, CommandContext");
         }
 
-        sendMessage(player, ListUtils.listToString(getSubCommandsHelpMessage(), "\n"));
+        sendUsage(player);
     }
 
     default @NotNull List<String> getArguments() {
         return new ArrayList<>();
     }
 
-    default List<String> suggest(String argument) {
+    default List<String> suggest(PlatformPlayer player, String argument) {
         return new ArrayList<>();
     }
 }

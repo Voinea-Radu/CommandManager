@@ -5,9 +5,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.suggestion.Suggestion;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
-import com.mojang.brigadier.suggestion.Suggestions;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
@@ -20,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -28,26 +24,89 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
 @SuppressWarnings("unused")
 public abstract class BaseCommand extends CommonCommandImpl {
 
-    public static String commandSourceFiled = "field_9819";
+    @SuppressWarnings("FieldCanBeLocal")
+    private static final String commandSourceFiled = "field_9819";
 
-    private @NotNull List<ArgumentBuilder<ServerCommandSource, ?>> getArgumentsBuilders() {
-        List<ArgumentBuilder<ServerCommandSource, ?>> output = new ArrayList<>();
+    @SneakyThrows
+    private static CommandOutput getSource(CommandContext<ServerCommandSource> context) {
+        //noinspection JavaReflectionMemberAccess
+        Field field = ServerCommandSource.class.getDeclaredField(commandSourceFiled);
+        field.setAccessible(true);
+        return (CommandOutput) field.get(context.getSource());
+    }
+
+    @Override
+    public boolean registerCommand(String alias) {
+        getMain().getServer().getCommandManager().getDispatcher().register(createCommandBuilder(alias));
+        getMain().getServer().getPlayerManager().getPlayerList().forEach(player ->
+                getMain().getServer().getCommandManager().sendCommandTree(player)
+        );
+
+        return true;
+    }
+
+    @Override
+    public final void sendMessage(Object user, String message) {
+        if (user instanceof ServerPlayerEntity player) {
+            player.sendMessage(Text.of(message));
+            return;
+        }
+
+        if (user instanceof MinecraftServer source) {
+            source.sendMessage(net.minecraft.text.Text.of(message));
+            return;
+        }
+
+        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and MinecraftDedicatedServer." +
+                " Trying to send message to " + user.getClass());
+    }
+
+    @Override
+    public final boolean checkPermission(Object sender, String permission) {
+        if (sender instanceof ServerPlayerEntity player) {
+            return PermissionUtils.checkPermission(getAdapter().convertPlayer(player), permission);
+        }
+
+        return sender instanceof MinecraftServer;
+    }
+
+    @Override
+    public CommandMain getMain() {
+        return (CommandMain) super.getMain();
+    }
+
+    protected FabricAdapter getAdapter() {
+        return (FabricAdapter) getMain().getAdapter();
+    }
+
+    private @NotNull List<RequiredArgumentBuilder<ServerCommandSource, String>> createArgumentsBuilders() {
+        List<RequiredArgumentBuilder<ServerCommandSource, String>> output = new ArrayList<>();
 
         for (String argument : getArguments()) {
             output.add(
                     CommandManager.argument(argument, StringArgumentType.string())
                             .suggests((context, builder) -> {
-                                for (String suggestion : suggest(argument)) {
+                                CommandOutput sender = getSource(context);
+
+                                if (!(sender instanceof ServerPlayerEntity player)) {
+                                    return builder.buildFuture();
+                                }
+
+                                String lastArgument = builder.getRemaining();
+
+                                List<String> suggestions = suggest(getAdapter().convertPlayer(player), argument);
+                                suggestions = ListUtils.getListThatStartsWith(suggestions, lastArgument);
+
+                                for (String suggestion : suggestions) {
                                     builder.suggest(suggestion);
                                 }
+
                                 return builder.buildFuture();
                             })
             );
@@ -56,92 +115,19 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return output;
     }
 
-    protected LiteralArgumentBuilder<ServerCommandSource> getCommandBuilder(String name) {
+    private LiteralArgumentBuilder<ServerCommandSource> createCommandBuilder(String name) {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(name);
 
         List<ICommonCommand> subCommands = getSubCommands();
-        List<ArgumentBuilder<ServerCommandSource, ?>> arguments = getArgumentsBuilders();
-
-        if (subCommands == null) {
-            subCommands = new ArrayList<>();
-        }
+        List<RequiredArgumentBuilder<ServerCommandSource, String>> arguments = createArgumentsBuilders();
 
         for (ICommonCommand subCommandObject : subCommands) {
             BaseCommand subCommand = (BaseCommand) subCommandObject;
-            for (String subName : subCommand.getNames()) {
-                command.then(subCommand.getCommandBuilder(subName));
+
+            for (String subName : subCommand.getArguments()) {
+                command.then(subCommand.createCommandBuilder(subName));
             }
         }
-
-        List<ArgumentBuilder<ServerCommandSource, ?>> processedArguments = new ArrayList<>();
-
-        for (ArgumentBuilder<ServerCommandSource, ?> rawArgument : arguments) {
-            if (rawArgument instanceof RequiredArgumentBuilder<?, ?> requiredArgumentBuilder) {
-                RequiredArgumentBuilder<ServerCommandSource, String> argument;
-
-                try {
-                    //noinspection unchecked
-                    argument = (RequiredArgumentBuilder<ServerCommandSource, String>) requiredArgumentBuilder;
-                } catch (Exception e) {
-                    //noinspection CallToPrintStackTrace
-                    e.printStackTrace();
-                    processedArguments.add(rawArgument);
-                    continue;
-                }
-
-                if (!(argument.getType() instanceof StringArgumentType)) {
-                    processedArguments.add(rawArgument);
-                    continue;
-                }
-
-                SuggestionProvider<ServerCommandSource> argumentSuggestionProvider = argument.getSuggestionsProvider();
-
-                argument.suggests(
-                        (context, builder) -> {
-                            SuggestionProvider<ServerCommandSource> suggestionProvider = argumentSuggestionProvider;
-
-
-                            if (suggestionProvider == null) {
-                                suggestionProvider = (tmpContext, tmpBuilder) -> Suggestions.empty();
-                            }
-
-                            CompletableFuture<Suggestions> suggestionsFuture =
-                                    suggestionProvider.getSuggestions(context, builder);
-                            Suggestions suggestions;
-
-                            try {
-                                suggestions = suggestionsFuture.get();
-                            } catch (InterruptedException | ExecutionException e) {
-                                return builder.buildFuture();
-                            }
-
-                            List<String> suggestionList = new ArrayList<>();
-
-                            for (Suggestion suggestion : suggestions.getList()) {
-                                suggestionList.add(suggestion.getText());
-                            }
-
-                            String value = builder.getRemaining();
-                            suggestionList = ListUtils.getListThatStartsWith(suggestionList, value);
-
-                            builder = builder.restart();
-
-                            for (String suggestionString : suggestionList) {
-                                builder.suggest(suggestionString);
-                            }
-
-                            return builder.buildFuture();
-                        }
-                );
-
-                processedArguments.add(argument);
-                continue;
-            }
-
-            processedArguments.add(rawArgument);
-        }
-
-        arguments = processedArguments;
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
 
@@ -164,26 +150,9 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return command;
     }
 
-    @Override
-    public final boolean registerCommand(String name) {
-        getMain().getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
-        getMain().getServer().getPlayerManager().getPlayerList().forEach(player ->
-                getMain().getServer().getCommandManager().sendCommandTree(player)
-        );
-
-        return true;
-    }
-
-    @SneakyThrows
-    private CommandOutput getSource(CommandContext<ServerCommandSource> context) {
-        Field field = ServerCommandSource.class.getDeclaredField(commandSourceFiled);
-        field.setAccessible(true);
-        return (CommandOutput) field.get(context.getSource());
-    }
-
-    public final int executeCatch(CommandContext<ServerCommandSource> context) {
+    private int executeCatch(CommandContext<ServerCommandSource> context) {
         try {
-            return execute(context);
+            internalExecute(context);
         } catch (Throwable t) {
             //noinspection CallToPrintStackTrace
             t.printStackTrace();
@@ -191,50 +160,40 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return 0;
     }
 
-    @SuppressWarnings("SameReturnValue")
-    public final int execute(CommandContext<ServerCommandSource> context) {
+    private void internalExecute(CommandContext<ServerCommandSource> context) {
         CommandOutput sender = getSource(context);
         List<String> argumentsList = convertToArgumentsList(context);
         ArgumentList arguments = new ArgumentList(argumentsList, this);
 
         if (!isEnabled()) {
             sendMessage(sender, getMain().getLang().commandIsDisabled);
-            return 0;
+            return;
         }
 
         if (!checkPermission(sender, getPermission())) {
             sendMessage(sender, getMain().getLang().noPermission);
-            return 0;
+            return;
         }
 
-        if (onlyForConsole()) {
-            if (!(sender instanceof MinecraftServer consoleSource)) {
-                sendMessage(sender, getMain().getLang().onlyForConsole);
-                return 0;
+        switch (getOnlyFor()) {
+            case PLAYER -> {
+                if (!(sender instanceof ServerPlayerEntity player)) {
+                    sendMessage(sender, getMain().getLang().onlyFotPlayer);
+                    return;
+                }
+                execute(getAdapter().convertPlayer(player), arguments);
             }
-            exec(getAdapter().convertConsole(consoleSource), arguments);
-            return 0;
-        }
-        if (onlyForPlayers()) {
-            if (!(sender instanceof ServerPlayerEntity player)) {
-                sendMessage(sender, getMain().getLang().onlyFotPlayer);
-                return 0;
+            case CONSOLE -> {
+                if (!(sender instanceof MinecraftServer consoleSource)) {
+                    sendMessage(sender, getMain().getLang().onlyForConsole);
+                    return;
+                }
+                execute(getAdapter().convertConsole(consoleSource), arguments);
             }
-            exec(getAdapter().convertPlayer(player), arguments);
-            return 0;
+            case BOTH -> {
+                execute(getAdapter().convertCommandSender(sender), arguments);
+            }
         }
-
-        exec(getAdapter().convertCommandSender(sender), arguments);
-        return 0;
-    }
-
-    @Override
-    public CommandMain getMain() {
-        return (CommandMain) super.getMain();
-    }
-
-    protected FabricAdapter getAdapter() {
-        return (FabricAdapter) getMain().getAdapter();
     }
 
     public List<String> convertToArgumentsList(CommandContext<ServerCommandSource> context) {
@@ -245,29 +204,5 @@ public abstract class BaseCommand extends CommonCommandImpl {
         }
 
         return arguments;
-    }
-
-    @Override
-    public final boolean checkPermission(Object sender, String permission) {
-        if (sender instanceof ServerPlayerEntity player) {
-            return PermissionUtils.checkPermission(getAdapter().convertPlayer(player), permission);
-        }
-
-        return sender instanceof MinecraftDedicatedServer source;
-    }
-
-    @Override
-    public final void sendMessage(Object user, String message) {
-        if (user instanceof ServerPlayerEntity player) {
-            player.sendMessage(Text.of(message));
-            return;
-        }
-        if (user instanceof MinecraftDedicatedServer source) {
-            source.sendMessage(net.minecraft.text.Text.of(message));
-            return;
-        }
-
-        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and MinecraftDedicatedServer." +
-                " Trying to send message to " + user.getClass());
     }
 }
