@@ -5,16 +5,19 @@ import dev.lightdream.commandmanager.common.command.ICommonCommand;
 
 public abstract class Adapter {
 
+    @SuppressWarnings("unused")
     public abstract Object convertPlayer(PlatformPlayer player);
 
     public abstract <T> PlatformPlayer convertPlayer(T playerObject);
 
 
+    @SuppressWarnings("unused")
     public abstract Object convertCommandSender(PlatformCommandSender commandSender);
 
     public abstract <T> PlatformCommandSender convertCommandSender(T commandSenderObject);
 
 
+    @SuppressWarnings("unused")
     public abstract Object convertConsole(PlatformConsole console);
 
     public abstract <T> PlatformConsole convertConsole(T consoleObject);

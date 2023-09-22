@@ -9,13 +9,10 @@ import com.velocitypowered.api.proxy.Player;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
-import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,7 +126,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         return tabComplete(invocation.source(), Arrays.asList(invocation.arguments()));
     }
 
-    private List<String> tabComplete(CommandSource sender, List<String> arguments){
+    private List<String> tabComplete(CommandSource sender, List<String> arguments) {
         if (!(sender instanceof Player)) {
             return new ArrayList<>();
         }

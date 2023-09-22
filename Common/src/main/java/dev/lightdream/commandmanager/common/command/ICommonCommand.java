@@ -6,7 +6,6 @@ import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
-import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -201,6 +200,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
         return new ArrayList<>();
     }
 
+    @SuppressWarnings("unused")
     default List<String> suggest(PlatformPlayer player, String argument) {
         return new ArrayList<>();
     }

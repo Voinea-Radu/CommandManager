@@ -4,10 +4,8 @@ import dev.lightdream.commandmanager.common.annotation.Command;
 import dev.lightdream.commandmanager.common.enums.OnlyFor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface ICommandAnnotationWrapper {
 
@@ -27,11 +25,11 @@ public interface ICommandAnnotationWrapper {
         return getCommandAnnotation().onlyFor();
     }
 
-    default boolean onlyForConsole(){
+    default boolean onlyForConsole() {
         return getOnlyFor() == OnlyFor.CONSOLE;
     }
 
-    default boolean onlyForPlayers(){
+    default boolean onlyForPlayers() {
         return getOnlyFor() == OnlyFor.PLAYER;
     }
 
@@ -39,6 +37,7 @@ public interface ICommandAnnotationWrapper {
         return getCommandAnnotation().parent();
     }
 
+    @SuppressWarnings("unused")
     default boolean isAutoRegistrable() {
         return getCommandAnnotation().autoRegister();
     }

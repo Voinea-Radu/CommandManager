@@ -190,9 +190,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
                 }
                 execute(getAdapter().convertConsole(consoleSource), arguments);
             }
-            case BOTH -> {
-                execute(getAdapter().convertCommandSender(sender), arguments);
-            }
+            case BOTH -> execute(getAdapter().convertCommandSender(sender), arguments);
         }
     }
 
