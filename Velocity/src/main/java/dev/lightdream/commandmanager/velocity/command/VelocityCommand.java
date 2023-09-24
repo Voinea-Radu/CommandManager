@@ -11,7 +11,6 @@ import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.velocity.CommandMain;
-import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
 import dev.lightdream.commandmanager.velocity.platform.VelocityConsole;
 import dev.lightdream.commandmanager.velocity.platform.VelocityPlayer;
 
@@ -23,7 +22,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class VelocityCommand implements SimpleCommand, IPlatformCommand {
 
-    private CommonCommand commonCommand;
+    private final CommonCommand commonCommand;
 
     public VelocityCommand(CommonCommand commonCommand) {
         this.commonCommand = commonCommand;
@@ -34,14 +33,10 @@ public class VelocityCommand implements SimpleCommand, IPlatformCommand {
         return commonCommand;
     }
 
-    @Override
-    public void setCommonCommand(CommonCommand commonCommand) {
-        this.commonCommand = commonCommand;
-    }
 
     @Override
     public void execute(Invocation invocation) {
-        PlatformCommandSender sender = getAdapter().convertCommandSender(invocation.source());
+        PlatformCommandSender sender = getMain().getAdapter().convertCommandSender(invocation.source());
         List<String> arguments = Arrays.asList(invocation.arguments());
 
         if (!isEnabled()) {
@@ -123,10 +118,6 @@ public class VelocityCommand implements SimpleCommand, IPlatformCommand {
         return (CommandMain) IPlatformCommand.super.getMain();
     }
 
-    protected VelocityAdapter getAdapter() {
-        return (VelocityAdapter) getMain().getAdapter();
-    }
-
     @Override
     public List<String> suggest(Invocation invocation) {
         return tabComplete(invocation.source(), Arrays.asList(invocation.arguments()));
@@ -137,8 +128,8 @@ public class VelocityCommand implements SimpleCommand, IPlatformCommand {
             return new ArrayList<>();
         }
 
-        Player nativePlayer  = (Player) nativeSource;
-        VelocityPlayer player = getAdapter().convertPlayer(nativePlayer);
+        Player nativePlayer = (Player) nativeSource;
+        VelocityPlayer player = getMain().getAdapter().convertPlayer(nativePlayer);
 
         if (arguments.size() == 1) {
             ArrayList<String> output = new ArrayList<>();

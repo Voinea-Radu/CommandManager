@@ -9,8 +9,6 @@ public interface IPlatformCommand extends ICommand{
 
     CommonCommand getCommonCommand();
 
-    void setCommonCommand(CommonCommand commonCommand);
-
     @Override
     default CommonCommandMain getMain() {
         return getCommonCommand().getMain();

@@ -6,17 +6,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
-import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.command.ICommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
-import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import dev.lightdream.commandmanager.fabric.platform.FabricConsole;
 import dev.lightdream.commandmanager.fabric.platform.FabricPlayer;
 import lombok.SneakyThrows;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
@@ -32,8 +30,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class FabricCommand implements IPlatformCommand {
 
     private static final String commandSourceFiled = "field_9819";
-
-    private CommonCommand commonCommand;
+    private final CommonCommand commonCommand;
 
     public FabricCommand(CommonCommand commonCommand) {
         this.commonCommand = commonCommand;
@@ -42,11 +39,6 @@ public class FabricCommand implements IPlatformCommand {
     @Override
     public CommonCommand getCommonCommand() {
         return commonCommand;
-    }
-
-    @Override
-    public void setCommonCommand(CommonCommand commonCommand) {
-        this.commonCommand = commonCommand;
     }
 
     @SneakyThrows
@@ -72,7 +64,7 @@ public class FabricCommand implements IPlatformCommand {
 
                                 String lastArgument = builder.getRemaining();
 
-                                List<String> suggestions = suggest(getAdapter().convertPlayer(player), argument);
+                                List<String> suggestions = suggest(getMain().getAdapter().convertPlayer(player), argument);
                                 suggestions = ListUtils.getListThatStartsWith(suggestions, lastArgument);
 
                                 for (String suggestion : suggestions) {
@@ -136,7 +128,7 @@ public class FabricCommand implements IPlatformCommand {
         List<String> argumentsList = convertToArgumentsList(context);
         ArgumentList arguments = new ArgumentList(argumentsList, getCommonCommand());
 
-        PlatformCommandSender sender = getAdapter().convertCommandSender(getSource(context));
+        PlatformCommandSender sender = getMain().getAdapter().convertCommandSender(getSource(context));
 
         if (!isEnabled()) {
             sender.sendMessage(getMain().getLang().commandIsDisabled);
@@ -185,10 +177,6 @@ public class FabricCommand implements IPlatformCommand {
         );
 
         return true;
-    }
-
-    protected FabricAdapter getAdapter() {
-        return getMain().getAdapter();
     }
 
     @Override

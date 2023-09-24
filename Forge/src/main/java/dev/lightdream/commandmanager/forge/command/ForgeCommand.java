@@ -8,20 +8,15 @@ import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.command.ICommand;
 import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
-import dev.lightdream.commandmanager.common.platform.PermissionUtils;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.forge.CommandMain;
-import dev.lightdream.commandmanager.forge.platform.ForgeAdapter;
 import dev.lightdream.commandmanager.forge.platform.ForgeConsole;
 import dev.lightdream.commandmanager.forge.platform.ForgePlayer;
-import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +30,7 @@ public class ForgeCommand implements IPlatformCommand {
 
     private final static String[] commandSourceFiled = {"field_9819", "f_81288_"};
 
-    private CommonCommand commonCommand;
+    private final CommonCommand commonCommand;
 
     public ForgeCommand(CommonCommand commonCommand) {
         this.commonCommand = commonCommand;
@@ -44,11 +39,6 @@ public class ForgeCommand implements IPlatformCommand {
     @Override
     public CommonCommand getCommonCommand() {
         return commonCommand;
-    }
-
-    @Override
-    public void setCommonCommand(CommonCommand commonCommand) {
-        this.commonCommand = commonCommand;
     }
 
 
@@ -68,7 +58,7 @@ public class ForgeCommand implements IPlatformCommand {
 
                 String lastArgument = builder.getRemaining();
 
-                List<String> suggestions = suggest(getAdapter().convertPlayer(player), argument);
+                List<String> suggestions = suggest(getMain().getAdapter().convertPlayer(player), argument);
                 suggestions = ListUtils.getListThatStartsWith(suggestions, lastArgument);
 
                 for (String suggestion : suggestions) {
@@ -134,7 +124,7 @@ public class ForgeCommand implements IPlatformCommand {
     }
 
     public void internalExecute(CommandContext<CommandSourceStack> context) {
-        PlatformCommandSender sender = getAdapter().convertCommandSender(getCommandSource(context));
+        PlatformCommandSender sender = getMain().getAdapter().convertCommandSender(getCommandSource(context));
         List<String> argumentsList = convertToArgumentsList(context);
         ArgumentList arguments = new ArgumentList(argumentsList, getCommonCommand());
 
@@ -146,14 +136,14 @@ public class ForgeCommand implements IPlatformCommand {
         switch (getOnlyFor()) {
             case PLAYER -> {
                 if (!(sender instanceof ForgePlayer player)) {
-                    sender. sendMessage(getMain().getLang().onlyFotPlayer);
+                    sender.sendMessage(getMain().getLang().onlyFotPlayer);
                     return;
                 }
                 execute(player, arguments);
             }
             case CONSOLE -> {
                 if (!(sender instanceof ForgeConsole console)) {
-                    sender.sendMessage( getMain().getLang().onlyForConsole);
+                    sender.sendMessage(getMain().getLang().onlyForConsole);
                     return;
                 }
                 execute(console, arguments);
@@ -203,7 +193,4 @@ public class ForgeCommand implements IPlatformCommand {
         return (CommandMain) IPlatformCommand.super.getMain();
     }
 
-    protected ForgeAdapter getAdapter() {
-        return getMain().getAdapter();
-    }
 }

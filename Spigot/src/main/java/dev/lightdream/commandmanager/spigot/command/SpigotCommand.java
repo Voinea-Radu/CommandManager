@@ -37,11 +37,6 @@ public class SpigotCommand extends org.bukkit.command.Command implements IPlatfo
     }
 
     @Override
-    public void setCommonCommand(CommonCommand commonCommand) {
-        this.commonCommand = commonCommand;
-    }
-
-    @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         internalExecute(getMain().getAdapter().convertCommandSender(sender), Arrays.asList(args));
         return true;
