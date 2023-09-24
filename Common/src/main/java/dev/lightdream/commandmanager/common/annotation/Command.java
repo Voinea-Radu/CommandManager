@@ -1,6 +1,6 @@
 package dev.lightdream.commandmanager.common.annotation;
 
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
 import dev.lightdream.commandmanager.common.enums.OnlyFor;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +16,6 @@ public @interface Command {
 
     OnlyFor onlyFor() default OnlyFor.BOTH;
 
-    Class<? extends ICommonCommand> parent() default ICommonCommand.class;
+    Class<? extends ICommand> parent() default ICommand.class;
 
-    boolean autoRegister() default false;
 }

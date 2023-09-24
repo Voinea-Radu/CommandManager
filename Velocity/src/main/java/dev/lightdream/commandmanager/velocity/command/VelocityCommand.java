@@ -4,15 +4,16 @@ import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
-import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
-import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.velocity.CommandMain;
 import dev.lightdream.commandmanager.velocity.platform.VelocityAdapter;
-import dev.lightdream.messagebuilder.MessageBuilder;
-import net.kyori.adventure.text.Component;
+import dev.lightdream.commandmanager.velocity.platform.VelocityConsole;
+import dev.lightdream.commandmanager.velocity.platform.VelocityPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,20 +21,36 @@ import java.util.List;
 
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand extends CommonCommandImpl implements SimpleCommand {
+public class VelocityCommand implements SimpleCommand, IPlatformCommand {
+
+    private CommonCommand commonCommand;
+
+    public VelocityCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
+
+    @Override
+    public CommonCommand getCommonCommand() {
+        return commonCommand;
+    }
+
+    @Override
+    public void setCommonCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
 
     @Override
     public void execute(Invocation invocation) {
-        CommandSource sender = invocation.source();
+        PlatformCommandSender sender = getAdapter().convertCommandSender(invocation.source());
         List<String> arguments = Arrays.asList(invocation.arguments());
 
         if (!isEnabled()) {
-            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            sender.sendMessage(getMain().getLang().commandIsDisabled);
             return;
         }
 
-        if (!checkPermission(sender, getPermission())) {
-            sender.sendMessage(Component.text(new MessageBuilder(getMain().getLang().noPermission).toString()));
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(getMain().getLang().noPermission);
             return;
         }
 
@@ -42,10 +59,10 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return;
         }
 
-        for (ICommonCommand subCommand : getSubCommands()) {
+        for (ICommand subCommand : getSubCommands()) {
             for (String name : subCommand.getNames()) {
                 if (name.equalsIgnoreCase(arguments.get(0))) {
-                    BaseCommand baseCommand = (BaseCommand) subCommand;
+                    VelocityCommand baseCommand = (VelocityCommand) subCommand;
 
                     baseCommand.distributeExecute(sender, arguments.subList(1, arguments.size()));
                     return;
@@ -56,37 +73,37 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         distributeExecute(sender, arguments);
     }
 
-    private void distributeExecute(CommandSource sender, List<String> argumentsList) {
+    private void distributeExecute(PlatformCommandSender sender, List<String> argumentsList) {
         if (!isEnabled()) {
-            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            sender.sendMessage(getMain().getLang().commandIsDisabled);
             return;
         }
 
-        if (!checkPermission(sender, getPermission())) {
-            sendMessage(sender, getMain().getLang().noPermission);
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(getMain().getLang().noPermission);
             return;
         }
 
-        ArgumentList arguments = new ArgumentList(argumentsList, this);
+        ArgumentList arguments = new ArgumentList(argumentsList, getCommonCommand());
 
         if (onlyForConsole()) {
-            if (!(sender instanceof ConsoleCommandSource)) {
-                sender.sendMessage(Component.text(getMain().getLang().onlyForConsole));
+            if (!(sender instanceof VelocityPlayer)) {
+                sender.sendMessage(getMain().getLang().onlyForConsole);
                 return;
             }
-            execute(getAdapter().convertConsole((ConsoleCommandSource) sender), arguments);
+            execute((VelocityPlayer) sender, arguments);
             return;
         }
         if (onlyForPlayers()) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(Component.text(getMain().getLang().onlyFotPlayer));
+            if (!(sender instanceof VelocityConsole)) {
+                sender.sendMessage(getMain().getLang().onlyFotPlayer);
                 return;
             }
-            execute(getAdapter().convertPlayer((Player) sender), arguments);
+            execute((VelocityConsole) sender, arguments);
             return;
         }
 
-        execute(getAdapter().convertCommandSender(sender), arguments);
+        execute(sender, arguments);
     }
 
     @Override
@@ -100,21 +117,10 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         return true;
     }
 
-    @Override
-    public final void sendMessage(Object user, String message) {
-        CommandSource source = (CommandSource) user;
-        source.sendMessage(Component.text(message));
-    }
-
-    @Override
-    public final boolean checkPermission(Object user, String permission) {
-        CommandSource source = (CommandSource) user;
-        return source.hasPermission(permission);
-    }
 
     @Override
     public CommandMain getMain() {
-        return (CommandMain) super.getMain();
+        return (CommandMain) IPlatformCommand.super.getMain();
     }
 
     protected VelocityAdapter getAdapter() {
@@ -126,17 +132,18 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         return tabComplete(invocation.source(), Arrays.asList(invocation.arguments()));
     }
 
-    private List<String> tabComplete(CommandSource sender, List<String> arguments) {
-        if (!(sender instanceof Player)) {
+    private List<String> tabComplete(CommandSource nativeSource, List<String> arguments) {
+        if (!(nativeSource instanceof Player)) {
             return new ArrayList<>();
         }
 
-        Player player = (Player) sender;
+        Player nativePlayer  = (Player) nativeSource;
+        VelocityPlayer player = getAdapter().convertPlayer(nativePlayer);
 
         if (arguments.size() == 1) {
             ArrayList<String> output = new ArrayList<>();
 
-            for (ICommonCommand subCommand : getSubCommands()) {
+            for (ICommand subCommand : getSubCommands()) {
                 for (String name : subCommand.getNames()) {
                     if (name.toLowerCase().contains(arguments.get(0).toLowerCase())) {
                         output.add(name);
@@ -147,22 +154,22 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
             return output;
         }
 
-        for (ICommonCommand subCommand : getSubCommands()) {
+        for (ICommand subCommand : getSubCommands()) {
             for (String name : subCommand.getNames()) {
                 if (name.equalsIgnoreCase(arguments.get(0))) {
-                    if (!checkPermission(sender, subCommand.getPermission())) {
+                    if (!player.hasPermission(subCommand.getPermission())) {
                         continue;
                     }
 
-                    BaseCommand baseCommand = (BaseCommand) subCommand;
+                    VelocityCommand baseCommand = (VelocityCommand) subCommand;
 
-                    return baseCommand.tabComplete(sender, new ArrayList<>(arguments.subList(1, arguments.size())));
+                    return baseCommand.tabComplete(nativeSource, new ArrayList<>(arguments.subList(1, arguments.size())));
                 }
             }
         }
 
         String argument = getArguments().get((arguments.size() - 1) % getArguments().size());
 
-        return suggest(getAdapter().convertPlayer(player), argument);
+        return suggest(player, argument);
     }
 }

@@ -1,55 +1,40 @@
 package dev.lightdream.commandmanager.fabric.platform;
 
+import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
-import dev.lightdream.commandmanager.common.platform.PlatformConsole;
-import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
+import dev.lightdream.commandmanager.fabric.command.FabricCommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class FabricAdapter extends Adapter {
+public class FabricAdapter extends Adapter<ServerPlayerEntity, MinecraftServer, CommandOutput> {
 
     @Override
-    public ServerPlayerEntity convertPlayer(PlatformPlayer player) {
-        return (ServerPlayerEntity) player.getNativePlayer();
+    public FabricPlayer convertPlayer(ServerPlayerEntity nativePlayer) {
+        return new FabricPlayer(nativePlayer, this);
     }
 
     @Override
-    public <T> FabricPlayer convertPlayer(T playerObject) {
-        if (!(playerObject instanceof ServerPlayerEntity player)) {
-            throw createConversionError(playerObject, FabricPlayer.class);
-        }
-
-        return new FabricPlayer(player);
+    public FabricConsole convertConsole(MinecraftServer nativeConsole) {
+        return new FabricConsole(nativeConsole, this);
     }
 
     @Override
-    public CommandOutput convertCommandSender(PlatformCommandSender commandSender) {
-        return (CommandOutput) commandSender.getNativeCommandSender();
+    public FabricCommand convertCommand(CommonCommand command) {
+        return new FabricCommand(command);
     }
 
     @Override
-    public <T> FabricCommandSender convertCommandSender(T commandSenderObject) {
-        if (!(commandSenderObject instanceof ServerPlayerEntity commandSender)) {
-            throw createConversionError(commandSenderObject, PlatformCommandSender.class);
-        }
-
-        return new FabricCommandSender(commandSender);
+    protected Class<ServerPlayerEntity> getNativePlayerClass() {
+        return ServerPlayerEntity.class;
     }
 
     @Override
-    public MinecraftServer convertConsole(PlatformConsole console) {
-        return (MinecraftServer) console.getNativeConsole();
+    protected Class<MinecraftServer> getNativeConsoleClass() {
+        return MinecraftServer.class;
     }
 
-    @Override
-    public <T> FabricConsole convertConsole(T consoleObject) {
-        if (!(consoleObject instanceof MinecraftServer console)) {
-            throw createConversionError(consoleObject, FabricConsole.class);
-        }
 
-        return new FabricConsole(console);
-    }
 }
 

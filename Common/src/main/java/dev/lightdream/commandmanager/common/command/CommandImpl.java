@@ -1,8 +1,7 @@
-package dev.lightdream.commandmanager.spigot.command;
+package dev.lightdream.commandmanager.common.command;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,17 +10,13 @@ import java.util.List;
 
 @Getter
 @Setter
-public abstract class SpigotCommonCommandImpl extends org.bukkit.command.Command implements ICommonCommand {
+public abstract class CommandImpl implements ICommand {
 
     private CommonCommandMain main;
     private Command commandAnnotation;
-    private ICommonCommand parentCommand;
-    private List<ICommonCommand> subCommands = new ArrayList<>();
-    private @Getter boolean enabled = true;
-
-    protected SpigotCommonCommandImpl() {
-        super("");
-    }
+    private ICommand parentCommand;
+    private List<ICommand> subCommands = new ArrayList<>();
+    private boolean enabled = true;
 
     @Override
     public void disable() {

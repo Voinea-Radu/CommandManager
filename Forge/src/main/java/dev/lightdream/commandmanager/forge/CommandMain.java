@@ -19,7 +19,7 @@ public interface CommandMain extends CommonCommandMain {
     }
 
     @Override
-    default Adapter getAdapter() {
+    default ForgeAdapter getAdapter() {
         return new ForgeAdapter();
     }
 }

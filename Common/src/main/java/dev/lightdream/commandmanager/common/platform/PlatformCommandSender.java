@@ -1,12 +1,19 @@
 package dev.lightdream.commandmanager.common.platform;
 
+import dev.lightdream.messagebuilder.GenericMessageBuilder;
+import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
-@Getter
-public abstract class PlatformCommandSender {
+public interface PlatformCommandSender {
 
-    private Object nativeCommandSender;
+     boolean hasPermission(String permission);
+
+     void sendMessage(String message);
+
+    default void sendMessage(GenericMessageBuilder<?> message){
+        sendMessage(message.toString());
+    }
+
 
 }

@@ -1,31 +1,29 @@
 package dev.lightdream.commandmanager.common.platform;
 
-import dev.lightdream.commandmanager.common.command.CommonBaseCommand;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 
-public abstract class Adapter {
+public abstract class Adapter<NativePlayer extends NativeCommandSender, NativeConsole extends NativeCommandSender, NativeCommandSender> {
 
-    @SuppressWarnings("unused")
-    public abstract Object convertPlayer(PlatformPlayer player);
+    public abstract PlatformPlayer convertPlayer(NativePlayer nativePLayer);
 
-    public abstract <T> PlatformPlayer convertPlayer(T playerObject);
+    public abstract PlatformConsole convertConsole(NativeConsole nativeConsole);
 
+    public PlatformCommandSender convertCommandSender(NativeCommandSender nativeCommandSender){
+        if(getNativePlayerClass().isInstance(nativeCommandSender)){
+            //noinspection unchecked
+            return convertPlayer((NativePlayer) nativeCommandSender);
+        }
 
-    @SuppressWarnings("unused")
-    public abstract Object convertCommandSender(PlatformCommandSender commandSender);
+        if(getNativeConsoleClass().isInstance(nativeCommandSender)){
+            //noinspection unchecked
+            return convertConsole((NativeConsole) nativeCommandSender);
+        }
 
-    public abstract <T> PlatformCommandSender convertCommandSender(T commandSenderObject);
-
-
-    @SuppressWarnings("unused")
-    public abstract Object convertConsole(PlatformConsole console);
-
-    public abstract <T> PlatformConsole convertConsole(T consoleObject);
-
-
-    public ICommonCommand convertCommand(CommonBaseCommand command) {
-        return command;
+        throw createConversionError(nativeCommandSender, PlatformCommandSender.class);
     }
+
+    public abstract IPlatformCommand convertCommand(CommonCommand command);
 
     protected RuntimeException createConversionError(Class<?> fromClass, Class<?> toClass) {
         return new RuntimeException("Can not convert from " + fromClass.getName() + " to " + toClass.getName());
@@ -34,4 +32,8 @@ public abstract class Adapter {
     protected RuntimeException createConversionError(Object fromObject, Class<?> toClass) {
         return createConversionError(fromObject.getClass(), toClass);
     }
+
+    protected abstract Class<NativePlayer> getNativePlayerClass();
+
+    protected abstract Class<NativeConsole> getNativeConsoleClass();
 }

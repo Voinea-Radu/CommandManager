@@ -1,8 +1,8 @@
 package dev.lightdream.commandmanager.fabric;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
-import dev.lightdream.commandmanager.common.platform.Adapter;
+import dev.lightdream.commandmanager.common.command.ICommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import java.util.Set;
 public interface CommandMain extends CommonCommandMain {
 
     @Override
-    default @NotNull Set<Class<? extends ICommonCommand>> getCommandClasses() {
+    default @NotNull Set<Class<? extends ICommand>> getCommandClasses() {
         return new HashSet<>();
     }
 
@@ -24,7 +24,5 @@ public interface CommandMain extends CommonCommandMain {
     MinecraftServer getServer();
 
     @Override
-    default Adapter getAdapter() {
-        return new FabricAdapter();
-    }
+    FabricAdapter getAdapter();
 }

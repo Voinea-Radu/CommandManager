@@ -1,7 +1,8 @@
 package dev.lightdream.commandmanager.spigot;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import org.bukkit.plugin.Plugin;
@@ -16,7 +17,7 @@ public interface CommandMain extends CommonCommandMain {
     Plugin getPlugin();
 
     @Override
-    default @NotNull Set<Class<? extends ICommonCommand>> getCommandClasses() {
+    default @NotNull Set<Class<? extends ICommand>> getCommandClasses() {
         return new HashSet<>();
     }
 
@@ -24,7 +25,7 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull Reflections getReflections();
 
     @Override
-    default Adapter getAdapter() {
+    default SpigotAdapter getAdapter() {
         return new SpigotAdapter();
     }
 }

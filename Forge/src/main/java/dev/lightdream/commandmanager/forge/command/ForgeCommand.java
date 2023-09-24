@@ -4,10 +4,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PermissionUtils;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.forge.CommandMain;
 import dev.lightdream.commandmanager.forge.platform.ForgeAdapter;
@@ -26,10 +28,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand extends CommonCommandImpl {
+public class ForgeCommand implements IPlatformCommand {
 
 
     private final static String[] commandSourceFiled = {"field_9819", "f_81288_"};
+
+    private CommonCommand commonCommand;
+
+    public ForgeCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
+
+    @Override
+    public CommonCommand getCommonCommand() {
+        return commonCommand;
+    }
+
+    @Override
+    public void setCommonCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
 
 
     private @NotNull List<RequiredArgumentBuilder<CommandSourceStack, String>> createArgumentsBuilders() {
@@ -66,15 +84,15 @@ public abstract class BaseCommand extends CommonCommandImpl {
     private LiteralArgumentBuilder<CommandSourceStack> createCommandBuilder(String name) {
         LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal(name);
 
-        List<ICommonCommand> subCommands = getSubCommands();
+        List<ICommand> subCommands = getSubCommands();
         List<RequiredArgumentBuilder<CommandSourceStack, String>> arguments = createArgumentsBuilders();
 
         if (subCommands == null) {
             subCommands = new ArrayList<>();
         }
 
-        for (ICommonCommand subCommandObject : subCommands) {
-            BaseCommand subCommand = (BaseCommand) subCommandObject;
+        for (ICommand subCommandObject : subCommands) {
+            ForgeCommand subCommand = (ForgeCommand) subCommandObject;
 
             for (String subName : subCommand.getNames()) {
                 command.then(subCommand.createCommandBuilder(subName));
@@ -114,31 +132,31 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void internalExecute(CommandContext<CommandSourceStack> context) {
-        CommandSource sender = getCommandSource(context);
+        PlatformCommandSender sender = getAdapter().convertCommandSender(getCommandSource(context));
         List<String> argumentsList = convertToArgumentsList(context);
-        ArgumentList arguments = new ArgumentList(argumentsList, this);
+        ArgumentList arguments = new ArgumentList(argumentsList, getCommonCommand());
 
         if (!isEnabled()) {
-            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            sender.sendMessage(getMain().getLang().commandIsDisabled);
             return;
         }
 
         switch (getOnlyFor()) {
             case PLAYER -> {
                 if (!(sender instanceof ServerPlayer player)) {
-                    sendMessage(sender, getMain().getLang().onlyFotPlayer);
+                    sender. sendMessage(getMain().getLang().onlyFotPlayer);
                     return;
                 }
                 execute(getAdapter().convertPlayer(player), arguments);
             }
             case CONSOLE -> {
                 if (!(sender instanceof MinecraftServer consoleSource)) {
-                    sendMessage(sender, getMain().getLang().onlyForConsole);
+                    sender.sendMessage( getMain().getLang().onlyForConsole);
                     return;
                 }
                 execute(getAdapter().convertConsole(consoleSource), arguments);
             }
-            case BOTH -> execute(getAdapter().convertCommandSender(sender), arguments);
+            case BOTH -> execute(sender, arguments);
         }
     }
 
@@ -158,31 +176,6 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return true;
     }
 
-
-    @Override
-    public void sendMessage(Object user, String message) {
-        if (user instanceof ServerPlayer player) {
-            player.displayClientMessage(Component.literal(message), false);
-            return;
-        }
-
-        if (user instanceof MinecraftServer) {
-            Logger.info(message);
-        }
-    }
-
-    @Override
-    public boolean checkPermission(Object user, String permission) {
-        if (user instanceof MinecraftServer console) {
-            return true;
-        }
-
-        if (user instanceof ServerPlayer player) {
-            return PermissionUtils.checkPermission(getAdapter().convertPlayer((ServerPlayer) user), permission);
-        }
-
-        return false;
-    }
 
     @SneakyThrows
     private CommandSource getCommandSource(CommandContext<CommandSourceStack> context) {
@@ -205,10 +198,10 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public CommandMain getMain() {
-        return (CommandMain) super.getMain();
+        return (CommandMain) IPlatformCommand.super.getMain();
     }
 
     protected ForgeAdapter getAdapter() {
-        return (ForgeAdapter) getMain().getAdapter();
+        return getMain().getAdapter();
     }
 }

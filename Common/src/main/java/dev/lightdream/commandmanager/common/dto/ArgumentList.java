@@ -1,6 +1,6 @@
 package dev.lightdream.commandmanager.common.dto;
 
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public class ArgumentList {
 
     private List<String> arguments;
-    private ICommonCommand command;
+    private CommonCommand command;
 
     public String get(int index) {
         return arguments.get(index);

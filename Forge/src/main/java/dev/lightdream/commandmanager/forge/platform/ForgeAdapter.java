@@ -1,53 +1,41 @@
 package dev.lightdream.commandmanager.forge.platform;
 
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.platform.PlatformConsole;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
+import dev.lightdream.commandmanager.forge.command.ForgeCommand;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ForgeAdapter extends Adapter {
-    @Override
-    public ServerPlayer convertPlayer(PlatformPlayer player) {
-        return (ServerPlayer) player.getNativePlayer();
-    }
+public class ForgeAdapter extends Adapter<ServerPlayer, MinecraftServer,CommandSource> {
 
     @Override
-    public <T> ForgePlayer convertPlayer(T playerObject) {
-        if (!(playerObject instanceof ServerPlayer player)) {
-            throw createConversionError(playerObject, ForgePlayer.class);
-        }
-
+    public  ForgePlayer convertPlayer(ServerPlayer player) {
         return new ForgePlayer(player);
     }
 
     @Override
-    public CommandSource convertCommandSender(PlatformCommandSender commandSender) {
-        return (CommandSource) commandSender.getNativeCommandSender();
-    }
-
-    @Override
-    public <T> ForgeCommandSender convertCommandSender(T commandSenderObject) {
-        if (!(commandSenderObject instanceof CommandSource commandSender)) {
-            throw createConversionError(commandSenderObject, ForgeCommandSender.class);
-        }
-
-        return new ForgeCommandSender(commandSender);
-    }
-
-    @Override
-    public MinecraftServer convertConsole(PlatformConsole console) {
-        return (MinecraftServer) console.getNativeConsole();
-    }
-
-    @Override
-    public <T> ForgeConsole convertConsole(T consoleObject) {
-        if (!(consoleObject instanceof MinecraftServer console)) {
-            throw createConversionError(consoleObject, PlatformConsole.class);
-        }
-
+    public ForgeConsole convertConsole(MinecraftServer console) {
         return new ForgeConsole(console);
     }
+
+    @Override
+    public IPlatformCommand convertCommand(CommonCommand command) {
+        return new ForgeCommand(command);
+    }
+
+    @Override
+    protected Class<ServerPlayer> getNativePlayerClass() {
+        return ServerPlayer.class;
+    }
+
+    @Override
+    protected Class<MinecraftServer> getNativeConsoleClass() {
+        return MinecraftServer.class;
+    }
+
 }

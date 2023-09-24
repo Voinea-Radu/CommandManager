@@ -5,7 +5,7 @@ import net.minecraft.server.MinecraftServer;
 
 public class ForgeConsole extends PlatformConsole {
 
-    public ForgeConsole(MinecraftServer minecraftServer) {
-        super(minecraftServer);
+    public ForgeConsole(MinecraftServer minecraftServer, ForgeAdapter adapter) {
+        super(minecraftServer, adapter);
     }
 }

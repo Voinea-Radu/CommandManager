@@ -1,15 +1,19 @@
 package dev.lightdream.commandmanager.spigot.command;
 
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.spigot.CommandMain;
 import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
+import dev.lightdream.commandmanager.spigot.platform.SpigotConsole;
+import dev.lightdream.commandmanager.spigot.platform.SpigotPlayer;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -18,21 +22,38 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand extends SpigotCommonCommandImpl {
+public class SpigotCommand extends org.bukkit.command.Command implements IPlatformCommand {
+
+    private CommonCommand commonCommand;
+
+    public SpigotCommand(CommonCommand commonCommand) {
+        super("");
+        this.commonCommand = commonCommand;
+    }
+
+    @Override
+    public CommonCommand getCommonCommand() {
+        return commonCommand;
+    }
+
+    @Override
+    public void setCommonCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        internalExecute(sender, Arrays.asList(args));
+        internalExecute(getAdapter().convertCommandSender(sender), Arrays.asList(args));
         return true;
     }
 
-    private void internalExecute(CommandSender sender, List<String> arguments) {
+    private void internalExecute(PlatformCommandSender sender, List<String> arguments) {
         if (!isEnabled()) {
-            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            sender.sendMessage(getMain().getLang().commandIsDisabled);
             return;
         }
 
-        if (!checkPermission(sender, getPermission())) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(new MessageBuilder(getMain().getLang().noPermission).toString());
             return;
         }
@@ -42,10 +63,10 @@ public abstract class BaseCommand extends SpigotCommonCommandImpl {
             return;
         }
 
-        for (ICommonCommand subCommand : getSubCommands()) {
+        for (ICommand subCommand : getSubCommands()) {
             for (String name : subCommand.getNames()) {
                 if (name.equalsIgnoreCase(arguments.get(0))) {
-                    BaseCommand baseCommand = (BaseCommand) subCommand;
+                    SpigotCommand baseCommand = (SpigotCommand) subCommand;
 
                     baseCommand.distributeExec(sender, arguments.subList(1, arguments.size()));
                     return;
@@ -56,38 +77,38 @@ public abstract class BaseCommand extends SpigotCommonCommandImpl {
         distributeExec(sender, arguments);
     }
 
-    private void distributeExec(CommandSender sender, List<String> argumentsList) {
+    private void distributeExec(PlatformCommandSender sender, List<String> argumentsList) {
         if (argumentsList.size() != getArguments().size()) {
             sendUsage(sender);
             return;
         }
 
-        ArgumentList arguments = new ArgumentList(argumentsList, this);
+        ArgumentList arguments = new ArgumentList(argumentsList, commonCommand);
 
         switch (getOnlyFor()) {
             case PLAYER:
-                if (!(sender instanceof Player)) {
+                if (!(sender instanceof SpigotPlayer)) {
                     sender.sendMessage(new MessageBuilder(getMain().getLang().onlyFotPlayer).parse());
                     return;
                 }
-                execute(getAdapter().convertPlayer((Player) sender), arguments);
+                execute((SpigotPlayer) sender, arguments);
                 break;
             case CONSOLE:
-                if (!(sender instanceof ConsoleCommandSender)) {
+                if (!(sender instanceof SpigotConsole)) {
                     sender.sendMessage(new MessageBuilder(getMain().getLang().onlyForConsole).parse());
                     return;
                 }
-                execute(getAdapter().convertConsole((ConsoleCommandSender) sender), arguments);
+                execute((SpigotConsole) sender, arguments);
                 break;
             case BOTH:
-                execute(getAdapter().convertCommandSender(sender), arguments);
+                execute(sender, arguments);
                 break;
         }
     }
 
     @Override
     public CommandMain getMain() {
-        return (CommandMain) super.getMain();
+        return (CommandMain) IPlatformCommand.super.getMain();
     }
 
     protected SpigotAdapter getAdapter() {
@@ -112,16 +133,6 @@ public abstract class BaseCommand extends SpigotCommonCommandImpl {
     }
 
     @Override
-    public void sendMessage(Object user, String message) {
-        ((CommandSender) user).sendMessage(message);
-    }
-
-    @Override
-    public boolean checkPermission(Object user, String permission) {
-        return ((CommandSender) user).hasPermission(permission);
-    }
-
-    @Override
     public final List<String> tabComplete(CommandSender sender, String bukkitAlias, String[] args) throws IllegalArgumentException {
         return tabComplete(sender, Arrays.asList(args));
     }
@@ -131,12 +142,13 @@ public abstract class BaseCommand extends SpigotCommonCommandImpl {
             return new ArrayList<>();
         }
 
-        Player player = (Player) sender;
+        Player nativePlayer = (Player) sender;
+        SpigotPlayer platformPlayer = getAdapter().convertPlayer(nativePlayer);
 
         if (arguments.size() == 1) {
             ArrayList<String> output = new ArrayList<>();
 
-            for (ICommonCommand subCommand : getSubCommands()) {
+            for (ICommand subCommand : getSubCommands()) {
                 for (String name : subCommand.getNames()) {
                     if (name.toLowerCase().contains(arguments.get(0).toLowerCase())) {
                         output.add(name);
@@ -147,14 +159,14 @@ public abstract class BaseCommand extends SpigotCommonCommandImpl {
             return output;
         }
 
-        for (ICommonCommand subCommand : getSubCommands()) {
+        for (ICommand subCommand : getSubCommands()) {
             for (String name : subCommand.getNames()) {
                 if (name.equalsIgnoreCase(arguments.get(0))) {
-                    if (!checkPermission(sender, subCommand.getPermission())) {
+                    if (!platformPlayer.hasPermission(subCommand.getPermission())) {
                         continue;
                     }
 
-                    BaseCommand baseCommand = (BaseCommand) subCommand;
+                    SpigotCommand baseCommand = (SpigotCommand) subCommand;
 
                     return baseCommand.tabComplete(sender, new ArrayList<>(arguments.subList(1, arguments.size())));
                 }
@@ -163,6 +175,6 @@ public abstract class BaseCommand extends SpigotCommonCommandImpl {
 
         String argument = getArguments().get((arguments.size() - 1) % getArguments().size());
 
-        return suggest(getAdapter().convertPlayer(player), argument);
+        return suggest(platformPlayer, argument);
     }
 }

@@ -11,7 +11,7 @@ public class PermissionUtils {
             LuckPerms luckPerms = LuckPermsProvider.get();
 
             //noinspection rawtypes
-            PlayerAdapter playerAdapter = luckPerms.getPlayerAdapter(player.getNativePlayerClass());
+            PlayerAdapter playerAdapter = luckPerms.getPlayerAdapter(player.getNativePlayer().getClass());
 
             //noinspection unchecked
             return playerAdapter.getPermissionData(player.getNativePlayer()).checkPermission(permission).asBoolean();

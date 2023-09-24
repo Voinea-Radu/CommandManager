@@ -3,14 +3,19 @@ package dev.lightdream.commandmanager.common.platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
-public abstract class PlatformPlayer {
+public abstract class PlatformPlayer  implements PlatformCommandSender{
 
-    private Object nativePlayer;
+    private final Object nativePlayer;
+    private final Adapter<?,?,?> adapter;
 
-    public Class<?> getNativePlayerClass() {
-        return nativePlayer.getClass();
+    public PlatformPlayer(Object nativePlayer, Adapter<?,?,?> adapter) {
+        this.nativePlayer=nativePlayer;
+        this.adapter=adapter;
     }
 
+    @Override
+    public boolean hasPermission(String permission) {
+        return PermissionUtils.checkPermission(this, permission);
+    }
 }

@@ -5,20 +5,21 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.CommonCommand;
+import dev.lightdream.commandmanager.common.command.IPlatformCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
-import dev.lightdream.commandmanager.common.platform.PermissionUtils;
+import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
+import dev.lightdream.commandmanager.fabric.platform.FabricPlayer;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -27,62 +28,32 @@ import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-@SuppressWarnings("unused")
-public abstract class BaseCommand extends CommonCommandImpl {
+public class FabricCommand implements IPlatformCommand {
 
-    @SuppressWarnings("FieldCanBeLocal")
     private static final String commandSourceFiled = "field_9819";
 
+    private CommonCommand commonCommand;
+
+    public FabricCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
+
+    @Override
+    public CommonCommand getCommonCommand() {
+        return commonCommand;
+    }
+
+    @Override
+    public void setCommonCommand(CommonCommand commonCommand) {
+        this.commonCommand = commonCommand;
+    }
+
     @SneakyThrows
-    private static CommandOutput getSource(CommandContext<ServerCommandSource> context) {
+    private CommandOutput getSource(CommandContext<ServerCommandSource> context) {
         //noinspection JavaReflectionMemberAccess
         Field field = ServerCommandSource.class.getDeclaredField(commandSourceFiled);
         field.setAccessible(true);
         return (CommandOutput) field.get(context.getSource());
-    }
-
-    @Override
-    public boolean registerCommand(String alias) {
-        getMain().getServer().getCommandManager().getDispatcher().register(createCommandBuilder(alias));
-        getMain().getServer().getPlayerManager().getPlayerList().forEach(player ->
-                getMain().getServer().getCommandManager().sendCommandTree(player)
-        );
-
-        return true;
-    }
-
-    @Override
-    public final void sendMessage(Object user, String message) {
-        if (user instanceof ServerPlayerEntity player) {
-            player.sendMessage(Text.of(message));
-            return;
-        }
-
-        if (user instanceof MinecraftServer source) {
-            source.sendMessage(net.minecraft.text.Text.of(message));
-            return;
-        }
-
-        throw new RuntimeException("Can only send messages to objects of type ServerPlayerEntity and MinecraftDedicatedServer." +
-                " Trying to send message to " + user.getClass());
-    }
-
-    @Override
-    public final boolean checkPermission(Object sender, String permission) {
-        if (sender instanceof ServerPlayerEntity player) {
-            return PermissionUtils.checkPermission(getAdapter().convertPlayer(player), permission);
-        }
-
-        return sender instanceof MinecraftServer;
-    }
-
-    @Override
-    public CommandMain getMain() {
-        return (CommandMain) super.getMain();
-    }
-
-    protected FabricAdapter getAdapter() {
-        return (FabricAdapter) getMain().getAdapter();
     }
 
     private @NotNull List<RequiredArgumentBuilder<ServerCommandSource, String>> createArgumentsBuilders() {
@@ -118,11 +89,11 @@ public abstract class BaseCommand extends CommonCommandImpl {
     private LiteralArgumentBuilder<ServerCommandSource> createCommandBuilder(String name) {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(name);
 
-        List<ICommonCommand> subCommands = getSubCommands();
+        List<ICommand> subCommands = getSubCommands();
         List<RequiredArgumentBuilder<ServerCommandSource, String>> arguments = createArgumentsBuilders();
 
-        for (ICommonCommand subCommandObject : subCommands) {
-            BaseCommand subCommand = (BaseCommand) subCommandObject;
+        for (ICommand subCommandObject : subCommands) {
+            FabricCommand subCommand = (FabricCommand) subCommandObject;
 
             for (String subName : subCommand.getArguments()) {
                 command.then(subCommand.createCommandBuilder(subName));
@@ -161,40 +132,41 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     private void internalExecute(CommandContext<ServerCommandSource> context) {
-        CommandOutput sender = getSource(context);
         List<String> argumentsList = convertToArgumentsList(context);
-        ArgumentList arguments = new ArgumentList(argumentsList, this);
+        ArgumentList arguments = new ArgumentList(argumentsList, getCommonCommand());
+
+        PlatformCommandSender sender = getAdapter().convertCommandSender(getSource(context));
 
         if (!isEnabled()) {
-            sendMessage(sender, getMain().getLang().commandIsDisabled);
+            sender.sendMessage(getMain().getLang().commandIsDisabled);
             return;
         }
 
-        if (!checkPermission(sender, getPermission())) {
-            sendMessage(sender, getMain().getLang().noPermission);
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(getMain().getLang().noPermission);
             return;
         }
 
         switch (getOnlyFor()) {
             case PLAYER -> {
-                if (!(sender instanceof ServerPlayerEntity player)) {
-                    sendMessage(sender, getMain().getLang().onlyFotPlayer);
+                if (!(sender instanceof FabricPlayer player)) {
+                    sender.sendMessage(getMain().getLang().onlyFotPlayer);
                     return;
                 }
-                execute(getAdapter().convertPlayer(player), arguments);
+                execute(player, arguments);
             }
             case CONSOLE -> {
                 if (!(sender instanceof MinecraftServer consoleSource)) {
-                    sendMessage(sender, getMain().getLang().onlyForConsole);
+                    sender.sendMessage(getMain().getLang().onlyForConsole);
                     return;
                 }
                 execute(getAdapter().convertConsole(consoleSource), arguments);
             }
-            case BOTH -> execute(getAdapter().convertCommandSender(sender), arguments);
+            case BOTH -> execute(sender, arguments);
         }
     }
 
-    public List<String> convertToArgumentsList(CommandContext<ServerCommandSource> context) {
+    private List<String> convertToArgumentsList(CommandContext<ServerCommandSource> context) {
         List<String> arguments = new ArrayList<>();
 
         for (String argument : getArguments()) {
@@ -202,5 +174,24 @@ public abstract class BaseCommand extends CommonCommandImpl {
         }
 
         return arguments;
+    }
+
+    @Override
+    public boolean registerCommand(String alias) {
+        getMain().getServer().getCommandManager().getDispatcher().register(createCommandBuilder(alias));
+        getMain().getServer().getPlayerManager().getPlayerList().forEach(player ->
+                getMain().getServer().getCommandManager().sendCommandTree(player)
+        );
+
+        return true;
+    }
+
+    protected FabricAdapter getAdapter() {
+        return getMain().getAdapter();
+    }
+
+    @Override
+    public CommandMain getMain() {
+        return (CommandMain) IPlatformCommand.super.getMain();
     }
 }

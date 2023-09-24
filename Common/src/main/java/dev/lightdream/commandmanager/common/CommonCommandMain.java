@@ -1,7 +1,7 @@
 package dev.lightdream.commandmanager.common;
 
 import dev.lightdream.commandmanager.common.annotation.Command;
-import dev.lightdream.commandmanager.common.command.ICommonCommand;
+import dev.lightdream.commandmanager.common.command.ICommand;
 import dev.lightdream.commandmanager.common.dto.CommandLang;
 import dev.lightdream.commandmanager.common.manager.CommandManager;
 import dev.lightdream.commandmanager.common.platform.Adapter;
@@ -20,7 +20,7 @@ public interface CommonCommandMain {
 
     @Nullable Reflections getReflections();
 
-    @NotNull Set<Class<? extends ICommonCommand>> getCommandClasses();
+    @NotNull Set<Class<? extends ICommand>> getCommandClasses();
 
     CommandManager getCommandManager();
 
@@ -31,17 +31,17 @@ public interface CommonCommandMain {
      */
     @NotNull String basePermission();
 
-    default Set<Class<? extends ICommonCommand>> getCommandClassesFinal() {
-        Set<Class<? extends ICommonCommand>> classes = new HashSet<>();
+    default Set<Class<? extends ICommand>> getCommandClassesFinal() {
+        Set<Class<? extends ICommand>> classes = new HashSet<>();
 
         if (getReflections() != null) {
             for (Class<?> clazz : getReflections().getTypesAnnotatedWith(Command.class)) {
-                if (!ICommonCommand.class.isAssignableFrom(clazz)) {
+                if (!ICommand.class.isAssignableFrom(clazz)) {
                     Logger.error("Class " + clazz.getName() + " does not extend CommonCommand");
                     continue;
                 }
                 //noinspection unchecked
-                classes.add((Class<? extends ICommonCommand>) clazz);
+                classes.add((Class<? extends ICommand>) clazz);
             }
         } else {
             classes = getCommandClasses();
@@ -50,5 +50,5 @@ public interface CommonCommandMain {
         return classes;
     }
 
-    Adapter getAdapter();
+    Adapter<?,?,?> getAdapter();
 }
