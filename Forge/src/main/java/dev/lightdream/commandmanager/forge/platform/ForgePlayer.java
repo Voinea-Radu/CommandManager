@@ -1,5 +1,6 @@
 package dev.lightdream.commandmanager.forge.platform;
 
+import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,12 +11,17 @@ public class ForgePlayer extends PlatformPlayer {
     }
 
     @Override
-    public ServerPlayer getNativePlayer() {
-        return (ServerPlayer) super.getNativePlayer();
+    public ServerPlayer getNative() {
+        return (ServerPlayer) this.nativeObject;
+    }
+
+    @Override
+    public ForgeAdapter getAdapter() {
+        return (ForgeAdapter) this.adapter;
     }
 
     @Override
     public void sendMessage(String message) {
-        getNativePlayer().sendSystemMessage(Component.literal(message));
+        getNative().sendSystemMessage(Component.literal(message));
     }
 }

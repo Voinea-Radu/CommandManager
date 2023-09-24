@@ -13,6 +13,7 @@ import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
+import dev.lightdream.commandmanager.fabric.platform.FabricConsole;
 import dev.lightdream.commandmanager.fabric.platform.FabricPlayer;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
@@ -156,11 +157,11 @@ public class FabricCommand implements IPlatformCommand {
                 execute(player, arguments);
             }
             case CONSOLE -> {
-                if (!(sender instanceof MinecraftServer consoleSource)) {
+                if (!(sender instanceof FabricConsole console)) {
                     sender.sendMessage(getMain().getLang().onlyForConsole);
                     return;
                 }
-                execute(getAdapter().convertConsole(consoleSource), arguments);
+                execute(console, arguments);
             }
             case BOTH -> execute(sender, arguments);
         }

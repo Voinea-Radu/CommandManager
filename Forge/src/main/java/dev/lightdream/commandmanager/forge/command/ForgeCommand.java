@@ -13,6 +13,8 @@ import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.forge.CommandMain;
 import dev.lightdream.commandmanager.forge.platform.ForgeAdapter;
+import dev.lightdream.commandmanager.forge.platform.ForgeConsole;
+import dev.lightdream.commandmanager.forge.platform.ForgePlayer;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
@@ -143,18 +145,18 @@ public class ForgeCommand implements IPlatformCommand {
 
         switch (getOnlyFor()) {
             case PLAYER -> {
-                if (!(sender instanceof ServerPlayer player)) {
+                if (!(sender instanceof ForgePlayer player)) {
                     sender. sendMessage(getMain().getLang().onlyFotPlayer);
                     return;
                 }
-                execute(getAdapter().convertPlayer(player), arguments);
+                execute(player, arguments);
             }
             case CONSOLE -> {
-                if (!(sender instanceof MinecraftServer consoleSource)) {
+                if (!(sender instanceof ForgeConsole console)) {
                     sender.sendMessage( getMain().getLang().onlyForConsole);
                     return;
                 }
-                execute(getAdapter().convertConsole(consoleSource), arguments);
+                execute(console, arguments);
             }
             case BOTH -> execute(sender, arguments);
         }

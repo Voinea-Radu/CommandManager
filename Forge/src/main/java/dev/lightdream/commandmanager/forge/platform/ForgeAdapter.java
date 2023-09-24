@@ -15,12 +15,12 @@ public class ForgeAdapter extends Adapter<ServerPlayer, MinecraftServer,CommandS
 
     @Override
     public  ForgePlayer convertPlayer(ServerPlayer player) {
-        return new ForgePlayer(player);
+        return new ForgePlayer(player, this);
     }
 
     @Override
     public ForgeConsole convertConsole(MinecraftServer console) {
-        return new ForgeConsole(console);
+        return new ForgeConsole(console, this);
     }
 
     @Override

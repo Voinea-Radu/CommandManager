@@ -1,10 +1,6 @@
 package dev.lightdream.commandmanager.fabric.platform;
 
-import dev.lightdream.commandmanager.common.platform.Adapter;
-import dev.lightdream.commandmanager.common.platform.PermissionUtils;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
-import dev.lightdream.logger.Logger;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -14,12 +10,17 @@ public class FabricPlayer extends PlatformPlayer {
     }
 
     @Override
-    public ServerPlayerEntity getNativePlayer() {
-        return (ServerPlayerEntity) super.getNativePlayer();
+    public void sendMessage(String message) {
+        getNative().sendMessage(Text.of(message));
     }
 
     @Override
-    public void sendMessage(String message) {
-        getNativePlayer().sendMessage(Text.of(message));
+    public ServerPlayerEntity getNative() {
+        return (ServerPlayerEntity) this.nativeObject;
+    }
+
+    @Override
+    public FabricAdapter getAdapter() {
+        return (FabricAdapter) this.adapter;
     }
 }

@@ -1,18 +1,12 @@
 package dev.lightdream.commandmanager.common.platform;
 
 import dev.lightdream.logger.Logger;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
-public abstract class PlatformConsole implements PlatformCommandSender {
+public abstract class PlatformConsole extends PlatformCommandSender {
 
-    public final Object nativeConsole;
-    private final Adapter adapter;
-
-    public PlatformConsole(Object nativeConsole, Adapter adapter) {
-        this.nativeConsole=nativeConsole;
-        this.adapter=adapter;
+    public PlatformConsole(Object nativeConsole, Adapter<?, ?, ?> adapter) {
+        super(nativeConsole, adapter);
     }
 
     @Override

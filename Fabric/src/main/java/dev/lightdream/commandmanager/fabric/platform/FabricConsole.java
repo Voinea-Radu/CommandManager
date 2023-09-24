@@ -1,7 +1,6 @@
 package dev.lightdream.commandmanager.fabric.platform;
 
 import dev.lightdream.commandmanager.common.platform.PlatformConsole;
-import dev.lightdream.logger.Logger;
 import net.minecraft.server.MinecraftServer;
 
 public class FabricConsole extends PlatformConsole {
@@ -10,4 +9,13 @@ public class FabricConsole extends PlatformConsole {
         super(minecraftServer, adapter);
     }
 
+    @Override
+    public MinecraftServer getNative() {
+        return (MinecraftServer) nativeObject;
+    }
+
+    @Override
+    public FabricAdapter getAdapter() {
+        return (FabricAdapter) adapter;
+    }
 }

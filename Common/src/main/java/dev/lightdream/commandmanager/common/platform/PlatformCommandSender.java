@@ -5,13 +5,17 @@ import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public interface PlatformCommandSender {
+public abstract class PlatformCommandSender extends PlatformObject {
 
-     boolean hasPermission(String permission);
+    public PlatformCommandSender(Object nativeConsole, Adapter<?, ?, ?> adapter) {
+        super(nativeConsole, adapter);
+    }
 
-     void sendMessage(String message);
+    public abstract boolean hasPermission(String permission);
 
-    default void sendMessage(GenericMessageBuilder<?> message){
+    public abstract void sendMessage(String message);
+
+    public void sendMessage(GenericMessageBuilder<?> message){
         sendMessage(message.toString());
     }
 

@@ -43,7 +43,7 @@ public class SpigotCommand extends org.bukkit.command.Command implements IPlatfo
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        internalExecute(getAdapter().convertCommandSender(sender), Arrays.asList(args));
+        internalExecute(getMain().getAdapter().convertCommandSender(sender), Arrays.asList(args));
         return true;
     }
 
@@ -111,10 +111,6 @@ public class SpigotCommand extends org.bukkit.command.Command implements IPlatfo
         return (CommandMain) IPlatformCommand.super.getMain();
     }
 
-    protected SpigotAdapter getAdapter() {
-        return (SpigotAdapter) getMain().getAdapter();
-    }
-
     @SneakyThrows(value = {IllegalAccessException.class, NoSuchFieldException.class})
     @Override
     public boolean registerCommand(String alias) {
@@ -143,7 +139,7 @@ public class SpigotCommand extends org.bukkit.command.Command implements IPlatfo
         }
 
         Player nativePlayer = (Player) sender;
-        SpigotPlayer platformPlayer = getAdapter().convertPlayer(nativePlayer);
+        SpigotPlayer platformPlayer = getMain().getAdapter().convertPlayer(nativePlayer);
 
         if (arguments.size() == 1) {
             ArrayList<String> output = new ArrayList<>();
