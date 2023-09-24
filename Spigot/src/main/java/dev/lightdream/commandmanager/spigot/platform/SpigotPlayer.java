@@ -11,7 +11,7 @@ public class SpigotPlayer extends PlatformPlayer {
 
     @Override
     public void sendMessage(String message) {
-        getNativePlayer().sendMessage(message);
+        getNative().sendMessage(message);
     }
 
     @Override
