@@ -2,7 +2,6 @@ package dev.lightdream.commandmanager.fabric;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommand;
-import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.fabric.platform.FabricAdapter;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;

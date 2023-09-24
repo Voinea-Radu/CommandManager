@@ -2,8 +2,6 @@ package dev.lightdream.commandmanager.spigot;
 
 import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommand;
-import dev.lightdream.commandmanager.common.command.IPlatformCommand;
-import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;

@@ -12,6 +12,6 @@ public abstract class PlatformObject {
 
     public abstract Object getNative();
 
-    public abstract Adapter<?,?,?> getAdapter();
+    public abstract Adapter<?, ?, ?> getAdapter();
 
 }

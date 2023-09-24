@@ -1,6 +1,5 @@
 package dev.lightdream.commandmanager.forge.platform;
 
-import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;

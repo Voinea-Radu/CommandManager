@@ -50,5 +50,5 @@ public interface CommonCommandMain {
         return classes;
     }
 
-    Adapter<?,?,?> getAdapter();
+    Adapter<?, ?, ?> getAdapter();
 }

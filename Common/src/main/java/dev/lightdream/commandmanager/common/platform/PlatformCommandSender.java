@@ -1,9 +1,6 @@
 package dev.lightdream.commandmanager.common.platform;
 
 import dev.lightdream.messagebuilder.GenericMessageBuilder;
-import dev.lightdream.messagebuilder.MessageBuilder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 public abstract class PlatformCommandSender extends PlatformObject {
 
@@ -15,7 +12,7 @@ public abstract class PlatformCommandSender extends PlatformObject {
 
     public abstract void sendMessage(String message);
 
-    public void sendMessage(GenericMessageBuilder<?> message){
+    public void sendMessage(GenericMessageBuilder<?> message) {
         sendMessage(message.toString());
     }
 

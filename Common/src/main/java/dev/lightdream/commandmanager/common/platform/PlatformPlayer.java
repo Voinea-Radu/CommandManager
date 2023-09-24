@@ -1,12 +1,11 @@
 package dev.lightdream.commandmanager.common.platform;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public abstract class PlatformPlayer  extends PlatformCommandSender{
+public abstract class PlatformPlayer extends PlatformCommandSender {
 
-    public PlatformPlayer(Object nativePlayer, Adapter<?,?,?> adapter) {
+    public PlatformPlayer(Object nativePlayer, Adapter<?, ?, ?> adapter) {
         super(nativePlayer, adapter);
     }
 

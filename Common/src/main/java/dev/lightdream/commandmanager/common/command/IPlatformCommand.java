@@ -5,7 +5,7 @@ import dev.lightdream.commandmanager.common.annotation.Command;
 
 import java.util.List;
 
-public interface IPlatformCommand extends ICommand{
+public interface IPlatformCommand extends ICommand {
 
     CommonCommand getCommonCommand();
 

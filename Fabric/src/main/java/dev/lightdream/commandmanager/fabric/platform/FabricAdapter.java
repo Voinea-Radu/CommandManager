@@ -2,7 +2,6 @@ package dev.lightdream.commandmanager.fabric.platform;
 
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.platform.Adapter;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.fabric.command.FabricCommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;

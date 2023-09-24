@@ -9,13 +9,13 @@ public abstract class Adapter<NativePlayer extends NativeCommandSender, NativeCo
 
     public abstract PlatformConsole convertConsole(NativeConsole nativeConsole);
 
-    public PlatformCommandSender convertCommandSender(NativeCommandSender nativeCommandSender){
-        if(getNativePlayerClass().isInstance(nativeCommandSender)){
+    public PlatformCommandSender convertCommandSender(NativeCommandSender nativeCommandSender) {
+        if (getNativePlayerClass().isInstance(nativeCommandSender)) {
             //noinspection unchecked
             return convertPlayer((NativePlayer) nativeCommandSender);
         }
 
-        if(getNativeConsoleClass().isInstance(nativeCommandSender)){
+        if (getNativeConsoleClass().isInstance(nativeCommandSender)) {
             //noinspection unchecked
             return convertConsole((NativeConsole) nativeCommandSender);
         }

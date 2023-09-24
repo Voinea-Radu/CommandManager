@@ -3,18 +3,15 @@ package dev.lightdream.commandmanager.forge.platform;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.platform.Adapter;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
-import dev.lightdream.commandmanager.common.platform.PlatformConsole;
-import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.forge.command.ForgeCommand;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ForgeAdapter extends Adapter<ServerPlayer, MinecraftServer,CommandSource> {
+public class ForgeAdapter extends Adapter<ServerPlayer, MinecraftServer, CommandSource> {
 
     @Override
-    public  ForgePlayer convertPlayer(ServerPlayer player) {
+    public ForgePlayer convertPlayer(ServerPlayer player) {
         return new ForgePlayer(player, this);
     }
 

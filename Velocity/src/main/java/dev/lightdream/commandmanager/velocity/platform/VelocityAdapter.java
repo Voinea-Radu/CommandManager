@@ -6,9 +6,6 @@ import com.velocitypowered.api.proxy.Player;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.platform.Adapter;
-import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
-import dev.lightdream.commandmanager.common.platform.PlatformConsole;
-import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import dev.lightdream.commandmanager.velocity.command.VelocityCommand;
 
 public class VelocityAdapter extends Adapter<Player, ConsoleCommandSource, CommandSource> {
@@ -18,7 +15,7 @@ public class VelocityAdapter extends Adapter<Player, ConsoleCommandSource, Comma
     }
 
     @Override
-    public  VelocityConsole convertConsole(ConsoleCommandSource console) {
+    public VelocityConsole convertConsole(ConsoleCommandSource console) {
         return new VelocityConsole(console, this);
     }
 

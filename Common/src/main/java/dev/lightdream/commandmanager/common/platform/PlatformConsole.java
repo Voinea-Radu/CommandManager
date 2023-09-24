@@ -1,7 +1,6 @@
 package dev.lightdream.commandmanager.common.platform;
 
 import dev.lightdream.logger.Logger;
-import lombok.Getter;
 
 public abstract class PlatformConsole extends PlatformCommandSender {
 

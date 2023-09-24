@@ -6,7 +6,6 @@ import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 import dev.lightdream.commandmanager.common.dto.ArgumentList;
 import dev.lightdream.commandmanager.common.platform.PlatformCommandSender;
 import dev.lightdream.commandmanager.spigot.CommandMain;
-import dev.lightdream.commandmanager.spigot.platform.SpigotAdapter;
 import dev.lightdream.commandmanager.spigot.platform.SpigotConsole;
 import dev.lightdream.commandmanager.spigot.platform.SpigotPlayer;
 import dev.lightdream.messagebuilder.MessageBuilder;

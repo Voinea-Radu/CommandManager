@@ -1,7 +1,6 @@
 package dev.lightdream.commandmanager.velocity.platform;
 
 import com.velocitypowered.api.proxy.Player;
-import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import net.kyori.adventure.text.Component;
 

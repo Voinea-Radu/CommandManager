@@ -1,6 +1,5 @@
 package dev.lightdream.commandmanager.spigot.platform;
 
-import dev.lightdream.commandmanager.common.platform.Adapter;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import org.bukkit.entity.Player;
 
