@@ -3,13 +3,14 @@ package dev.lightdream.commandmanager.common.platform;
 import dev.lightdream.commandmanager.common.command.CommonCommand;
 import dev.lightdream.commandmanager.common.command.IPlatformCommand;
 
-public abstract class Adapter<NativePlayer extends NativeCommandSender, NativeConsole extends NativeCommandSender, NativeCommandSender> {
+public interface Adapter
+        <NativePlayer extends NativeCommandSender, NativeConsole extends NativeCommandSender, NativeCommandSender> {
 
-    public abstract PlatformPlayer convertPlayer(NativePlayer nativePLayer);
+    PlatformPlayer convertPlayer(NativePlayer nativePLayer);
 
-    public abstract PlatformConsole convertConsole(NativeConsole nativeConsole);
+    PlatformConsole convertConsole(NativeConsole nativeConsole);
 
-    public PlatformCommandSender convertCommandSender(NativeCommandSender nativeCommandSender) {
+    default PlatformCommandSender convertCommandSender(NativeCommandSender nativeCommandSender) {
         if (getNativePlayerClass().isInstance(nativeCommandSender)) {
             //noinspection unchecked
             return convertPlayer((NativePlayer) nativeCommandSender);
@@ -23,17 +24,17 @@ public abstract class Adapter<NativePlayer extends NativeCommandSender, NativeCo
         throw createConversionError(nativeCommandSender, PlatformCommandSender.class);
     }
 
-    public abstract IPlatformCommand convertCommand(CommonCommand command);
+    IPlatformCommand convertCommand(CommonCommand command);
 
-    protected RuntimeException createConversionError(Class<?> fromClass, Class<?> toClass) {
+    default RuntimeException createConversionError(Class<?> fromClass, Class<?> toClass) {
         return new RuntimeException("Can not convert from " + fromClass.getName() + " to " + toClass.getName());
     }
 
-    protected RuntimeException createConversionError(Object fromObject, Class<?> toClass) {
+    default RuntimeException createConversionError(Object fromObject, Class<?> toClass) {
         return createConversionError(fromObject.getClass(), toClass);
     }
 
-    protected abstract Class<NativePlayer> getNativePlayerClass();
+    Class<NativePlayer> getNativePlayerClass();
 
-    protected abstract Class<NativeConsole> getNativeConsoleClass();
+    Class<NativeConsole> getNativeConsoleClass();
 }

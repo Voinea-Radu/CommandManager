@@ -23,7 +23,5 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull Reflections getReflections();
 
     @Override
-    default SpigotAdapter getAdapter() {
-        return new SpigotAdapter();
-    }
+    SpigotAdapter getAdapter();
 }

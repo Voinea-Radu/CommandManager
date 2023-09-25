@@ -7,30 +7,30 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class FabricAdapter extends Adapter<ServerPlayerEntity, MinecraftServer, CommandOutput> {
+public interface FabricAdapter extends Adapter<ServerPlayerEntity, MinecraftServer, CommandOutput> {
 
     @Override
-    public FabricPlayer convertPlayer(ServerPlayerEntity nativePlayer) {
+    default FabricPlayer convertPlayer(ServerPlayerEntity nativePlayer) {
         return new FabricPlayer(nativePlayer, this);
     }
 
     @Override
-    public FabricConsole convertConsole(MinecraftServer nativeConsole) {
+    default FabricConsole convertConsole(MinecraftServer nativeConsole) {
         return new FabricConsole(nativeConsole, this);
     }
 
     @Override
-    public FabricCommand convertCommand(CommonCommand command) {
+    default FabricCommand convertCommand(CommonCommand command) {
         return new FabricCommand(command);
     }
 
     @Override
-    protected Class<ServerPlayerEntity> getNativePlayerClass() {
+    default Class<ServerPlayerEntity> getNativePlayerClass() {
         return ServerPlayerEntity.class;
     }
 
     @Override
-    protected Class<MinecraftServer> getNativeConsoleClass() {
+    default Class<MinecraftServer> getNativeConsoleClass() {
         return MinecraftServer.class;
     }
 

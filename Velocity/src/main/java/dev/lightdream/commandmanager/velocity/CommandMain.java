@@ -23,7 +23,5 @@ public interface CommandMain extends CommonCommandMain {
     @NotNull Reflections getReflections();
 
     @Override
-    default VelocityAdapter getAdapter() {
-        return new VelocityAdapter();
-    }
+    VelocityAdapter getAdapter();
 }

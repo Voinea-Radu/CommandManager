@@ -7,30 +7,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class SpigotAdapter extends Adapter<Player, ConsoleCommandSender, CommandSender> {
+public interface SpigotAdapter extends Adapter<Player, ConsoleCommandSender, CommandSender> {
 
     @Override
-    public SpigotPlayer convertPlayer(Player nativePlayer) {
+    default SpigotPlayer convertPlayer(Player nativePlayer) {
         return new SpigotPlayer(nativePlayer, this);
     }
 
     @Override
-    public SpigotConsole convertConsole(ConsoleCommandSender nativeConsole) {
+    default SpigotConsole convertConsole(ConsoleCommandSender nativeConsole) {
         return new SpigotConsole(nativeConsole, this);
     }
 
     @Override
-    public SpigotCommand convertCommand(CommonCommand command) {
+    default SpigotCommand convertCommand(CommonCommand command) {
         return new SpigotCommand(command);
     }
 
     @Override
-    protected Class<Player> getNativePlayerClass() {
+    default Class<Player> getNativePlayerClass() {
         return Player.class;
     }
 
     @Override
-    protected Class<ConsoleCommandSender> getNativeConsoleClass() {
+    default Class<ConsoleCommandSender> getNativeConsoleClass() {
         return ConsoleCommandSender.class;
     }
 

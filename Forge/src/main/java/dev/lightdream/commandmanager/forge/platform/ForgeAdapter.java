@@ -8,30 +8,30 @@ import net.minecraft.commands.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ForgeAdapter extends Adapter<ServerPlayer, MinecraftServer, CommandSource> {
+public interface ForgeAdapter extends Adapter<ServerPlayer, MinecraftServer, CommandSource> {
 
     @Override
-    public ForgePlayer convertPlayer(ServerPlayer player) {
+    default ForgePlayer convertPlayer(ServerPlayer player) {
         return new ForgePlayer(player, this);
     }
 
     @Override
-    public ForgeConsole convertConsole(MinecraftServer console) {
+    default ForgeConsole convertConsole(MinecraftServer console) {
         return new ForgeConsole(console, this);
     }
 
     @Override
-    public IPlatformCommand convertCommand(CommonCommand command) {
+    default IPlatformCommand convertCommand(CommonCommand command) {
         return new ForgeCommand(command);
     }
 
     @Override
-    protected Class<ServerPlayer> getNativePlayerClass() {
+    default Class<ServerPlayer> getNativePlayerClass() {
         return ServerPlayer.class;
     }
 
     @Override
-    protected Class<MinecraftServer> getNativeConsoleClass() {
+    default Class<MinecraftServer> getNativeConsoleClass() {
         return MinecraftServer.class;
     }
 
