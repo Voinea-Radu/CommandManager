@@ -1,9 +1,10 @@
 package dev.lightdream.commandmanager.spigot.platform;
 
+import dev.lightdream.commandmanager.common.platform.PlatformObject;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import org.bukkit.entity.Player;
 
-public class SpigotPlayer extends PlatformPlayer {
+public class SpigotPlayer extends PlatformObject implements PlatformPlayer {
 
     public SpigotPlayer(Player player, SpigotAdapter adapter) {
         super(player, adapter);

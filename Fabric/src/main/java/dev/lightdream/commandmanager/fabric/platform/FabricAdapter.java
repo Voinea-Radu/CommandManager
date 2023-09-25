@@ -34,6 +34,4 @@ public interface FabricAdapter extends Adapter<ServerPlayerEntity, MinecraftServ
         return MinecraftServer.class;
     }
 
-
 }
-

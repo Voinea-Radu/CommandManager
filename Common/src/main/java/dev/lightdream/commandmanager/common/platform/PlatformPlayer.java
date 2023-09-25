@@ -1,16 +1,9 @@
 package dev.lightdream.commandmanager.common.platform;
 
-import lombok.Getter;
-
-@Getter
-public abstract class PlatformPlayer extends PlatformCommandSender {
-
-    public PlatformPlayer(Object nativePlayer, Adapter<?, ?, ?> adapter) {
-        super(nativePlayer, adapter);
-    }
+public interface PlatformPlayer extends PlatformCommandSender {
 
     @Override
-    public boolean hasPermission(String permission) {
+    default boolean hasPermission(String permission) {
         return PermissionUtils.checkPermission(this, permission);
     }
 

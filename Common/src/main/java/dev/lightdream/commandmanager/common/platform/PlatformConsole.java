@@ -2,19 +2,15 @@ package dev.lightdream.commandmanager.common.platform;
 
 import dev.lightdream.logger.Logger;
 
-public abstract class PlatformConsole extends PlatformCommandSender {
-
-    public PlatformConsole(Object nativeConsole, Adapter<?, ?, ?> adapter) {
-        super(nativeConsole, adapter);
-    }
+public interface PlatformConsole extends PlatformCommandSender {
 
     @Override
-    public boolean hasPermission(String permission) {
+    default boolean hasPermission(String permission) {
         return true;
     }
 
     @Override
-    public void sendMessage(String message) {
+    default void sendMessage(String message) {
         Logger.log(message);
     }
 

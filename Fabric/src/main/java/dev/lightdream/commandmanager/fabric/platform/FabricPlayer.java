@@ -1,10 +1,12 @@
 package dev.lightdream.commandmanager.fabric.platform;
 
+import dev.lightdream.commandmanager.common.platform.PlatformObject;
 import dev.lightdream.commandmanager.common.platform.PlatformPlayer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public class FabricPlayer extends PlatformPlayer {
+public class FabricPlayer extends PlatformObject implements PlatformPlayer {
+
     public FabricPlayer(ServerPlayerEntity player, FabricAdapter adapter) {
         super(player, adapter);
     }
@@ -23,4 +25,5 @@ public class FabricPlayer extends PlatformPlayer {
     public FabricAdapter getAdapter() {
         return (FabricAdapter) this.adapter;
     }
+
 }

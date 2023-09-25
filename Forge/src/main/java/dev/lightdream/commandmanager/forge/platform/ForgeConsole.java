@@ -1,9 +1,10 @@
 package dev.lightdream.commandmanager.forge.platform;
 
 import dev.lightdream.commandmanager.common.platform.PlatformConsole;
+import dev.lightdream.commandmanager.common.platform.PlatformObject;
 import net.minecraft.server.MinecraftServer;
 
-public class ForgeConsole extends PlatformConsole {
+public class ForgeConsole extends PlatformObject implements PlatformConsole {
 
     public ForgeConsole(MinecraftServer minecraftServer, ForgeAdapter adapter) {
         super(minecraftServer, adapter);

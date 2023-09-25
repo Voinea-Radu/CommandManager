@@ -1,6 +1,6 @@
 package dev.lightdream.commandmanager.common.platform;
 
-public abstract class PlatformObject {
+public abstract class PlatformObject implements IPlatformObject{
 
     protected final Object nativeObject;
     protected final Adapter<?, ?, ?> adapter;

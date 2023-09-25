@@ -2,19 +2,14 @@ package dev.lightdream.commandmanager.common.platform;
 
 import dev.lightdream.messagebuilder.GenericMessageBuilder;
 
-public abstract class PlatformCommandSender extends PlatformObject {
+public interface PlatformCommandSender extends IPlatformObject {
 
-    public PlatformCommandSender(Object nativeConsole, Adapter<?, ?, ?> adapter) {
-        super(nativeConsole, adapter);
-    }
+     boolean hasPermission(String permission);
 
-    public abstract boolean hasPermission(String permission);
+     void sendMessage(String message);
 
-    public abstract void sendMessage(String message);
-
-    public void sendMessage(GenericMessageBuilder<?> message) {
+    default void sendMessage(GenericMessageBuilder<?> message) {
         sendMessage(message.toString());
     }
-
 
 }
