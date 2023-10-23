@@ -13,8 +13,7 @@ import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.fabric.CommandMain;
-import dev.lightdream.commandmanager.fabric.utils.PermissionUtils;
-import dev.lightdream.logger.Debugger;
+import dev.lightdream.commandmanager.common.utils.PermissionUtils;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
@@ -77,6 +76,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
                     //noinspection unchecked
                     argument = (RequiredArgumentBuilder<ServerCommandSource, String>) requiredArgumentBuilder;
                 } catch (Exception e) {
+                    //noinspection CallToPrintStackTrace
                     e.printStackTrace();
                     processedArguments.add(rawArgument);
                     continue;
@@ -138,7 +138,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         ArgumentBuilder<ServerCommandSource, ?> then = null;
 
-        if (arguments.size() != 0) {
+        if (!arguments.isEmpty()) {
             arguments.get(arguments.size() - 1).executes(this::executeCatch);
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
@@ -177,6 +177,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         try {
             return execute(context);
         } catch (Throwable t) {
+            //noinspection CallToPrintStackTrace
             t.printStackTrace();
         }
         return 0;
@@ -218,7 +219,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void exec(@NotNull CommandOutput source, @NotNull CommandContext<ServerCommandSource> context) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
@@ -226,7 +227,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<ServerCommandSource> context) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
@@ -234,7 +235,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void exec(@NotNull ServerPlayerEntity player, @NotNull CommandContext<ServerCommandSource> context) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
@@ -244,7 +245,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     @Override
     public final boolean checkPermission(Object sender, String permission) {
         if (sender instanceof ServerPlayerEntity player) {
-            return PermissionUtils.checkPermission((ServerPlayerEntity) sender, permission);
+            return PermissionUtils.checkPermission(sender, permission);
         }
 
         return sender instanceof MinecraftDedicatedServer source;

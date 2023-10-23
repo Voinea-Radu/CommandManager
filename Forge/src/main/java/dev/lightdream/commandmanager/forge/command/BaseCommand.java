@@ -7,8 +7,8 @@ import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
+import dev.lightdream.commandmanager.common.utils.PermissionUtils;
 import dev.lightdream.commandmanager.forge.CommandMain;
-import dev.lightdream.commandmanager.forge.util.PermissionUtil;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
@@ -61,7 +61,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
         RequiredArgumentBuilder<CommandSourceStack, ?> then = null;
 
-        if (arguments.size() != 0) {
+        if (!arguments.isEmpty()) {
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
                     arguments.get(index).then(arguments.get(index + 1));
@@ -78,6 +78,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
             try {
                 return internalExecute(context);
             } catch (Throwable t) {
+                //noinspection CallToPrintStackTrace
                 t.printStackTrace();
             }
             return 0;
@@ -135,7 +136,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void exec(@NotNull CommandSource source, @NotNull CommandContext<CommandSourceStack> context) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + source + ", but the command is not implemented. Exec type: CommandSource, CommandContext");
         }
 
@@ -143,7 +144,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void exec(@NotNull MinecraftServer console, @NotNull CommandContext<CommandSourceStack> context) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for Console, but the command is not implemented. Exec type: ConsoleSource, CommandContext");
         }
 
@@ -151,7 +152,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
     }
 
     public void exec(@NotNull Player player, @NotNull CommandContext<CommandSourceStack> context) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: User, CommandContext");
         }
 
@@ -160,7 +161,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean checkPermission(Object user, String permission) {
-        return PermissionUtil.checkPermission((Player) user, permission);
+        return PermissionUtils.checkPermission(user, permission);
     }
 
     @Override
