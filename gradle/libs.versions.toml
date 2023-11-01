@@ -34,6 +34,6 @@ luckperms = { module = "net.luckperms:api", version = "5.4" }
 # LightDream
 lightdream_logger = { module = "dev.lightdream:logger", version = "3.3.14" }
 lightdream_lambda = { module = "dev.lightdream:lambda", version = "5.0.7" }
-lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.20" }
+lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.22" }
 
 
