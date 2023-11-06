@@ -20,7 +20,7 @@ velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPS
 spigot = { module = "org.spigotmc:spigot-api", version = "1.8-R0.1-SNAPSHOT" }
 
 # Sponge
-sponge = { module = "org.spongepowered:spongeapi", version = "7.4.0" }
+sponge = { module = "org.spongepowered:spongeapi", version = "9.0.0" }
 
 # Utils
 lombok = { module = "org.projectlombok:lombok", version = "1.18.30" }
