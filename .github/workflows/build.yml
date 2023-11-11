@@ -51,7 +51,7 @@ jobs:
 
 
       - name: Execute Gradle build
-        run: gradle build
+        run: ./gradlew build
 
 
       # ==================== EXTERNAL SCRIPTS ====================
