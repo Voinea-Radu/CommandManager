@@ -1,7 +1,7 @@
 package dev.lightdream.commandmanager.common.command;
 
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.annotation.Command;
+import dev.lightdream.commandmanager.common.manager.CommonCommandManager;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import org.reflections.Reflections;
@@ -41,8 +41,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
 
         for (Class<? extends ICommonCommand> clazz : getSubCommandClasses()) {
             subCommands.add(
-                    CommonCommandMain.getCommandMain(CommonCommandMain.class)
-                            .getCommandManager()
+                    CommonCommandManager.instance()
                             .initCommand(clazz, parentCommand)
             );
         }
@@ -92,7 +91,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     default List<Class<? extends ICommonCommand>> getSubCommandClasses() {
         List<Class<? extends ICommonCommand>> subCommands = new ArrayList<>();
 
-        Reflections reflections = CommonCommandMain.getCommandMain(CommonCommandMain.class).getReflections();
+        Reflections reflections = CommonCommandManager.instance().reflections();
         Set<Class<? extends ICommonCommand>> classes = new HashSet<>();
 
         if (reflections != null) {
@@ -102,7 +101,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
                 }
             }
         } else {
-            for (Class<? extends ICommonCommand> clazz : CommonCommandMain.getCommandMain(CommonCommandMain.class).getCommandClasses()) {
+            for (Class<? extends ICommonCommand> clazz : CommonCommandManager.instance().commandClasses()) {
                 if (ICommonCommand.class.isAssignableFrom(clazz)) {
                     classes.add(clazz);
                 }
@@ -133,14 +132,14 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
 
     default String getPermission() {
         String annotationPermission = getCommandAnnotation().permission();
-        String basePermission = CommonCommandMain.getCommandMain(CommonCommandMain.class).basePermission();
+        String basePermission = CommonCommandManager.instance().basePermission();
         String commandPermission = getName();
 
-        if (annotationPermission != null && !annotationPermission.equals("")) {
+        if (annotationPermission != null && !annotationPermission.isEmpty()) {
             commandPermission = annotationPermission;
         }
 
-        if (basePermission.equals("")) {
+        if (basePermission.isEmpty()) {
             return commandPermission;
         }
 
@@ -166,6 +165,7 @@ public interface ICommonCommand extends ICommandAnnotationWrapper {
     }
 
     void disable();
+
     void enable();
 
 }

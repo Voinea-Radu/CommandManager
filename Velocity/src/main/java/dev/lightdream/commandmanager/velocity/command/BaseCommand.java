@@ -1,16 +1,14 @@
 package dev.lightdream.commandmanager.velocity.command;
 
-import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
-import dev.lightdream.commandmanager.velocity.CommandMain;
+import dev.lightdream.commandmanager.velocity.manager.CommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import net.kyori.adventure.text.Component;
@@ -86,7 +84,8 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
     @Override
     public final boolean registerCommand(String name) {
-        CommandManager commandManager = CommonCommandMain.getCommandMain(CommandMain.class).getProxy().getCommandManager();
+        com.velocitypowered.api.command.CommandManager commandManager = CommandManager.instance()
+                .proxy().getCommandManager();
         CommandMeta commandMeta = commandManager.metaBuilder(name)
                 .plugin(this)
                 .build();
@@ -103,12 +102,12 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
     private void distributeExecute(CommandSource source, List<String> args) {
 
         if (!isEnabled()) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            sendMessage(source, CommandManager.instance().lang().commandIsDisabled);
             return;
         }
 
         if (!checkPermission(source, getPermission())) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
+            sendMessage(source, CommandManager.instance().lang().noPermission);
             return;
         }
 
@@ -141,7 +140,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
 
         if (onlyForConsole()) {
             if (!(source instanceof ConsoleCommandSource)) {
-                source.sendMessage(Component.text(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole));
+                source.sendMessage(Component.text(CommandManager.instance().lang().onlyForConsole));
                 return;
             }
             ConsoleCommandSource consoleSource = (ConsoleCommandSource) source;
@@ -150,7 +149,7 @@ public abstract class BaseCommand extends CommonCommandImpl implements SimpleCom
         }
         if (onlyForPlayers()) {
             if (!(source instanceof Player)) {
-                source.sendMessage(Component.text(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer));
+                source.sendMessage(Component.text(CommandManager.instance().lang().onlyFotPlayer));
                 return;
             }
             Player player = (Player) source;

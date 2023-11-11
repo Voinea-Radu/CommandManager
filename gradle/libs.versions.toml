@@ -1,5 +1,5 @@
 [versions]
-project = "5.1.0"
+project = "6.0.-1"
 forge = "1.19-41.1.0"
 yarn_mappings = "1.20.1+build.10"
 parchment = "2022.08.14-1.19.2"
@@ -32,8 +32,8 @@ jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.0.
 luckperms = { module = "net.luckperms:api", version = "5.4" }
 
 # LightDream
-lightdream_logger = { module = "dev.lightdream:logger", version = "3.3.14" }
-lightdream_lambda = { module = "dev.lightdream:lambda", version = "4.1.22" }
-lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "3.1.20" }
+lightdream_logger = { module = "dev.lightdream:logger", version = "4.1.2" }
+lightdream_lambda = { module = "dev.lightdream:lambda", version = "5.2.2" }
+lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "4.1.3" }
 
 

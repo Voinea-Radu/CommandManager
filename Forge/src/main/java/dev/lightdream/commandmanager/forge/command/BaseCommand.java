@@ -3,12 +3,11 @@ package dev.lightdream.commandmanager.forge.command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
 import dev.lightdream.commandmanager.common.utils.PermissionUtils;
-import dev.lightdream.commandmanager.forge.CommandMain;
+import dev.lightdream.commandmanager.forge.manager.CommandManager;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
@@ -31,7 +30,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
 
     @Override
     public final boolean registerCommand(String name) {
-        CommonCommandMain.getCommandMain(CommandMain.class).getDispatcher().register(getCommandBuilder(name));
+        CommandManager.instance().dispatcher().register(getCommandBuilder(name));
         return true;
     }
 
@@ -109,14 +108,14 @@ public abstract class BaseCommand extends CommonCommandImpl {
     public int internalExecute(CommandContext<CommandSourceStack> context) {
         CommandSource source = getCommandSource(context);
 
-        if(!isEnabled()){
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+        if (!isEnabled()) {
+            sendMessage(source, CommandManager.instance().lang().commandIsDisabled);
             return 0;
         }
 
         if (onlyForConsole()) {
             if (!(source instanceof MinecraftServer consoleSource)) {
-                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole);
+                sendMessage(source, CommandManager.instance().lang().onlyForConsole);
                 return 0;
             }
             exec(consoleSource, context);
@@ -124,7 +123,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         }
         if (onlyForPlayers()) {
             if (!(source instanceof Player player)) {
-                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer);
+                sendMessage(source, CommandManager.instance().lang().onlyFotPlayer);
                 return 0;
             }
             exec(player, context);

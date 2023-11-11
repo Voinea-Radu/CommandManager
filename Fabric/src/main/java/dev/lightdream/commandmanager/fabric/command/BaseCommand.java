@@ -8,12 +8,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.CommonCommandImpl;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
-import dev.lightdream.commandmanager.fabric.CommandMain;
 import dev.lightdream.commandmanager.common.utils.PermissionUtils;
+import dev.lightdream.commandmanager.fabric.manager.CommandManager;
 import dev.lightdream.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.server.MinecraftServer;
@@ -33,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 import static net.minecraft.server.command.CommandManager.literal;
 
 @SuppressWarnings("unused")
-public abstract class BaseCommand extends CommonCommandImpl {
+public class BaseCommand extends CommonCommandImpl {
 
     public static String commandSourceFiled = "field_9819";
 
@@ -157,11 +156,13 @@ public abstract class BaseCommand extends CommonCommandImpl {
         return command;
     }
 
+    @SuppressWarnings("resource")
     @Override
     public final boolean registerCommand(String name) {
-        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().getDispatcher().register(getCommandBuilder(name));
-        CommonCommandMain.getCommandMain(CommandMain.class).getServer().getPlayerManager().getPlayerList().forEach(player ->
-                CommonCommandMain.getCommandMain(CommandMain.class).getServer().getCommandManager().sendCommandTree(player));
+        CommandManager.instance().server().getCommandManager().getDispatcher().register(getCommandBuilder(name));
+        CommandManager.instance().server().getPlayerManager().getPlayerList().forEach(player ->
+                CommandManager.instance().server().getCommandManager().sendCommandTree(player)
+        );
 
         return true;
     }
@@ -188,18 +189,18 @@ public abstract class BaseCommand extends CommonCommandImpl {
         CommandOutput source = getSource(context);
 
         if (!isEnabled()) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            sendMessage(source, CommandManager.instance().lang().commandIsDisabled);
             return 0;
         }
 
         if (!checkPermission(source, getPermission())) {
-            sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission);
+            sendMessage(source, CommandManager.instance().lang().noPermission);
             return 0;
         }
 
         if (onlyForConsole()) {
             if (!(source instanceof MinecraftServer consoleSource)) {
-                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole);
+                sendMessage(source, CommandManager.instance().lang().onlyForConsole);
                 return 0;
             }
             exec(consoleSource, context);
@@ -207,7 +208,7 @@ public abstract class BaseCommand extends CommonCommandImpl {
         }
         if (onlyForPlayers()) {
             if (!(source instanceof ServerPlayerEntity player)) {
-                sendMessage(source, CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer);
+                sendMessage(source, CommandManager.instance().lang().onlyFotPlayer);
                 return 0;
             }
             exec(player, context);

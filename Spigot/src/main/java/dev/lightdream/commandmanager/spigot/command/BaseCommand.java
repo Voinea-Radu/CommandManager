@@ -1,9 +1,8 @@
 package dev.lightdream.commandmanager.spigot.command;
 
-import dev.lightdream.commandmanager.common.CommonCommandMain;
 import dev.lightdream.commandmanager.common.command.ICommonCommand;
 import dev.lightdream.commandmanager.common.utils.ListUtils;
-import dev.lightdream.commandmanager.spigot.CommandMain;
+import dev.lightdream.commandmanager.spigot.manager.CommandManager;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.messagebuilder.MessageBuilder;
 import lombok.Getter;
@@ -59,7 +58,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
         Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
         if (commandMapObject instanceof CommandMap) {
             CommandMap commandMap = (CommandMap) commandMapObject;
-            commandMap.register(CommonCommandMain.getCommandMain(CommandMain.class).getPlugin().getDescription().getName(), this);
+            commandMap.register(CommandManager.instance().plugin().getDescription().getName(), this);
         } else {
             return false;
         }
@@ -68,7 +67,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     public void exec(@NotNull CommandSender source, List<String> args) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + this.getName() + " for " + source.getName() + ", but the command is not implemented. Exec type: CommandSender, List<String>");
         }
 
@@ -76,7 +75,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     public void exec(@NotNull ConsoleCommandSender console, @NotNull List<String> args) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + this.getName() + " for " + console.getName() + ", but the command is not implemented. Exec type: ConsoleCommandSender, List<String>");
         }
 
@@ -84,7 +83,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     }
 
     public void exec(@NotNull Player player, @NotNull List<String> args) {
-        if (getSubCommands().size() == 0) {
+        if (getSubCommands().isEmpty()) {
             Logger.warn("Executing command " + this.getName() + " for " + player.getName() + ", but the command is not implemented. Exec type: Player, List<String>");
         }
 
@@ -94,12 +93,12 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
     @Override
     public final boolean execute(CommandSender sender, String label, String[] args) {
         if (!isEnabled()) {
-            sendMessage(sender, CommonCommandMain.getCommandMain(CommandMain.class).getLang().commandIsDisabled);
+            sendMessage(sender, CommandManager.instance().lang().commandIsDisabled);
             return true;
         }
 
         if (!checkPermission(sender, getPermission())) {
-            sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().noPermission).toString());
+            sender.sendMessage(new MessageBuilder(CommandManager.instance().lang().noPermission).toString());
             return true;
         }
 
@@ -141,7 +140,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
         if (onlyForPlayers()) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyFotPlayer).parse());
+                sender.sendMessage(new MessageBuilder(CommandManager.instance().lang().onlyFotPlayer).parse());
                 return;
             }
             exec((Player) sender, args);
@@ -150,7 +149,7 @@ public abstract class BaseCommand extends org.bukkit.command.Command implements 
 
         if (onlyForConsole()) {
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(new MessageBuilder(CommonCommandMain.getCommandMain(CommandMain.class).getLang().onlyForConsole).parse());
+                sender.sendMessage(new MessageBuilder(CommandManager.instance().lang().onlyForConsole).parse());
                 return;
             }
             exec((ConsoleCommandSender) sender, args);
