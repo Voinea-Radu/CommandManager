@@ -10,8 +10,8 @@ minecraft_v19 = { module = "com.mojang:minecraft", version = "1.19" }
 minecraft_v20 = { module = "com.mojang:minecraft", version = "1.20.1" }
 
 # Fabric
-fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.86.1+1.20.1" }
-fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.14.22" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.90.7+1.20.3" }
+fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.14.24" }
 
 # Velocioty
 velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
@@ -23,7 +23,7 @@ spigot = { module = "org.spigotmc:spigot-api", version = "1.8-R0.1-SNAPSHOT" }
 sponge = { module = "org.spongepowered:spongeapi", version = "7.4.0" }
 
 # Utils
-lombok = { module = "org.projectlombok:lombok", version = "1.18.28" }
+lombok = { module = "org.projectlombok:lombok", version = "1.18.30" }
 gson = { module = "com.google.code.gson:gson", version = "2.10.1" }
 reflections = { module = "org.reflections:reflections", version = "0.10.2" }
 jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.0.1" }
