@@ -10,6 +10,7 @@ dependencies {
     // LightDream
     api(libs.lightdream.logger)
     api(libs.lightdream.lambda)
+    api(libs.lightdream.filemanager)
     api(libs.lightdream.messagebuilder)
 
     // Reflections
