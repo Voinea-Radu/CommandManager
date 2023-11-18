@@ -79,8 +79,8 @@ public class CommonCommandManager {
         }
     }
 
-    public void generateCommands() {
-        for (Class<? extends ICommonCommand> clazz : commandClasses()) {
+    public static void generateCommands() {
+        for (Class<? extends ICommonCommand> clazz : instance().commandClasses()) {
             Command command = clazz.getAnnotation(Command.class);
             if (command.parent() != ICommonCommand.class) {
                 continue;
@@ -94,8 +94,8 @@ public class CommonCommandManager {
         }
     }
 
-    public void registerCommand(Class<? extends ICommonCommand> commandClazz) {
-        for (ICommonCommand command : commands) {
+    public static void registerCommand(Class<? extends ICommonCommand> commandClazz) {
+        for (ICommonCommand command : instance().commands()) {
             if (command.getClass().equals(commandClazz)) {
                 command.enable();
                 return;
@@ -107,12 +107,12 @@ public class CommonCommandManager {
             return;
         }
 
-        commands.add(commandObject);
+        instance().commands().add(commandObject);
     }
 
     @SuppressWarnings("unused")
-    public void unregisterCommand(Class<? extends ICommonCommand> commandClazz) {
-        for (ICommonCommand command : commands) {
+    public static void unregisterCommand(Class<? extends ICommonCommand> commandClazz) {
+        for (ICommonCommand command : instance().commands()) {
             if (command.getClass().equals(commandClazz)) {
                 command.disable();
                 return;
@@ -120,7 +120,7 @@ public class CommonCommandManager {
         }
     }
 
-    public ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass) {
+    public static ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass) {
         ICommonCommand command;
         Constructor<ICommonCommand> constructor;
 
@@ -145,6 +145,11 @@ public class CommonCommandManager {
 
     public ICommonCommand initCommand(Class<? extends ICommonCommand> commandClass, ICommonCommand parentCommand) {
         ICommonCommand command = initCommand(commandClass);
+
+        if(command==null){
+            return null;
+        }
+
         command.setParentCommand(parentCommand);
         return command;
     }
