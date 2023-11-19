@@ -14,8 +14,6 @@ import java.util.Set;
 @Accessors(chain = true, fluent = true)
 public class CommandManager extends CommonCommandManager {
 
-    private static @Getter CommandManager instance = null;
-
     private final MinecraftServer server;
 
     @lombok.Builder(builderClassName = "Builder")
@@ -24,9 +22,11 @@ public class CommandManager extends CommonCommandManager {
                           boolean autoRegister, MinecraftServer server) {
         super(reflections, lang, commandClasses, basePermission, autoRegister);
 
-        instance = this;
-
         this.server = server;
+    }
+
+    public static CommandManager instance(){
+        return (CommandManager) instance;
     }
 
     @SuppressWarnings("unused")

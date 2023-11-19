@@ -20,7 +20,7 @@ import java.util.Set;
 @Accessors(chain = true, fluent = true)
 public class CommonCommandManager {
 
-    private static @Getter CommonCommandManager instance = null;
+    protected static @Getter CommonCommandManager instance = null;
 
     private final List<ICommonCommand> commands = new ArrayList<>();
 

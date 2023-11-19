@@ -14,8 +14,6 @@ import java.util.Set;
 @Accessors(chain = true, fluent = true)
 public class CommandManager extends CommonCommandManager {
 
-    private static @Getter CommandManager instance = null;
-
     private final ProxyServer proxy;
 
     @lombok.Builder(builderClassName = "Builder")
@@ -24,9 +22,11 @@ public class CommandManager extends CommonCommandManager {
                           boolean autoRegister, ProxyServer proxy) {
         super(reflections, lang, commandClasses, basePermission, autoRegister);
 
-        instance = this;
-
         this.proxy = proxy;
+    }
+
+    public static CommandManager instance(){
+        return (CommandManager) instance;
     }
 
     @SuppressWarnings("unused")

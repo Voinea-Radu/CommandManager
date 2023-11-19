@@ -15,8 +15,6 @@ import java.util.Set;
 @Accessors(chain = true, fluent = true)
 public class CommandManager extends CommonCommandManager {
 
-    private static @Getter CommandManager instance = null;
-
     private final CommandDispatcher<CommandSourceStack> dispatcher;
 
     @lombok.Builder(builderClassName = "Builder")
@@ -25,9 +23,11 @@ public class CommandManager extends CommonCommandManager {
                           boolean autoRegister, CommandDispatcher<CommandSourceStack> dispatcher) {
         super(reflections, lang, commandClasses, basePermission, autoRegister);
 
-        instance = this;
-
         this.dispatcher = dispatcher;
+    }
+
+    public static CommandManager instance(){
+        return (CommandManager) instance;
     }
 
     @SuppressWarnings("unused")
