@@ -1,40 +1,31 @@
 [versions]
-project = "6.1.3"
-forge = "1.19-41.1.0"
-yarn_mappings = "1.20.1+build.10"
-parchment = "2022.08.14-1.19.2"
+
+version = "1.0.-1"
+group = "com.voinearadu"
+
+[plugins]
+
+loom = { id = "fabric-loom", version = "1.5.5" }
 
 [libraries]
+
 # Minecraft
-minecraft_v19 = { module = "com.mojang:minecraft", version = "1.19" }
 minecraft_v20 = { module = "com.mojang:minecraft", version = "1.20.1" }
 
 # Fabric
 fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.90.7+1.20.3" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.15.0" }
+parchment_mappings = { module = "org.parchmentmc.data:parchment-1.20.1", version = "2023.09.03" }
 
 # Velocioty
 velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
 
-# Spigot
-spigot = { module = "org.spigotmc:spigot-api", version = "1.8-R0.1-SNAPSHOT" }
-
-# Sponge
-sponge = { module = "org.spongepowered:spongeapi", version = "7.4.0" }
-
-# Utils
+# Dependencies
 lombok = { module = "org.projectlombok:lombok", version = "1.18.30" }
+jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
 gson = { module = "com.google.code.gson:gson", version = "2.10.1" }
 reflections = { module = "org.reflections:reflections", version = "0.10.2" }
-jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
-
-# APIs
 luckperms = { module = "net.luckperms:api", version = "5.4" }
-
-# LightDream
-lightdream_logger = { module = "dev.lightdream:logger", version = "4.2.2" }
-lightdream_lambda = { module = "dev.lightdream:lambda", version = "5.3.3" }
-lightdream_filemanager = { module = "dev.lightdream:file-manager", version = "3.2.5" }
-lightdream_messagebuilder = { module = "dev.lightdream:message-builder", version = "4.2.6" }
-
-
+kyori_minimessage = { module = "net.kyori:adventure-text-minimessage", version = "4.17.0" }
+kyori_adventure_fabric = { module = "net.kyori:adventure-platform-fabric", version = "5.9.0" }
+voinearadu_utils = { module = "com.voinearadu:utils", version = "1.0.1" }

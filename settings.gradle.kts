@@ -1,3 +1,5 @@
+rootProject.name = "command-manager"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -9,19 +11,14 @@ pluginManagement {
         mavenCentral()
     }
 }
-rootProject.name = "command-manager"
 
-include(":command-manager-common")
-project(":command-manager-common").projectDir = file("Common")
+fun defineProject(module: String, path: String) {
+    include(module)
+    project(module).projectDir = file(path)
+}
 
-include(":command-manager-forge-1-19")
-project(":command-manager-forge-1-19").projectDir = file("Forge")
-
-include(":command-manager-spigot")
-project(":command-manager-spigot").projectDir = file("Spigot")
-
-include(":command-manager-velocity")
-project(":command-manager-velocity").projectDir = file("Velocity")
-
-include(":command-manager-fabric-1-20")
-project(":command-manager-fabric-1-20").projectDir = file("Fabric")
+defineProject(":command-manager-common", "src/common")
+defineProject(":command-manager-fabric-1-19", "src/fabric_1_19")
+defineProject(":command-manager-velocity", "src/velocity")
+// TODO: Spigot (Bukkit) Support
+// TODO: Force Support
