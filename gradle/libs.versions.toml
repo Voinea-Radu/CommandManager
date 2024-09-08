@@ -27,5 +27,5 @@ gson = { module = "com.google.code.gson:gson", version = "2.10.1" }
 reflections = { module = "org.reflections:reflections", version = "0.10.2" }
 luckperms = { module = "net.luckperms:api", version = "5.4" }
 kyori_minimessage = { module = "net.kyori:adventure-text-minimessage", version = "4.17.0" }
-kyori_adventure_fabric = { module = "net.kyori:adventure-platform-fabric", version = "5.9.0" }
+kyori_adventure_fabric = { module = "net.kyori:adventure-platform-fabric", version = "5.14.1" }
 voinearadu_utils = { module = "com.voinearadu:utils", version = "1.0.1" }
