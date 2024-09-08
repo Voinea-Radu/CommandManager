@@ -72,10 +72,13 @@ subprojects {
         }
 
         repositories {
-            maven(url = (project.findProperty("voinearadu.url") ?: "") as String) {
-                credentials(PasswordCredentials::class) {
-                    username = (project.findProperty("voinearadu.auth.username") ?: "") as String
-                    password = (project.findProperty("voinearadu.auth.password") ?: "") as String
+            if (project.properties["com.voinearadu.publish"] == "true") {
+                maven(url = (project.findProperty("com.voinearadu.url") ?: "") as String) {
+                    name = "VoineaRaduRepository"
+                    credentials(PasswordCredentials::class) {
+                        username = (project.findProperty("com.voinearadu.auth.username") ?: "") as String
+                        password = (project.findProperty("com.voinearadu.auth.password") ?: "") as String
+                    }
                 }
             }
         }
