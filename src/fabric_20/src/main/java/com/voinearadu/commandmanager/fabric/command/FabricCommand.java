@@ -114,7 +114,7 @@ public abstract class FabricCommand extends CommonCommand {
         ArgumentBuilder<CommandSourceStack, ?> then = null;
 
         if (!arguments.isEmpty()) {
-            arguments.get(arguments.size() - 1).executes(this::internalExecute);
+            arguments.getLast().executes(this::internalExecute);
 
             if (arguments.size() != 1) {
                 for (int index = arguments.size() - 2; index >= 0; index--) {
@@ -126,7 +126,7 @@ public abstract class FabricCommand extends CommonCommand {
                 }
             }
 
-            then = arguments.get(0);
+            then = arguments.getFirst();
         } else {
             command.executes(this::internalExecute);
         }

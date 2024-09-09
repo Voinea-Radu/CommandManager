@@ -18,7 +18,7 @@ fun defineProject(module: String, path: String) {
 }
 
 defineProject(":command-manager-common", "src/common")
-defineProject(":command-manager-fabric-1-19", "src/fabric_1_19")
+defineProject(":command-manager-fabric-20", "src/fabric_20")
 defineProject(":command-manager-velocity", "src/velocity")
 // TODO: Spigot (Bukkit) Support
 // TODO: Force Support

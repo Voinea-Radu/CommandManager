@@ -12,7 +12,11 @@ group = _group
 
 fun DependencyHandlerScope.applyDependencies() {
     // Dependencies
-    api(libs.voinearadu.utils)
+    if(project.properties["com.voinearadu.utils.local"] != null){
+        api(project(project.properties["com.voinearadu.utils.local"] as String))
+    }else{
+        api("com.voinearadu:utils:1.1.5")
+    }
 
     // Annotations
     compileOnly(libs.lombok)
