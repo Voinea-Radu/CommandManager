@@ -22,7 +22,7 @@ velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPS
 
 # Dependencies
 lombok = { module = "org.projectlombok:lombok", version = "1.18.34" }
-jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
+jetbrains_annotations = { module = "org.jetbrains:annotations", version = "25.0.0" }
 gson = { module = "com.google.code.gson:gson", version = "2.11.0" }
 reflections = { module = "org.reflections:reflections", version = "0.10.2" }
 luckperms = { module = "net.luckperms:api", version = "5.4" }
