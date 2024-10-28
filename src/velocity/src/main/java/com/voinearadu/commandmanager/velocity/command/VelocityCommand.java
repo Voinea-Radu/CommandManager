@@ -4,7 +4,7 @@ import com.voinearadu.commandmanager.common.command.CommonCommand;
 import com.voinearadu.commandmanager.common.manager.CommonCommandManager;
 import com.voinearadu.commandmanager.common.utils.ListUtils;
 import com.voinearadu.commandmanager.velocity.manager.VelocityCommandManager;
-import com.voinearadu.logger.Logger;
+import com.voinearadu.utils.logger.Logger;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;

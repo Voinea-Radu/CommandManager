@@ -15,7 +15,7 @@ fun DependencyHandlerScope.applyDependencies() {
     if(project.properties["com.voinearadu.utils.local"] != null){
         api(project(project.properties["com.voinearadu.utils.local"] as String))
     }else{
-        api("com.voinearadu:utils:1.1.6")
+        api("com.voinearadu:utils:1.1.17")
     }
 
     // Annotations
@@ -63,8 +63,8 @@ subprojects {
 
     tasks {
         java {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
     }
 

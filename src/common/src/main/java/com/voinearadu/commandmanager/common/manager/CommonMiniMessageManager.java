@@ -1,7 +1,7 @@
 package com.voinearadu.commandmanager.common.manager;
 
-import com.voinearadu.message_builder.MessageBuilder;
-import com.voinearadu.message_builder.MessageBuilderList;
+import com.voinearadu.utils.message_builder.MessageBuilder;
+import com.voinearadu.utils.message_builder.MessageBuilderList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;

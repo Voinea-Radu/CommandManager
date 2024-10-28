@@ -1,6 +1,6 @@
 package com.voinearadu.commandmanager.common.utils;
 
-import com.voinearadu.logger.Logger;
+import com.voinearadu.utils.logger.Logger;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.platform.PlayerAdapter;

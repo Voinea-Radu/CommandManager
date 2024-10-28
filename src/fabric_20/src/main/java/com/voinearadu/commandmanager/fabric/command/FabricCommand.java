@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.voinearadu.commandmanager.common.command.CommonCommand;
 import com.voinearadu.commandmanager.common.manager.CommonCommandManager;
 import com.voinearadu.commandmanager.fabric.manager.FabricCommandManager;
-import com.voinearadu.logger.Logger;
+import com.voinearadu.utils.logger.Logger;
 import lombok.SneakyThrows;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
