@@ -15,7 +15,7 @@ loom_v21 = { id = "fabric-loom", version = "1.7.3" }
 # Fabric 1.20
 minecraft_v20 = { module = "com.mojang:minecraft", version = "1.20.1" }
 fabric_api_v20 = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.90.7+1.20.3" }
-fabric_loader_v20 = { module = "net.fabricmc:fabric-loader", version = "0.15.10" }
+fabric_loader_v20 = { module = "net.fabricmc:fabric-loader", version = "0.16.9" }
 parchment_mappings_v20 = { module = "org.parchmentmc.data:parchment-1.20.1", version = "2023.09.03" }
 
 # Fabric 1.21
