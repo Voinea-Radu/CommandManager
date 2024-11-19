@@ -32,5 +32,5 @@ lombok = { module = "org.projectlombok:lombok", version = "1.18.34" }
 jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
 luckperms = { module = "net.luckperms:api", version = "5.4" }
 kyori_minimessage = { module = "net.kyori:adventure-text-minimessage", version = "4.17.0" }
-kyori_adventure_fabric = { module = "net.kyori:adventure-platform-fabric", version = "5.9.0" }
+kyori_adventure_fabric = { module = "net.kyori:adventure-platform-fabric", version = "5.14.2" }
 voinearadu_utils = { module = "com.voinearadu:utils", version = "1.1.19" }
