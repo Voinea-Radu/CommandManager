@@ -28,7 +28,7 @@ parchment_mappings_v21 = { module = "org.parchmentmc.data:parchment-1.21", versi
 velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
 
 # Dependencies
-lombok = { module = "org.projectlombok:lombok", version = "1.18.34" }
+lombok = { module = "org.projectlombok:lombok", version = "1.18.36" }
 jetbrains_annotations = { module = "org.jetbrains:annotations", version = "26.0.1" }
 luckperms = { module = "net.luckperms:api", version = "5.4" }
 kyori_minimessage = { module = "net.kyori:adventure-text-minimessage", version = "4.17.0" }
