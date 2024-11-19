@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public abstract class CommonCommand {
 
     // Provided
@@ -29,7 +30,7 @@ public abstract class CommonCommand {
 
         this.annotation = this.getClass().getAnnotation(Command.class);
 
-        subCommands.addAll(commandManager.getReflections().getOfType(CommonCommand.class)
+        subCommands.addAll(commandManager.getReflectionsCrawler().getOfType(CommonCommand.class)
                 .stream()
                 .filter(commandClass -> commandClass.isAnnotationPresent(Command.class))
                 .filter(commandClass -> commandClass.getAnnotation(Command.class).parent().equals(this.getClass()))
@@ -96,7 +97,7 @@ public abstract class CommonCommand {
         }
 
         if (!arguments.isEmpty()) {
-            String subCommandName = arguments.get(0);
+            String subCommandName = arguments.getFirst();
             CommonCommand subCommand = subCommands.stream()
                     .filter(command -> command.getAliases().contains(subCommandName))
                     .findFirst()

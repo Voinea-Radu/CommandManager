@@ -18,9 +18,9 @@ public class VelocityCommandManager extends CommonCommandManager {
     private final ProxyServer proxy;
     private final VelocityMiniMessageManager miniMessageManager;
 
-    public VelocityCommandManager(@NotNull Reflections reflections, @NotNull String basePermission,
+    public VelocityCommandManager(@NotNull Reflections.Crawler reflectionsCrawler, @NotNull String basePermission,
                                   @NotNull ProxyServer proxy) {
-        super(reflections, Player.class, ConsoleCommandSource.class, CommandSource.class, basePermission);
+        super(reflectionsCrawler, Player.class, ConsoleCommandSource.class, CommandSource.class, basePermission);
 
         this.proxy = proxy;
         this.miniMessageManager = new VelocityMiniMessageManager();

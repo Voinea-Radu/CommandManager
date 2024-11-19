@@ -2,6 +2,13 @@
 
 ## How to add to your project
 
+## Fabric versioning
+
+| Minecraft version | Fabric version | command-manager-fabric vebric |
+|-------------------|----------------|-------------------------------|
+| 1.20.1            | 0.15.10        | [1.0.0 - 1.0.6]               |
+| 1.21.1            | 0.16.9         | [1.1.0 - ]                    |
+
 ```kotlin
 repositories {
     maven("https://repository.voinearadu.com/repository/maven-releases/")

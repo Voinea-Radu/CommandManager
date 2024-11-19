@@ -1,21 +1,28 @@
 [versions]
 
-version = "1.0.6"
+version = "1.1.-1"
 group = "com.voinearadu"
 
 [plugins]
 
-loom = { id = "fabric-loom", version = "1.5.5" }
+loom_v20 = { id = "fabric-loom", version = "1.5.5" }
+loom_v21 = { id = "fabric-loom", version = "1.7.3" }
 
 [libraries]
 
 # Minecraft
-minecraft_v20 = { module = "com.mojang:minecraft", version = "1.20.1" }
 
-# Fabric
-fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.90.7+1.20.3" }
-fabric_loader = { module = "net.fabricmc:fabric-loader", version = "0.15.10" }
-parchment_mappings = { module = "org.parchmentmc.data:parchment-1.20.1", version = "2023.09.03" }
+# Fabric 1.20
+minecraft_v20 = { module = "com.mojang:minecraft", version = "1.20.1" }
+fabric_api_v20 = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.90.7+1.20.3" }
+fabric_loader_v20 = { module = "net.fabricmc:fabric-loader", version = "0.15.10" }
+parchment_mappings_v20 = { module = "org.parchmentmc.data:parchment-1.20.1", version = "2023.09.03" }
+
+# Fabric 1.21
+minecraft_v21 = { module = "com.mojang:minecraft", version = "1.21.1" }
+fabric_api_v21 = { module = "net.fabricmc.fabric-api:fabric-api", version = "0.109.0+1.21.1" }
+fabric_loader_v21 = { module = "net.fabricmc:fabric-loader", version = "0.16.9" }
+parchment_mappings_v21 = { module = "org.parchmentmc.data:parchment-1.21", version = "2024.11.10" }
 
 # Velocioty
 velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
@@ -23,9 +30,7 @@ velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPS
 # Dependencies
 lombok = { module = "org.projectlombok:lombok", version = "1.18.34" }
 jetbrains_annotations = { module = "org.jetbrains:annotations", version = "24.1.0" }
-gson = { module = "com.google.code.gson:gson", version = "2.11.0" }
-reflections = { module = "org.reflections:reflections", version = "0.10.2" }
 luckperms = { module = "net.luckperms:api", version = "5.4" }
 kyori_minimessage = { module = "net.kyori:adventure-text-minimessage", version = "4.17.0" }
 kyori_adventure_fabric = { module = "net.kyori:adventure-platform-fabric", version = "5.9.0" }
-voinearadu_utils = { module = "com.voinearadu:utils", version = "1.1.6" }
+voinearadu_utils = { module = "com.voinearadu:utils", version = "1.1.19" }

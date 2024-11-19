@@ -15,19 +15,20 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public abstract class CommonCommandManager {
 
-    private final @Getter Reflections reflections;
+    private final @Getter Reflections.Crawler reflectionsCrawler;
     private final List<CommonCommand> commands = new ArrayList<>();
     private final @Getter Class<?> playerClass;
     private final @Getter Class<?> consoleClass;
     private final @Getter Class<?> senderClass;
     private final @Getter String basePermission;
 
-    public CommonCommandManager(@NotNull Reflections reflections, @NotNull Class<?> playerClass,
+    public CommonCommandManager(@NotNull Reflections.Crawler reflectionsCrawler, @NotNull Class<?> playerClass,
                                 @NotNull Class<?> consoleClass, @NotNull Class<?> senderClass,
                                 @NotNull String basePermission) {
-        this.reflections = reflections;
+        this.reflectionsCrawler = reflectionsCrawler;
         this.playerClass = playerClass;
         this.consoleClass = consoleClass;
         this.senderClass = senderClass;

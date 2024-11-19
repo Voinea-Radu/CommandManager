@@ -15,7 +15,7 @@ fun DependencyHandlerScope.applyDependencies() {
     if(project.properties["com.voinearadu.utils.local"] != null){
         api(project(project.properties["com.voinearadu.utils.local"] as String))
     }else{
-        api("com.voinearadu:utils:1.1.17")
+        api(libs.voinearadu.utils)
     }
 
     // Annotations
