@@ -5,8 +5,8 @@ group = "com.voinearadu"
 
 [plugins]
 
-loom_v20 = { id = "fabric-loom", version = "1.5.5" }
-loom_v21 = { id = "fabric-loom", version = "1.8.12" }
+loom_v20 = { id = "fabric-loom", version = "1.9.2" }
+loom_v21 = { id = "fabric-loom", version = "1.9.2" }
 
 [libraries]
 
