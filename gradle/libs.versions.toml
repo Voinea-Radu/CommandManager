@@ -25,7 +25,7 @@ fabric_loader_v21 = { module = "net.fabricmc:fabric-loader", version = "0.16.9" 
 parchment_mappings_v21 = { module = "org.parchmentmc.data:parchment-1.21", version = "2024.11.10" }
 
 # Velocioty
-velocity = { module = "com.velocitypowered:velocity-api", version = "3.1.2-SNAPSHOT" }
+velocity = { module = "com.velocitypowered:velocity-api", version = "3.4.0-SNAPSHOT" }
 
 # Dependencies
 lombok = { module = "org.projectlombok:lombok", version = "1.18.36" }

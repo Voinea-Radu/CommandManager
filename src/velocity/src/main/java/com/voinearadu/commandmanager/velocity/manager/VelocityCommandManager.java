@@ -32,9 +32,10 @@ public class VelocityCommandManager extends CommonCommandManager {
 
         com.velocitypowered.api.command.CommandManager commandManager = proxy.getCommandManager();
 
+
         CommandMeta commandMeta = commandManager.metaBuilder(command.getMainAlias())
                 .aliases(command.getAliases().subList(1, command.getAliases().size()).toArray(new String[0]))
-                .plugin(this)
+                .plugin(this.proxy)
                 .build();
 
 
