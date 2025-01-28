@@ -15,7 +15,7 @@ jobs:
           node-version: '12.x'
 
       - name: Setup Python
-        uses: actions/setup-python@v5.3.0
+        uses: actions/setup-python@v5.4.0
 
       - name: Setup Java
         uses: actions/setup-java@v4
